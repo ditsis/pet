@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♡ my little sanctuary ♡</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-blush: #f9f1f2;
+            --card-white: #ffffff;
+            --border-soft: #ece6e6;
+            --pill-grey: #dcd7d8;
+            --text-main: #6b5e62;
+            --text-muted: #9e8f94;
+            --accent-pink: #f4b8c8;
+            --accent-pink-dark: #e08ea4;
+            --bubble-bg: #fff7f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        input, textarea {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg-blush);
+            color: var(--text-main);
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.35s ease, color 0.35s ease;
+        }
+
+        /* Custom Pixel Cursors */
+        body.cursor-paw, body.cursor-paw button {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23ff9eb5' stroke='%236b5e62' stroke-width='1' d='M4 2h2v2H4zm6 0h2v2h-2zM2 5h2v2H2zm10 0h2v2h-2zM5 6h6v2h1v4H4V8h1z'/></svg>") 8 8, auto;
+        }
+
+        body.cursor-heart, body.cursor-heart button {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23ff85a2' stroke='%23ffffff' stroke-width='1' d='M3 2h3v1h1v1h2V3h1V2h3v1h1v4h-1v2h-2v2H9v2H7v-2H5V9H3V7H2V3h1z'/></svg>") 8 8, auto;
+        }
+
+        body.cursor-sparkle, body.cursor-sparkle button {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23d8b4fe' stroke='%236b5e62' stroke-width='0.8' d='M7 1h2v4h1v1h4v2h-4v1H9v4H7V9H6V8H2V6h4V5h1z'/></svg>") 8 8, auto;
+        }
+
+        body.cursor-bunny, body.cursor-bunny button {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23ffffff' stroke='%236b5e62' stroke-width='1' d='M4 1h2v5H4zm6 0h2v5h-2zM3 6h10v7H3z'/><rect x='5' y='8' width='1.5' height='1.5' fill='%236b5e62'/><rect x='9.5' y='8' width='1.5' height='1.5' fill='%236b5e62'/></svg>") 8 8, auto;
+        }
+
+        /* Soft Neocities Card Aesthetics */
+        .sanctuary-card {
+            background-color: var(--card-white);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 22px;
+            box-shadow: 0 8px 28px rgba(180, 155, 162, 0.08);
+            transition: box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.35s ease;
+        }
+
+        .sanctuary-card:hover {
+            box-shadow: 0 12px 34px rgba(180, 155, 162, 0.14);
+        }
+
+        .draggable-window {
+            position: absolute;
+            z-index: 20;
+        }
+
+        .draggable-window.active-drag {
+            z-index: 40;
+            box-shadow: 0 18px 42px rgba(180, 155, 162, 0.22);
+        }
+
+        /* Owner-only visibility & drag cues */
+        .owner-only {
+            display: none !important;
+        }
+
+        body.is-owner:not(.visitor-preview) .owner-only {
+            display: inline-flex !important;
+        }
+
+        body.is-owner:not(.visitor-preview) .owner-only-block {
+            display: block !important;
+        }
+
+        body.is-owner:not(.visitor-preview) .owner-only-flex {
+            display: flex !important;
+        }
+
+        .owner-only-block, .owner-only-flex {
+            display: none !important;
+        }
+
+        .draggable-handle {
+            cursor: grab;
+        }
+        .draggable-handle:active {
+            cursor: grabbing;
+        }
+
+        /* Top Badges Pill */
+        .top-pill {
+            background-color: var(--pill-grey);
+            border-radius: 9999px;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), 0 4px 12px rgba(160, 145, 148, 0.08);
+            transition: background-color 0.35s ease;
+        }
+
+        .badge-item {
+            position: relative;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .badge-item:hover {
+            transform: scale(1.25) translateY(-2px);
+        }
+
+        .badge-tooltip {
+            position: absolute;
+            top: 135%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-4px);
+            background: var(--card-white);
+            color: var(--text-main);
+            border: 1px solid var(--border-soft);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            z-index: 50;
+        }
+        .badge-item:hover .badge-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Floating Thought Bubbles around Mental Health Character */
+        .thought-bubble {
+            position: absolute;
+            background-color: var(--bubble-bg);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 18px;
+            padding: 8px 12px;
+            font-size: 12px;
+            line-height: 1.35;
+            color: var(--text-main);
+            box-shadow: 0 6px 18px rgba(212, 175, 186, 0.14);
+            max-width: 155px;
+            cursor: grab;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: gentleFloat 4.5s ease-in-out infinite;
+            z-index: 25;
+        }
+        .thought-bubble:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 22px rgba(212, 175, 186, 0.26);
+            z-index: 35;
+        }
+        .thought-bubble:active {
+            cursor: grabbing;
+            animation: none;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Equalizer Animation */
+        .eq-bar {
+            width: 3px;
+            background-color: var(--accent-pink-dark);
+            border-radius: 2px;
+            height: 4px;
+            transition: height 0.2s ease;
+        }
+        .playing .eq-bar:nth-child(1) { animation: eqBounce 0.7s infinite alternate; }
+        .playing .eq-bar:nth-child(2) { animation: eqBounce 0.5s infinite alternate 0.2s; }
+        .playing .eq-bar:nth-child(3) { animation: eqBounce 0.8s infinite alternate 0.1s; }
+        .playing .eq-bar:nth-child(4) { animation: eqBounce 0.6s infinite alternate 0.3s; }
+
+        @keyframes eqBounce {
+            0% { height: 4px; }
+            100% { height: 14px; }
+        }
+
+        /* Cursor Trail & Floating Hearts */
+        .cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 13px;
+            animation: trailFade 0.85s forwards ease-out;
+        }
+
+        @keyframes trailFade {
+            0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(-50%, -18px) scale(0.4) rotate(25deg); }
+        }
+
+        .falling-particle {
+            position: fixed;
+            top: -20px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.45;
+            animation: fallDown linear forwards;
+        }
+
+        @keyframes fallDown {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
+        /* Custom Scrollbar for Notes */
+        .cute-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .cute-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .cute-scroll::-webkit-scrollbar-thumb {
+            background: #eadadd;
+            border-radius: 10px;
+        }
+
+        /* Responsive fallback on small mobile screens so boxes stack cleanly */
+        @media (max-width: 900px) {
+            .workspace-stage {
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+                padding-top: 90px;
+                padding-bottom: 100px;
+                height: auto !important;
+            }
+            .draggable-window {
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                width: 92% !important;
+                max-width: 380px !important;
+            }
+        }
+    </style>
+</head>
+<body class="cursor-paw">
+
+    <!-- Subtle Falling Pastel Particles Container -->
+    <div id="particles-layer"></div>
+
+    <!-- Top Floating Mini Music Player (Top-Left) -->
+    <div id="music-widget" class="fixed top-4 left-4 z-40 sanctuary-card px-3.5 py-2.5 flex items-center gap-3 max-w-[290px]">
+        <button id="play-pause-btn" onclick="toggleAudio()" class="w-8 h-8 rounded-full flex items-center justify-center transition shrink-0" style="background-color: var(--bubble-bg); border: 1px solid var(--border-soft); color: var(--accent-pink-dark);" title="Play / Pause Daily Song">
+            <span id="play-icon" class="text-xs ml-0.5">▶</span>
+        </button>
+        <div class="overflow-hidden flex-1">
+            <div class="flex items-center gap-1.5">
+                <span id="track-mood-label" class="text-[10px] uppercase tracking-wider font-semibold opacity-70">daily tune</span>
+                <div id="eq-bars" class="flex items-end gap-[2px] h-3.5">
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                </div>
+            </div>
+            <div id="track-title-display" class="text-xs font-semibold truncate">soft music box lullaby</div>
+        </div>
+        <!-- Owner-only edit song button -->
+        <button onclick="openEditModal('music')" class="owner-only text-xs px-1.5 py-1 rounded-lg hover:bg-black/5 transition" style="color: var(--accent-pink-dark);" title="Change Daily Song">
+            ♫✎
+        </button>
+        <audio id="daily-audio" loop crossorigin="anonymous"></audio>
+    </div>
+
+    <!-- Top Center Badges Pill (Inspired by Reference) -->
+    <header class="fixed top-5 left-1/2 -translate-x-1/2 z-30">
+        <div class="top-pill px-6 py-2 flex items-center gap-4 text-white text-sm select-none">
+            <button onclick="filterMood('all')" class="badge-item focus:outline-none" aria-label="All Notes">
+                <span class="font-bold drop-shadow-sm">#</span>
+                <span class="badge-tooltip">all feelings</span>
+            </button>
+            <button onclick="toggleParticles()" class="badge-item focus:outline-none" aria-label="Toggle Snow/Sparkles">
+                <span class="drop-shadow-sm">❄</span>
+                <span class="badge-tooltip">toggle sparkles</span>
+            </button>
+            <button onclick="triggerHeartBurst()" class="badge-item focus:outline-none" aria-label="Send Love">
+                <span class="drop-shadow-sm">♥</span>
+                <span class="badge-tooltip">send love burst</span>
+            </button>
+            <button onclick="cycleCursor()" class="badge-item focus:outline-none" aria-label="Switch Cursor">
+                <span class="drop-shadow-sm">🐾</span>
+                <span class="badge-tooltip">switch cursor</span>
+            </button>
+            <button onclick="openEditModal('general')" class="owner-only badge-item focus:outline-none" aria-label="Customize Diary">
+                <span class="drop-shadow-sm">♡</span>
+                <span class="badge-tooltip">owner settings</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Interactive Three-Box Workspace -->
+    <main id="workspace" class="workspace-stage relative w-full min-h-screen overflow-hidden">
+
+        <!-- 1. LEFT BOX: LOVE NOTES -->
+        <section id="box-love" class="draggable-window sanctuary-card w-[300px] flex flex-col" style="left: calc(50% - 515px); top: 195px;">
+            <div class="draggable-handle px-4 py-2.5 border-b flex items-center justify-between rounded-t-[20px]" style="border-color: var(--border-soft);">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-xs" style="color: var(--accent-pink-dark);">♡</span>
+                    <h2 class="text-xs font-bold tracking-wide">love notes</h2>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="openAddLoveNote()" class="owner-only text-[11px] px-2.5 py-0.5 rounded-full font-semibold transition" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">+ note</button>
+                    <span class="owner-only text-[11px] opacity-40" title="Drag box">⋮⋮</span>
+                </div>
+            </div>
+
+            <div id="love-notes-list" class="p-3.5 space-y-2.5 max-h-[295px] overflow-y-auto cute-scroll">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="owner-only-flex px-4 py-2 border-t justify-between items-center text-[11px] opacity-60" style="border-color: var(--border-soft);">
+                <span>drag header to move</span>
+                <span id="love-count">3 notes</span>
+            </div>
+        </section>
+
+        <!-- 2. CENTER BOX: THINGS I LOVE + TOP PEEKING CHARACTER PNG -->
+        <section id="box-center" class="draggable-window w-[320px] flex flex-col items-center" style="left: calc(50% - 160px); top: 175px;">
+            <!-- Cute Peeking Character PNG sitting on top of the box -->
+            <div class="relative z-10 -mb-2 group flex flex-col items-center">
+                <div id="top-sprite-container" class="flex items-end justify-center transition-transform duration-300">
+                    <!-- Custom Uploaded Top Character PNG/GIF -->
+                    <img id="custom-top-sprite" src="" alt="Top Character" style="height: 68px;" class="hidden object-contain drop-shadow-sm pointer-events-none">
+
+                    <!-- Owner-only clean placeholder when no top PNG is uploaded yet -->
+                    <button id="top-sprite-placeholder" onclick="openEditModal('images')" class="owner-only-flex flex-col items-center justify-center px-3 py-1.5 mb-2 rounded-2xl border border-dashed text-[11px] bg-white/80 hover:bg-white transition" style="border-color: var(--accent-pink); color: var(--text-muted);">
+                        <span>+ top char png</span>
+                    </button>
+                </div>
+
+                <!-- Owner quick-swap pill on hover -->
+                <button onclick="openEditModal('images')" class="owner-only opacity-0 group-hover:opacity-100 transition-opacity absolute -top-6 bg-white/95 border text-[10px] px-2.5 py-0.5 rounded-full shadow-sm whitespace-nowrap" style="border-color: var(--border-soft); color: var(--text-main);">
+                    ✎ change top png
+                </button>
+            </div>
+
+            <!-- Center White Card -->
+            <div class="sanctuary-card w-full pt-5 pb-5 px-6 text-center relative">
+                <div class="draggable-handle owner-only absolute top-2 right-3 text-xs opacity-40 hover:opacity-80" title="Drag center box">⋮⋮</div>
+                <h1 id="center-title" class="text-[13px] font-semibold mb-3 tracking-wide">things i love:</h1>
+
+                <div id="interests-container" class="flex flex-wrap justify-center gap-1.5 mb-2">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Owner-only inline add interest -->
+                <div class="owner-only-flex items-center justify-center gap-1 mt-3">
+                    <input id="new-interest-input" type="text" placeholder="add interest..." class="text-xs border rounded-full px-3 py-1 w-40 text-center focus:outline-none" style="background-color: var(--bubble-bg); border-color: var(--border-soft);" onkeydown="if(event.key==='Enter') addInterest()">
+                    <button onclick="addInterest()" class="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center transition" style="background-color: var(--accent-pink); color: #fff;" title="Add Interest">+</button>
+                </div>
+
+                <!-- Daily Mood / Mini Status Line -->
+                <div class="mt-4 pt-3 border-t" style="border-color: var(--border-soft);">
+                    <p id="daily-status-text" class="text-[11px] opacity-75 italic">"taking things one gentle step at a time today ♡"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. RIGHT BOX: MENTAL HEALTH SPACE WITH STANDING CHARACTER PNG & POP-UP FEELING NOTES -->
+        <section id="box-mental" class="draggable-window sanctuary-card w-[345px] h-[395px] flex flex-col" style="left: calc(50% + 205px); top: 165px;">
+            <div class="draggable-handle px-4 py-2.5 border-b flex items-center justify-between rounded-t-[20px]" style="border-color: var(--border-soft);">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-xs" style="color: var(--accent-pink-dark);">✿</span>
+                    <h2 class="text-xs font-bold tracking-wide">mental health</h2>
+                </div>
+                <div class="owner-only-flex items-center gap-1.5">
+                    <button onclick="openEditModal('images')" class="text-[11px] px-2 py-0.5 rounded-full font-medium transition" style="background-color: var(--bubble-bg); color: var(--text-main);" title="Upload Full Body Character PNG">
+                        char png ✎
+                    </button>
+                    <button onclick="openAddFeelingModal()" class="text-[11px] px-2 py-0.5 rounded-full font-semibold transition" style="background-color: var(--accent-pink); color: #fff;" title="Add Pop-up Feeling Note">
+                        + feeling
+                    </button>
+                    <span class="text-[11px] opacity-40 ml-0.5" title="Drag box">⋮⋮</span>
+                </div>
+            </div>
+
+            <!-- Interactive Stage where Full-Body Character PNG stands & Feeling Bubbles float around her -->
+            <div id="mental-stage" class="relative flex-1 w-full overflow-hidden rounded-b-[20px]">
+                <!-- Subtle soft floor shadow under standing character -->
+                <div class="absolute bottom-5 left-1/2 -translate-x-1/2 w-24 h-3.5 rounded-full opacity-50 blur-[1px]" style="background-color: var(--pill-grey);"></div>
+
+                <!-- Full Body Character Container (Purely User's PNG/GIF) -->
+                <div id="standing-char-wrapper" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center justify-end h-[250px] w-[180px]">
+                    <!-- Custom Uploaded Full-Body Character PNG/GIF -->
+                    <img id="custom-standing-char" src="" alt="Standing Character" style="max-height: 235px;" class="hidden w-auto object-contain drop-shadow-sm pointer-events-none">
+
+                    <!-- Owner-only Upload Silhouette Prompt when no character PNG is uploaded yet -->
+                    <div id="standing-char-placeholder" onclick="openEditModal('images')" class="owner-only-flex flex-col items-center justify-center w-32 h-48 rounded-3xl border-2 border-dashed cursor-pointer p-3 text-center transition hover:scale-[1.02]" style="border-color: var(--accent-pink); background-color: var(--bubble-bg); color: var(--text-muted);">
+                        <span class="text-xl mb-1">🧍‍♀️</span>
+                        <span class="text-[11px] font-semibold">upload your standing character png</span>
+                        <span class="text-[9px] opacity-75 mt-1">transparent png or gif</span>
+                    </div>
+                </div>
+
+                <!-- Floating / Pop-up Mental Health Feeling Bubbles Container -->
+                <div id="feeling-bubbles-layer" class="absolute inset-0 z-20">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <div class="owner-only absolute bottom-1.5 right-3 text-[10px] opacity-60 pointer-events-none">
+                    drag bubbles or click to edit
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom-Left Discreet Owner Lock & Toolbar (Matches Screenshot Bottom-Left Spot) -->
+    <div class="fixed bottom-4 left-4 z-40 flex items-center gap-2">
+        <!-- Tiny Lock Button for Owner Login -->
+        <button id="owner-lock-btn" onclick="handleLockClick()" class="w-8 h-8 rounded-full text-white flex items-center justify-center shadow-sm transition hover:scale-105" style="background-color: var(--pill-grey);" title="Owner Access">
+            <span id="lock-icon" class="text-xs">🔒</span>
+        </button>
+
+        <!-- Owner-only Quick Action Bar when logged in -->
+        <div id="owner-toolbar" class="owner-only-flex items-center gap-1.5 px-3 py-1 rounded-full sanctuary-card shadow-sm">
+            <button onclick="openEditModal('colors')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium" title="Theme Colors">
+                🎨 colors
+            </button>
+            <button onclick="openEditModal('images')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium" title="Upload Characters">
+                🐰 chars
+            </button>
+            <button onclick="openEditModal('music')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium" title="Daily Song">
+                ♫ song
+            </button>
+            <button id="preview-toggle-btn" onclick="toggleVisitorPreview()" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium" title="Preview as Visitor">
+                👁 preview
+            </button>
+        </div>
+
+        <!-- Floating Exit Preview Pill when Owner is testing Visitor View -->
+        <button id="exit-preview-btn" onclick="toggleVisitorPreview()" class="hidden px-3 py-1 rounded-full text-xs font-semibold shadow-sm bg-white border" style="border-color: var(--accent-pink); color: var(--accent-pink-dark);">
+            ✕ exit visitor view
+        </button>
+    </div>
+
+    <!-- Bottom-Right Live Heart & View Counter Pills (Exact Reference Style) -->
+    <div class="fixed bottom-4 right-4 z-40 flex items-center gap-2">
+        <button id="heart-counter-btn" onclick="incrementHeartCounter()" class="active:scale-95 text-white px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-semibold shadow-sm transition-all duration-200" style="background-color: var(--pill-grey);">
+            <span id="heart-icon">♥</span>
+            <span id="heart-count">4</span>
+        </button>
+        <div class="text-white px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-semibold shadow-sm select-none" style="background-color: var(--pill-grey);" title="Total Sanctuary Visits">
+            <span>👁</span>
+            <span id="view-count">3,147</span>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- 0. Owner Login / Claim Sanctuary Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-sm p-5">
+            <div class="flex items-center justify-between pb-2.5 border-b" style="border-color: var(--border-soft);">
+                <h3 class="text-sm font-bold">🔒 owner sanctuary access</h3>
+                <button onclick="closeModal('auth-modal')" class="text-sm opacity-60 hover:opacity-100 px-1.5">✕</button>
+            </div>
+
+            <div id="auth-signed-out-view" class="space-y-3 mt-3">
+                <p id="auth-status-desc" class="text-xs leading-relaxed opacity-85">
+                    sign in to unlock owner mode so only you can drag boxes, change pastel colors, upload your character PNGs, and post daily notes.
+                </p>
+
+                <div class="space-y-2">
+                    <input id="owner-email-input" type="email" placeholder="owner email..." class="w-full text-xs border rounded-xl px-3 py-2 focus:outline-none" style="border-color: var(--border-soft);">
+                    <input id="owner-pass-input" type="password" placeholder="password (min 6 chars)..." class="w-full text-xs border rounded-xl px-3 py-2 focus:outline-none" style="border-color: var(--border-soft);">
+                </div>
+
+                <div class="flex flex-col gap-2 pt-1">
+                    <button onclick="ownerEmailLogin()" class="w-full py-2 rounded-full text-white text-xs font-bold shadow-sm transition" style="background-color: var(--accent-pink-dark);">
+                        sign in / claim owner lock ♡
+                    </button>
+                    <button onclick="ownerGoogleLogin()" class="w-full py-2 rounded-full border text-xs font-semibold hover:bg-black/5 transition" style="border-color: var(--border-soft);">
+                        continue with google
+                    </button>
+                </div>
+                <p id="auth-error-msg" class="text-[11px] text-rose-500 hidden"></p>
+            </div>
+
+            <div id="auth-signed-in-view" class="hidden space-y-3 mt-3">
+                <div class="p-3 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                    <p class="font-bold">✨ unlocked as sanctuary owner</p>
+                    <p id="owner-uid-display" class="text-[10px] opacity-70 break-all mt-1"></p>
+                </div>
+                <button onclick="ownerSignOut()" class="w-full py-2 rounded-full border text-xs font-semibold hover:bg-black/5 transition" style="border-color: var(--border-soft);">
+                    lock sanctuary & sign out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. Multi-Tab Owner Customization Modal (Colors, Music, Character PNGs, Status) -->
+    <div id="customize-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-md p-5">
+            <div class="flex items-center justify-between pb-3 border-b" style="border-color: var(--border-soft);">
+                <h3 class="text-sm font-bold">♡ customize your sanctuary</h3>
+                <button onclick="closeModal('customize-modal')" class="opacity-60 hover:opacity-100 text-sm px-2">✕</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-1 my-3 p-1 rounded-xl" style="background-color: var(--bg-blush);">
+                <button onclick="switchModalTab('colors')" id="tab-btn-colors" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-white shadow-sm">🎨 colors</button>
+                <button onclick="switchModalTab('images')" id="tab-btn-images" class="flex-1 py-1.5 text-xs font-semibold rounded-lg opacity-70">🐰 chars</button>
+                <button onclick="switchModalTab('music')" id="tab-btn-music" class="flex-1 py-1.5 text-xs font-semibold rounded-lg opacity-70">♫ music</button>
+                <button onclick="switchModalTab('general')" id="tab-btn-general" class="flex-1 py-1.5 text-xs font-semibold rounded-lg opacity-70">✿ text</button>
+            </div>
+
+            <!-- Tab: Pastel Theme Colors -->
+            <div id="tab-colors" class="space-y-3">
+                <div>
+                    <label class="block text-[11px] font-bold mb-1.5 opacity-80">quick pastel presets</label>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="applyColorPreset('blush')" class="px-2.5 py-1 rounded-full text-[11px] border bg-[#f9f1f2] text-[#6b5e62] border-[#ece6e6]">🌸 blush milk</button>
+                        <button onclick="applyColorPreset('matcha')" class="px-2.5 py-1 rounded-full text-[11px] border bg-[#f3f7f2] text-[#566655] border-[#dce6da]">🍵 strawberry matcha</button>
+                        <button onclick="applyColorPreset('lavender')" class="px-2.5 py-1 rounded-full text-[11px] border bg-[#f5f2fa] text-[#5e566e] border-[#e2dcf0]">🔮 lavender dream</button>
+                        <button onclick="applyColorPreset('sky')" class="px-2.5 py-1 rounded-full text-[11px] border bg-[#f1f6fa] text-[#536370] border-[#dae5f0]">☁️ sky cloud</button>
+                        <button onclick="applyColorPreset('peach')" class="px-2.5 py-1 rounded-full text-[11px] border bg-[#fbf4ef] text-[#6e5b52] border-[#eddcd2]">🍑 peach cream</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                    <label class="flex items-center justify-between p-2 rounded-xl border text-xs" style="border-color: var(--border-soft);">
+                        <span>background</span>
+                        <input id="color-bg" type="color" oninput="previewThemeColors()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-xl border text-xs" style="border-color: var(--border-soft);">
+                        <span>box cards</span>
+                        <input id="color-card" type="color" oninput="previewThemeColors()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-xl border text-xs" style="border-color: var(--border-soft);">
+                        <span>top pill & counters</span>
+                        <input id="color-pill" type="color" oninput="previewThemeColors()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-xl border text-xs" style="border-color: var(--border-soft);">
+                        <span>accent & hearts</span>
+                        <input id="color-accent" type="color" oninput="previewThemeColors()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-xl border text-xs" style="border-color: var(--border-soft);">
+                        <span>feeling bubbles</span>
+                        <input id="color-bubble" type="color" oninput="previewThemeColors()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-xl border text-xs" style="border-color: var(--border-soft);">
+                        <span>text color</span>
+                        <input id="color-text" type="color" oninput="previewThemeColors()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                    </label>
+                </div>
+
+                <div class="pt-2 flex justify-end">
+                    <button onclick="saveThemeColors()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm transition" style="background-color: var(--accent-pink-dark);">save colors for everyone ♡</button>
+                </div>
+            </div>
+
+            <!-- Tab: Character PNGs -->
+            <div id="tab-images" class="space-y-3 hidden">
+                <!-- Top Box Character PNG -->
+                <div class="p-3 rounded-xl border space-y-2" style="background-color: var(--bubble-bg); border-color: var(--border-soft);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">1. top box peeking character png</span>
+                        <button onclick="clearCharacterImage('top')" class="text-[11px] underline opacity-70 hover:opacity-100">remove</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'top')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
+                    <input id="input-top-url" type="text" placeholder="or paste direct PNG/GIF URL (e.g. GitHub raw link)..." class="w-full text-xs border rounded-lg px-2.5 py-1.5 bg-white" style="border-color: var(--border-soft);">
+                    <div class="flex items-center gap-2 text-[11px]">
+                        <span>size:</span>
+                        <input id="slider-top-size" type="range" min="40" max="125" value="68" oninput="updateCharacterScale('top', this.value)" class="flex-1">
+                    </div>
+                </div>
+
+                <!-- Standing Full-Body Character PNG -->
+                <div class="p-3 rounded-xl border space-y-2" style="background-color: var(--bubble-bg); border-color: var(--border-soft);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">2. mental health standing character png</span>
+                        <button onclick="clearCharacterImage('standing')" class="text-[11px] underline opacity-70 hover:opacity-100">remove</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'standing')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
+                    <input id="input-standing-url" type="text" placeholder="or paste direct full-body PNG/GIF URL..." class="w-full text-xs border rounded-lg px-2.5 py-1.5 bg-white" style="border-color: var(--border-soft);">
+                    <div class="flex items-center gap-2 text-[11px]">
+                        <span>height:</span>
+                        <input id="slider-standing-size" type="range" min="130" max="300" value="235" oninput="updateCharacterScale('standing', this.value)" class="flex-1">
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button onclick="saveImageUrlsAndSizes()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm" style="background-color: var(--accent-pink-dark);">save characters ♡</button>
+                </div>
+            </div>
+
+            <!-- Tab: Daily Music -->
+            <div id="tab-music" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">song title of the day</label>
+                    <input id="input-track-title" type="text" class="w-full text-xs border rounded-xl px-3 py-2 focus:outline-none" style="border-color: var(--border-soft);" placeholder="e.g. cozy rainy afternoon.mp3">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">audio file path or URL (.mp3 / .ogg / .wav)</label>
+                    <input id="input-track-url" type="text" class="w-full text-xs border rounded-xl px-3 py-2 focus:outline-none" style="border-color: var(--border-soft);" placeholder="e.g. music/today.mp3 or https://...">
+                    <p class="text-[10px] opacity-65 mt-1">tip: drop your .mp3 in your GitHub repo and type its filename here so visitors hear it too!</p>
+                </div>
+                <div class="pt-1">
+                    <label class="block text-xs font-semibold mb-1">or test a local audio file right now</label>
+                    <input id="input-track-file" type="file" accept="audio/*" class="w-full text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold" style="background-color: var(--bubble-bg);">
+                </div>
+                <div class="pt-2 flex justify-end">
+                    <button onclick="saveMusicSettings()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm transition" style="background-color: var(--accent-pink-dark);">save daily song ♡</button>
+                </div>
+            </div>
+
+            <!-- Tab: General Status & Layout Reset -->
+            <div id="tab-general" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">center box header</label>
+                    <input id="input-center-title" type="text" class="w-full text-xs border rounded-xl px-3 py-2 focus:outline-none" style="border-color: var(--border-soft);">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">daily gentle affirmation / status</label>
+                    <input id="input-daily-status" type="text" class="w-full text-xs border rounded-xl px-3 py-2 focus:outline-none" style="border-color: var(--border-soft);">
+                </div>
+                <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t" style="border-color: var(--border-soft);">
+                    <button onclick="resetLayoutPositions()" class="text-xs px-3 py-1.5 rounded-full border hover:bg-black/5">reset 3 box positions</button>
+                    <button onclick="saveGeneralSettings()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm" style="background-color: var(--accent-pink-dark);">save ♡</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Add Love Note Modal (Owner-Only) -->
+    <div id="love-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-sm p-5">
+            <h3 class="text-sm font-bold mb-3">♡ write a love note</h3>
+            <input id="love-note-date" type="text" class="w-full text-xs border rounded-xl px-3 py-1.5 mb-2" style="border-color: var(--border-soft);" placeholder="date or tag (e.g. nov 26 • self-love)">
+            <textarea id="love-note-text" rows="3" class="w-full text-xs border rounded-xl p-3 focus:outline-none" style="border-color: var(--border-soft);" placeholder="write something sweet..."></textarea>
+            <div class="flex justify-end gap-2 mt-3">
+                <button onclick="closeModal('love-modal')" class="px-3 py-1.5 rounded-full text-xs opacity-70">cancel</button>
+                <button onclick="saveLoveNote()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">post note ♡</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Add / Edit Mental Health Feeling Bubble Modal (Owner-Only) -->
+    <div id="feeling-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-sm p-5">
+            <div class="flex justify-between items-center mb-3">
+                <h3 id="feeling-modal-title" class="text-sm font-bold">✿ how is she feeling right now?</h3>
+                <button id="delete-feeling-btn" onclick="deleteCurrentFeeling()" class="hidden text-xs text-rose-500 hover:underline">delete</button>
+            </div>
+            <div class="flex gap-1.5 mb-2.5 flex-wrap">
+                <button type="button" onclick="selectMoodTag('soft', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#fdf0f3] text-[#d47a92] border border-[#f5d5de]">🌸 soft</button>
+                <button type="button" onclick="selectMoodTag('anxious', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#f3f0fa] text-[#8e74b5] border border-[#e3dbf5]">🌧️ overwhelmed</button>
+                <button type="button" onclick="selectMoodTag('healing', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#eff8f3] text-[#6ba386] border border-[#d7ede1]">🌱 healing</button>
+                <button type="button" onclick="selectMoodTag('sleepy', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#fcf7eb] text-[#b59457] border border-[#f2e6c9]">🌙 sleepy</button>
+            </div>
+            <textarea id="feeling-note-text" rows="3" class="w-full text-xs border rounded-xl p-3 focus:outline-none" style="border-color: var(--border-soft);" placeholder="pop up a thought around her..."></textarea>
+            <div class="flex justify-end gap-2 mt-3">
+                <button onclick="closeModal('feeling-modal')" class="px-3 py-1.5 rounded-full text-xs opacity-70">cancel</button>
+                <button onclick="saveFeelingBubble()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">pop up bubble ✿</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subtle Toast Notification -->
+    <div id="toast-msg" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 sanctuary-card px-4 py-1.5 rounded-full text-xs shadow-md opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import {
+            getAuth,
+            signInAnonymously,
+            signInWithCustomToken,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            onSnapshot,
+            increment
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==================== FIREBASE SETUP ====================
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'cute-sanctuary-diary';
+        const firebaseConfig = typeof __firebase_config !== 'undefined'
+            ? JSON.parse(__firebase_config)
+            : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo" };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Public Firestore document paths (Rule 1 compliant: /artifacts/{appId}/public/data/{collection}/{doc})
+        const diaryDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sanctuary', 'main');
+        const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sanctuary_stats', 'counters');
+
+        // ==================== DEFAULT STATE ====================
+        const defaultTheme = {
+            bg: '#f9f1f2',
+            card: '#ffffff',
+            border: '#ece6e6',
+            pill: '#dcd7d8',
+            accent: '#e08ea4',
+            bubble: '#fff7f9',
+            text: '#6b5e62'
+        };
+
+        const defaultState = {
+            ownerUid: null,
+            cursorIndex: 0,
+            particlesEnabled: true,
+            centerTitle: 'things i love:',
+            dailyStatus: '"taking things one gentle step at a time today ♡"',
+            interests: ['gaming', 'cozy tea', 'plushies', 'rainy days', 'pastel art'],
+            trackTitle: 'soft music box lullaby',
+            trackUrl: '',
+            topSpriteImg: '',
+            topSpriteSize: 68,
+            standingCharImg: '',
+            standingCharSize: 235,
+            theme: { ...defaultTheme },
+            loveNotes: [
+                { id: 1, date: 'today ♡', text: 'you are doing so much better than you think. be gentle with your heart.' },
+                { id: 2, date: 'reminder ✿', text: 'drink a glass of water, unclench your jaw, and take a deep breath.' }
+            ],
+            feelings: [
+                { id: 101, mood: 'soft', text: 'feeling cozy & safe in my little room ♡', x: 12, y: 18 },
+                { id: 102, mood: 'healing', text: 'proud of myself for resting today 🌱', x: 185, y: 34 },
+                { id: 103, mood: 'sleepy', text: 'a little tired, listening to my daily song 🌙', x: 14, y: 215 },
+                { id: 104, mood: 'anxious', text: 'overthinking a bit, breathing slowly 🌧️', x: 182, y: 225 }
+            ],
+            positions: {}
+        };
+
+        let appState = JSON.parse(JSON.stringify(defaultState));
+        let statsState = { hearts: 4, views: 3147 };
+        let currentUser = null;
+        let isOwner = false;
+        let isVisitorPreview = false;
+        let activeMoodFilter = 'all';
+        let editingFeelingId = null;
+        let selectedFeelingMood = 'soft';
+
+        // ==================== AUTH & REALTIME SYNC (RULE 3 COMPLIANT) ====================
+        async function initSanctuary() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else if (!auth.currentUser) {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.warn('Initial auth fallback:', err);
+            }
+
+            onAuthStateChanged(auth, async (user) => {
+                currentUser = user;
+                evaluateOwnerStatus();
+                updateAuthModalUI();
+            });
+
+            // Subscribe to live diary content
+            onSnapshot(diaryDocRef, (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    appState = {
+                        ...defaultState,
+                        ...data,
+                        theme: { ...defaultTheme, ...(data.theme || {}) }
+                    };
+                }
+                evaluateOwnerStatus();
+                renderAll();
+            }, (err) => {
+                console.warn('Diary listener error:', err);
+                renderAll();
+            });
+
+            // Subscribe to live public heart & view counters
+            onSnapshot(statsDocRef, (snap) => {
+                if (snap.exists()) {
+                    statsState = { ...statsState, ...snap.data() };
+                }
+                document.getElementById('heart-count').textContent = (statsState.hearts || 4).toLocaleString();
+                document.getElementById('view-count').textContent = (statsState.views || 3147).toLocaleString();
+            }, (err) => {
+                console.warn('Stats listener error:', err);
+            });
+
+            // Increment public view count once per browser session
+            if (!sessionStorage.getItem('sanctuary_viewed_v2')) {
+                sessionStorage.setItem('sanctuary_viewed_v2', 'true');
+                try {
+                    const statSnap = await getDoc(statsDocRef);
+                    if (!statSnap.exists()) {
+                        await setDoc(statsDocRef, { hearts: 4, views: 3148 });
+                    } else {
+                        await updateDoc(statsDocRef, { views: increment(1) });
+                    }
+                } catch (e) {
+                    console.warn('View increment skipped:', e);
+                }
+            }
+        }
+
+        function evaluateOwnerStatus() {
+            // Only non-anonymous owner matching ownerUid is granted Owner Mode
+            if (currentUser && !currentUser.isAnonymous && appState.ownerUid && currentUser.uid === appState.ownerUid) {
+                isOwner = true;
+            } else {
+                isOwner = false;
+            }
+
+            document.body.classList.toggle('is-owner', isOwner);
+            document.body.classList.toggle('visitor-preview', isVisitorPreview);
+            document.getElementById('lock-icon').textContent = isOwner ? '🔓' : '🔒';
+        }
+
+        async function saveDiaryToCloud(toastText = '') {
+            if (!isOwner || !currentUser) {
+                showToast('owner lock required to save changes 🔒');
+                return;
+            }
+            try {
+                await setDoc(diaryDocRef, appState, { merge: true });
+                if (toastText) showToast(toastText);
+            } catch (err) {
+                console.error('Save failed:', err);
+                showToast('could not save: check image size (< 800KB)');
+            }
+        }
+
+        // ==================== OWNER AUTHENTICATION HANDLERS ====================
+        window.handleLockClick = function() {
+            updateAuthModalUI();
+            openModal('auth-modal');
+        };
+
+        function updateAuthModalUI() {
+            const signedOutView = document.getElementById('auth-signed-out-view');
+            const signedInView = document.getElementById('auth-signed-in-view');
+            const desc = document.getElementById('auth-status-desc');
+
+            if (isOwner && currentUser) {
+                signedOutView.classList.add('hidden');
+                signedInView.classList.remove('hidden');
+                document.getElementById('owner-uid-display').textContent = `signed in as: ${currentUser.email || currentUser.uid}`;
+            } else {
+                signedOutView.classList.remove('hidden');
+                signedInView.classList.add('hidden');
+                if (!appState.ownerUid) {
+                    desc.textContent = 'no owner claimed yet! sign in with your email or google to claim permanent owner lock over this sanctuary.';
+                } else {
+                    desc.textContent = 'this sanctuary is locked. only the owner account can unlock editing & dragging.';
+                }
+            }
+        }
+
+        async function claimOrVerifyOwner(user) {
+            if (!user || user.isAnonymous) return;
+            const snap = await getDoc(diaryDocRef);
+            const existingOwner = snap.exists() ? snap.data().ownerUid : null;
+
+            if (!existingOwner) {
+                // First real user claims ownership of the sanctuary
+                appState.ownerUid = user.uid;
+                await setDoc(diaryDocRef, appState, { merge: true });
+                isOwner = true;
+                evaluateOwnerStatus();
+                closeModal('auth-modal');
+                showToast('sanctuary claimed & unlocked! 🔓♡');
+            } else if (existingOwner === user.uid) {
+                isOwner = true;
+                evaluateOwnerStatus();
+                closeModal('auth-modal');
+                showToast('welcome back, owner! 🔓♡');
+            } else {
+                await signInAnonymously(auth);
+                const errEl = document.getElementById('auth-error-msg');
+                errEl.textContent = 'sorry! this sanctuary belongs to another owner account.';
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        window.ownerEmailLogin = async function() {
+            const email = document.getElementById('owner-email-input').value.trim();
+            const pass = document.getElementById('owner-pass-input').value;
+            const errEl = document.getElementById('auth-error-msg');
+            errEl.classList.add('hidden');
+
+            if (!email || pass.length < 6) {
+                errEl.textContent = 'please enter a valid email and 6+ character password.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                await claimOrVerifyOwner(cred.user);
+            } catch (err) {
+                if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+                    // If no owner exists yet, allow creating the owner account
+                    if (!appState.ownerUid) {
+                        try {
+                            const newCred = await createUserWithEmailAndPassword(auth, email, pass);
+                            await claimOrVerifyOwner(newCred.user);
+                            return;
+                        } catch (createErr) {
+                            errEl.textContent = createErr.message;
+                            errEl.classList.remove('hidden');
+                            return;
+                        }
+                    }
+                }
+                errEl.textContent = 'incorrect owner email or password.';
+                errEl.classList.remove('hidden');
+            }
+        };
+
+        window.ownerGoogleLogin = async function() {
+            const errEl = document.getElementById('auth-error-msg');
+            errEl.classList.add('hidden');
+            try {
+                const provider = new GoogleAuthProvider();
+                const cred = await signInWithPopup(auth, provider);
+                await claimOrVerifyOwner(cred.user);
+            } catch (err) {
+                errEl.textContent = err.message;
+                errEl.classList.remove('hidden');
+            }
+        };
+
+        window.ownerSignOut = async function() {
+            isVisitorPreview = false;
+            await signOut(auth);
+            await signInAnonymously(auth);
+            closeModal('auth-modal');
+            showToast('sanctuary locked 🔒');
+        };
+
+        window.toggleVisitorPreview = function() {
+            if (!isOwner) return;
+            isVisitorPreview = !isVisitorPreview;
+            document.body.classList.toggle('visitor-preview', isVisitorPreview);
+            document.getElementById('exit-preview-btn').classList.toggle('hidden', !isVisitorPreview);
+            showToast(isVisitorPreview ? 'previewing as visitor 👁' : 'back to owner mode 🔓');
+        };
+
+        // ==================== RENDERING & THEME COLORS ====================
+        function renderAll() {
+            applyThemeToDOM(appState.theme || defaultTheme);
+
+            // Center Box
+            document.getElementById('center-title').textContent = appState.centerTitle;
+            document.getElementById('daily-status-text').textContent = appState.dailyStatus;
+            renderInterests();
+
+            // Character PNGs
+            updateCharacterDisplay();
+
+            // Music Title
+            document.getElementById('track-title-display').textContent = appState.trackTitle || 'soft music box lullaby';
+            const audioEl = document.getElementById('daily-audio');
+            if (appState.trackUrl && audioEl.getAttribute('data-url') !== appState.trackUrl) {
+                audioEl.src = appState.trackUrl;
+                audioEl.setAttribute('data-url', appState.trackUrl);
+            }
+
+            // Love Notes & Feeling Bubbles
+            renderLoveNotes();
+            renderFeelingBubbles();
+
+            // Saved window coordinates on desktop
+            if (window.innerWidth > 900 && appState.positions) {
+                Object.keys(appState.positions).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && appState.positions[id]) {
+                        el.style.left = appState.positions[id].left;
+                        el.style.top = appState.positions[id].top;
+                    }
+                });
+            }
+
+            // Cursor
+            const cursors = ['cursor-paw', 'cursor-heart', 'cursor-sparkle', 'cursor-bunny'];
+            const currentCursor = cursors[appState.cursorIndex % cursors.length];
+            cursors.forEach(c => document.body.classList.remove(c));
+            document.body.classList.add(currentCursor);
+        }
+
+        function applyThemeToDOM(t) {
+            const root = document.documentElement.style;
+            root.setProperty('--bg-blush', t.bg || defaultTheme.bg);
+            root.setProperty('--card-white', t.card || defaultTheme.card);
+            root.setProperty('--border-soft', t.border || defaultTheme.border);
+            root.setProperty('--pill-grey', t.pill || defaultTheme.pill);
+            root.setProperty('--accent-pink', t.accent || defaultTheme.accent);
+            root.setProperty('--accent-pink-dark', t.accent || defaultTheme.accent);
+            root.setProperty('--bubble-bg', t.bubble || defaultTheme.bubble);
+            root.setProperty('--text-main', t.text || defaultTheme.text);
+        }
+
+        const colorPresets = {
+            blush: { bg: '#f9f1f2', card: '#ffffff', border: '#ece6e6', pill: '#dcd7d8', accent: '#e08ea4', bubble: '#fff7f9', text: '#6b5e62' },
+            matcha: { bg: '#f3f7f2', card: '#ffffff', border: '#dce6da', pill: '#c8d6c5', accent: '#8ab586', bubble: '#f6faf5', text: '#566655' },
+            lavender: { bg: '#f5f2fa', card: '#ffffff', border: '#e2dcf0', pill: '#d4cce6', accent: '#a892d6', bubble: '#f8f5fc', text: '#5e566e' },
+            sky: { bg: '#f1f6fa', card: '#ffffff', border: '#dae5f0', pill: '#c7d7e6', accent: '#84aed6', bubble: '#f5f9fc', text: '#536370' },
+            peach: { bg: '#fbf4ef', card: '#ffffff', border: '#eddcd2', pill: '#e3cfc3', accent: '#e09b79', bubble: '#fdf8f5', text: '#6e5b52' }
+        };
+
+        window.applyColorPreset = function(name) {
+            const p = colorPresets[name];
+            if (!p) return;
+            document.getElementById('color-bg').value = p.bg;
+            document.getElementById('color-card').value = p.card;
+            document.getElementById('color-pill').value = p.pill;
+            document.getElementById('color-accent').value = p.accent;
+            document.getElementById('color-bubble').value = p.bubble;
+            document.getElementById('color-text').value = p.text;
+            applyThemeToDOM(p);
+        };
+
+        window.previewThemeColors = function() {
+            const custom = {
+                bg: document.getElementById('color-bg').value,
+                card: document.getElementById('color-card').value,
+                border: appState.theme.border || '#ece6e6',
+                pill: document.getElementById('color-pill').value,
+                accent: document.getElementById('color-accent').value,
+                bubble: document.getElementById('color-bubble').value,
+                text: document.getElementById('color-text').value
+            };
+            applyThemeToDOM(custom);
+        };
+
+        window.saveThemeColors = async function() {
+            appState.theme = {
+                bg: document.getElementById('color-bg').value,
+                card: document.getElementById('color-card').value,
+                border: appState.theme.border || '#ece6e6',
+                pill: document.getElementById('color-pill').value,
+                accent: document.getElementById('color-accent').value,
+                bubble: document.getElementById('color-bubble').value,
+                text: document.getElementById('color-text').value
+            };
+            await saveDiaryToCloud('theme colors saved for everyone 🎨♡');
+            closeModal('customize-modal');
+        };
+
+        // ==================== CHARACTER PNG UPLOADS & SCALING ====================
+        window.handleImageUpload = function(event, targetType) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Compress/resize cleanly if large so it fits nicely in Firestore (< 750KB)
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = targetType === 'top' ? 280 : 620;
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    const dataUrl = canvas.toDataURL('image/png');
+
+                    if (targetType === 'top') {
+                        appState.topSpriteImg = dataUrl;
+                        document.getElementById('input-top-url').value = '';
+                    } else {
+                        appState.standingCharImg = dataUrl;
+                        document.getElementById('input-standing-url').value = '';
+                    }
+                    updateCharacterDisplay();
+                    saveDiaryToCloud('character png uploaded ♡');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.updateCharacterScale = function(targetType, val) {
+            if (targetType === 'top') {
+                appState.topSpriteSize = Number(val);
+                document.getElementById('custom-top-sprite').style.height = `${val}px`;
+            } else {
+                appState.standingCharSize = Number(val);
+                document.getElementById('custom-standing-char').style.maxHeight = `${val}px`;
+            }
+        };
+
+        window.saveImageUrlsAndSizes = async function() {
+            const topUrl = document.getElementById('input-top-url').value.trim();
+            const standUrl = document.getElementById('input-standing-url').value.trim();
+            if (topUrl) appState.topSpriteImg = topUrl;
+            if (standUrl) appState.standingCharImg = standUrl;
+            updateCharacterDisplay();
+            await saveDiaryToCloud('characters updated ♡');
+            closeModal('customize-modal');
+        };
+
+        window.clearCharacterImage = async function(targetType) {
+            if (targetType === 'top') {
+                appState.topSpriteImg = '';
+                document.getElementById('input-top-url').value = '';
+            } else {
+                appState.standingCharImg = '';
+                document.getElementById('input-standing-url').value = '';
+            }
+            updateCharacterDisplay();
+            await saveDiaryToCloud('character cleared');
+        };
+
+        function updateCharacterDisplay() {
+            const topImg = document.getElementById('custom-top-sprite');
+            const topPlaceholder = document.getElementById('top-sprite-placeholder');
+            if (appState.topSpriteImg) {
+                topImg.src = appState.topSpriteImg;
+                topImg.style.height = `${appState.topSpriteSize || 68}px`;
+                topImg.classList.remove('hidden');
+                topPlaceholder.style.display = 'none';
+            } else {
+                topImg.classList.add('hidden');
+                topPlaceholder.style.display = '';
+            }
+
+            const standImg = document.getElementById('custom-standing-char');
+            const standPlaceholder = document.getElementById('standing-char-placeholder');
+            if (appState.standingCharImg) {
+                standImg.src = appState.standingCharImg;
+                standImg.style.maxHeight = `${appState.standingCharSize || 235}px`;
+                standImg.classList.remove('hidden');
+                standPlaceholder.style.display = 'none';
+            } else {
+                standImg.classList.add('hidden');
+                standPlaceholder.style.display = '';
+            }
+        }
+
+        // ==================== INTERESTS, LOVE NOTES & FEELING BUBBLES ====================
+        function renderInterests() {
+            const container = document.getElementById('interests-container');
+            container.innerHTML = '';
+            (appState.interests || []).forEach((item, idx) => {
+                const tag = document.createElement('span');
+                tag.className = 'group inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs border transition';
+                tag.style.backgroundColor = 'var(--bubble-bg)';
+                tag.style.borderColor = 'var(--border-soft)';
+                tag.innerHTML = `
+                    <span>${escapeHtml(item)}</span>
+                    <button onclick="removeInterest(${idx})" class="owner-only text-[10px] opacity-60 hover:opacity-100 ml-0.5" title="remove">×</button>
+                `;
+                container.appendChild(tag);
+            });
+        }
+
+        window.addInterest = async function() {
+            if (!isOwner) return;
+            const input = document.getElementById('new-interest-input');
+            const val = input.value.trim();
+            if (!val) return;
+            appState.interests.push(val);
+            input.value = '';
+            renderInterests();
+            await saveDiaryToCloud('interest added ♡');
+        };
+
+        window.removeInterest = async function(index) {
+            if (!isOwner) return;
+            appState.interests.splice(index, 1);
+            renderInterests();
+            await saveDiaryToCloud();
+        };
+
+        function renderLoveNotes() {
+            const list = document.getElementById('love-notes-list');
+            list.innerHTML = '';
+            (appState.loveNotes || []).forEach(note => {
+                const card = document.createElement('div');
+                card.className = 'group relative p-3 rounded-2xl border transition';
+                card.style.backgroundColor = 'var(--bubble-bg)';
+                card.style.borderColor = 'var(--border-soft)';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider" style="color: var(--accent-pink-dark);">${escapeHtml(note.date)}</span>
+                        <button onclick="deleteLoveNote(${note.id})" class="owner-only text-[11px] opacity-50 hover:opacity-100 transition" title="Delete note">✕</button>
+                    </div>
+                    <p class="text-xs leading-relaxed">${escapeHtml(note.text)}</p>
+                `;
+                list.appendChild(card);
+            });
+            document.getElementById('love-count').textContent = `${appState.loveNotes.length} note${appState.loveNotes.length === 1 ? '' : 's'}`;
+        }
+
+        window.openAddLoveNote = function() {
+            if (!isOwner) return;
+            document.getElementById('love-note-date').value = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toLowerCase() + ' ♡';
+            document.getElementById('love-note-text').value = '';
+            openModal('love-modal');
+        };
+
+        window.saveLoveNote = async function() {
+            if (!isOwner) return;
+            const date = document.getElementById('love-note-date').value.trim() || 'note ♡';
+            const text = document.getElementById('love-note-text').value.trim();
+            if (!text) return;
+            appState.loveNotes.unshift({ id: Date.now(), date, text });
+            renderLoveNotes();
+            closeModal('love-modal');
+            await saveDiaryToCloud('love note posted ♡');
+        };
+
+        window.deleteLoveNote = async function(id) {
+            if (!isOwner) return;
+            appState.loveNotes = appState.loveNotes.filter(n => n.id !== id);
+            renderLoveNotes();
+            await saveDiaryToCloud();
+        };
+
+        function renderFeelingBubbles() {
+            const layer = document.getElementById('feeling-bubbles-layer');
+            layer.innerHTML = '';
+
+            (appState.feelings || []).forEach((f, idx) => {
+                if (activeMoodFilter !== 'all' && f.mood !== activeMoodFilter) return;
+
+                const bubble = document.createElement('div');
+                bubble.className = 'thought-bubble';
+                bubble.style.left = `${f.x}px`;
+                bubble.style.top = `${f.y}px`;
+                bubble.style.animationDelay = `${idx * 0.6}s`;
+                bubble.textContent = f.text;
+
+                makeBubbleOwnerDraggable(bubble, f);
+                layer.appendChild(bubble);
+            });
+        }
+
+        function makeBubbleOwnerDraggable(el, feelingObj) {
+            let isDragging = false;
+            let moved = false;
+            let startX, startY, origX, origY;
+
+            const onDown = (e) => {
+                e.stopPropagation();
+                isDragging = true;
+                moved = false;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                startX = clientX;
+                startY = clientY;
+                origX = feelingObj.x;
+                origY = feelingObj.y;
+            };
+
+            const onMove = (e) => {
+                if (!isDragging) return;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+
+                const stage = document.getElementById('mental-stage');
+                const maxX = stage.clientWidth - el.offsetWidth - 6;
+                const maxY = stage.clientHeight - el.offsetHeight - 6;
+
+                feelingObj.x = Math.max(6, Math.min(maxX, origX + dx));
+                feelingObj.y = Math.max(6, Math.min(maxY, origY + dy));
+                el.style.left = `${feelingObj.x}px`;
+                el.style.top = `${feelingObj.y}px`;
+            };
+
+            const onUp = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                if (moved) {
+                    if (isOwner && !isVisitorPreview) saveDiaryToCloud();
+                } else if (isOwner && !isVisitorPreview) {
+                    openEditFeelingModal(feelingObj);
+                }
+            };
+
+            el.addEventListener('mousedown', onDown);
+            el.addEventListener('touchstart', onDown, { passive: true });
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('touchmove', onMove, { passive: true });
+            window.addEventListener('mouseup', onUp);
+            window.addEventListener('touchend', onUp);
+        }
+
+        window.openAddFeelingModal = function() {
+            if (!isOwner) return;
+            editingFeelingId = null;
+            document.getElementById('feeling-modal-title').textContent = '✿ pop up a new feeling bubble';
+            document.getElementById('delete-feeling-btn').classList.add('hidden');
+            document.getElementById('feeling-note-text').value = '';
+            selectedFeelingMood = 'soft';
+            openModal('feeling-modal');
+        };
+
+        function openEditFeelingModal(feelingObj) {
+            if (!isOwner) return;
+            editingFeelingId = feelingObj.id;
+            document.getElementById('feeling-modal-title').textContent = '✿ edit feeling bubble';
+            document.getElementById('delete-feeling-btn').classList.remove('hidden');
+            document.getElementById('feeling-note-text').value = feelingObj.text;
+            selectedFeelingMood = feelingObj.mood || 'soft';
+            openModal('feeling-modal');
+        }
+
+        window.selectMoodTag = function(mood, btnEl) {
+            selectedFeelingMood = mood;
+            document.querySelectorAll('.mood-chip').forEach(btn => btn.classList.remove('ring-2', 'ring-[#d47a92]'));
+            if (btnEl) btnEl.classList.add('ring-2', 'ring-[#d47a92]');
+        };
+
+        window.saveFeelingBubble = async function() {
+            if (!isOwner) return;
+            const text = document.getElementById('feeling-note-text').value.trim();
+            if (!text) return;
+
+            if (editingFeelingId) {
+                const target = appState.feelings.find(f => f.id === editingFeelingId);
+                if (target) {
+                    target.text = text;
+                    target.mood = selectedFeelingMood;
+                }
+            } else {
+                const sideLeft = Math.random() > 0.5;
+                const x = sideLeft ? Math.floor(10 + Math.random() * 35) : Math.floor(175 + Math.random() * 25);
+                const y = Math.floor(18 + Math.random() * 195);
+                appState.feelings.push({ id: Date.now(), mood: selectedFeelingMood, text, x, y });
+            }
+            renderFeelingBubbles();
+            closeModal('feeling-modal');
+            await saveDiaryToCloud('feeling bubble saved ✿');
+        };
+
+        window.deleteCurrentFeeling = async function() {
+            if (!isOwner || !editingFeelingId) return;
+            appState.feelings = appState.feelings.filter(f => f.id !== editingFeelingId);
+            renderFeelingBubbles();
+            closeModal('feeling-modal');
+            await saveDiaryToCloud('feeling bubble removed');
+        };
+
+        window.filterMood = function(mood) {
+            activeMoodFilter = activeMoodFilter === mood ? 'all' : mood;
+            renderFeelingBubbles();
+            showToast(activeMoodFilter === 'all' ? 'showing all feelings ♡' : `mood: ${activeMoodFilter}`);
+        };
+
+        // ==================== OWNER-ONLY DRAGGABLE WINDOWS ====================
+        function initOwnerDraggables() {
+            const windows = document.querySelectorAll('.draggable-window');
+            windows.forEach(win => {
+                const handle = win.querySelector('.draggable-handle');
+                if (!handle) return;
+
+                let isDragging = false;
+                let startX, startY, initialLeft, initialTop;
+
+                const startDrag = (e) => {
+                    if (window.innerWidth <= 900) return;
+                    isDragging = true;
+                    win.classList.add('active-drag');
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    startX = clientX;
+                    startY = clientY;
+                    initialLeft = win.offsetLeft;
+                    initialTop = win.offsetTop;
+                };
+
+                const onDrag = (e) => {
+                    if (!isDragging) return;
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    const newLeft = Math.max(8, Math.min(window.innerWidth - win.offsetWidth - 8, initialLeft + (clientX - startX)));
+                    const newTop = Math.max(65, Math.min(window.innerHeight - 80, initialTop + (clientY - startY)));
+                    win.style.left = `${newLeft}px`;
+                    win.style.top = `${newTop}px`;
+                };
+
+                const stopDrag = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    win.classList.remove('active-drag');
+                    if (isOwner && !isVisitorPreview) {
+                        appState.positions[win.id] = { left: win.style.left, top: win.style.top };
+                        saveDiaryToCloud();
+                    }
+                };
+
+                handle.addEventListener('mousedown', startDrag);
+                handle.addEventListener('touchstart', startDrag, { passive: true });
+                window.addEventListener('mousemove', onDrag);
+                window.addEventListener('touchmove', onDrag, { passive: true });
+                window.addEventListener('mouseup', stopDrag);
+                window.addEventListener('touchend', stopDrag);
+            });
+        }
+
+        window.resetLayoutPositions = async function() {
+            if (!isOwner) return;
+            appState.positions = {};
+            document.getElementById('box-love').style.left = 'calc(50% - 515px)';
+            document.getElementById('box-love').style.top = '195px';
+            document.getElementById('box-center').style.left = 'calc(50% - 160px)';
+            document.getElementById('box-center').style.top = '175px';
+            document.getElementById('box-mental').style.left = 'calc(50% + 205px)';
+            document.getElementById('box-mental').style.top = '165px';
+            await saveDiaryToCloud('box layout reset ♡');
+        };
+
+        // ==================== DAILY MUSIC PLAYER ====================
+        let isPlaying = false;
+        let synthInterval = null;
+        let audioCtx = null;
+
+        window.toggleAudio = function() {
+            const audioEl = document.getElementById('daily-audio');
+            const eq = document.getElementById('eq-bars');
+            const icon = document.getElementById('play-icon');
+
+            if (isPlaying) {
+                isPlaying = false;
+                audioEl.pause();
+                stopMusicBoxSynth();
+                eq.classList.remove('playing');
+                icon.textContent = '▶';
+            } else {
+                isPlaying = true;
+                eq.classList.add('playing');
+                icon.textContent = '❚❚';
+
+                if (audioEl.src && audioEl.src !== window.location.href) {
+                    audioEl.play().catch(() => startMusicBoxSynth());
+                } else {
+                    startMusicBoxSynth();
+                }
+            }
+        };
+
+        function startMusicBoxSynth() {
+            if (synthInterval) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const notes = [523.25, 659.25, 783.99, 987.77, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46];
+            let step = 0;
+
+            const playNote = () => {
+                if (!isPlaying) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.1);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.15);
+                step++;
+            };
+
+            playNote();
+            synthInterval = setInterval(playNote, 650);
+        }
+
+        function stopMusicBoxSynth() {
+            if (synthInterval) {
+                clearInterval(synthInterval);
+                synthInterval = null;
+            }
+        }
+
+        window.saveMusicSettings = async function() {
+            if (!isOwner) return;
+            const titleInput = document.getElementById('input-track-title').value.trim();
+            const urlInput = document.getElementById('input-track-url').value.trim();
+            const fileInput = document.getElementById('input-track-file');
+            const audioEl = document.getElementById('daily-audio');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                audioEl.src = URL.createObjectURL(file);
+                appState.trackTitle = titleInput || file.name;
+                if (urlInput) appState.trackUrl = urlInput;
+            } else {
+                appState.trackUrl = urlInput;
+                audioEl.src = urlInput;
+                audioEl.setAttribute('data-url', urlInput);
+                appState.trackTitle = titleInput || (urlInput ? 'daily custom song.mp3' : 'soft music box lullaby');
+            }
+
+            document.getElementById('track-title-display').textContent = appState.trackTitle;
+            closeModal('customize-modal');
+            await saveDiaryToCloud('daily song updated ♫');
+
+            if (isPlaying) {
+                stopMusicBoxSynth();
+                if (audioEl.src && audioEl.src !== window.location.href) {
+                    audioEl.play().catch(() => startMusicBoxSynth());
+                } else {
+                    startMusicBoxSynth();
+                }
+            }
+        };
+
+        // ==================== SHARED HEART COUNTER & VISITOR INTERACTIONS ====================
+        window.incrementHeartCounter = async function() {
+            triggerHeartBurst();
+            const btn = document.getElementById('heart-counter-btn');
+            btn.style.backgroundColor = 'var(--accent-pink-dark)';
+
+            try {
+                const statSnap = await getDoc(statsDocRef);
+                if (!statSnap.exists()) {
+                    await setDoc(statsDocRef, { hearts: 5, views: 3148 });
+                } else {
+                    await updateDoc(statsDocRef, { hearts: increment(1) });
+                }
+            } catch (e) {
+                statsState.hearts += 1;
+                document.getElementById('heart-count').textContent = statsState.hearts.toLocaleString();
+            }
+        };
+
+        window.triggerHeartBurst = function() {
+            const symbols = ['♡', '♥', '✿', '🐾', '✨'];
+            for (let i = 0; i < 14; i++) {
+                const span = document.createElement('span');
+                span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                span.style.position = 'fixed';
+                span.style.left = `${40 + Math.random() * 20}vw`;
+                span.style.top = `${45 + Math.random() * 20}vh`;
+                span.style.color = 'var(--accent-pink-dark)';
+                span.style.fontSize = `${14 + Math.random() * 14}px`;
+                span.style.pointerEvents = 'none';
+                span.style.zIndex = '9999';
+                span.style.transition = 'all 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+                document.body.appendChild(span);
+
+                requestAnimationFrame(() => {
+                    span.style.transform = `translate(${(Math.random() - 0.5) * 260}px, ${-120 - Math.random() * 160}px) rotate(${(Math.random() - 0.5) * 90}deg)`;
+                    span.style.opacity = '0';
+                });
+
+                setTimeout(() => span.remove(), 1250);
+            }
+        };
+
+        window.cycleCursor = function() {
+            appState.cursorIndex = (appState.cursorIndex + 1) % 4;
+            const cursors = ['cursor-paw', 'cursor-heart', 'cursor-sparkle', 'cursor-bunny'];
+            const names = ['pixel paw 🐾', 'pastel heart ♥', 'magic sparkle ✨', 'pixel bunny 🐰'];
+            cursors.forEach(c => document.body.classList.remove(c));
+            document.body.classList.add(cursors[appState.cursorIndex]);
+            if (isOwner) saveDiaryToCloud();
+            showToast(`cursor: ${names[appState.cursorIndex]}`);
+        };
+
+        function initCursorTrail() {
+            let lastTime = 0;
+            const trailIcons = ['♡', '🐾', '✦', '🐰'];
+            window.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastTime < 65) return;
+                lastTime = now;
+
+                const dot = document.createElement('span');
+                dot.className = 'cursor-trail';
+                dot.textContent = trailIcons[appState.cursorIndex] || '♡';
+                dot.style.left = `${e.clientX}px`;
+                dot.style.top = `${e.clientY}px`;
+                dot.style.color = 'var(--accent-pink-dark)';
+                document.body.appendChild(dot);
+                setTimeout(() => dot.remove(), 850);
+            });
+        }
+
+        let particlesActive = true;
+        function initFallingParticles() {
+            const container = document.getElementById('particles-layer');
+            const icons = ['♡', '❄', '✿', '·'];
+            setInterval(() => {
+                if (!particlesActive) return;
+                const p = document.createElement('span');
+                p.className = 'falling-particle';
+                p.textContent = icons[Math.floor(Math.random() * icons.length)];
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.color = 'var(--accent-pink-dark)';
+                p.style.fontSize = `${10 + Math.random() * 10}px`;
+                const duration = 7 + Math.random() * 6;
+                p.style.animationDuration = `${duration}s`;
+                container.appendChild(p);
+                setTimeout(() => p.remove(), duration * 1000);
+            }, 950);
+        }
+
+        window.toggleParticles = function() {
+            particlesActive = !particlesActive;
+            showToast(particlesActive ? 'falling sparkles on ❄' : 'falling sparkles paused');
+        };
+
+        // ==================== MODAL & HELPER FUNCTIONS ====================
+        window.openEditModal = function(tab = 'colors') {
+            if (!isOwner) return;
+            const t = appState.theme || defaultTheme;
+            document.getElementById('color-bg').value = t.bg;
+            document.getElementById('color-card').value = t.card;
+            document.getElementById('color-pill').value = t.pill;
+            document.getElementById('color-accent').value = t.accent;
+            document.getElementById('color-bubble').value = t.bubble;
+            document.getElementById('color-text').value = t.text;
+
+            document.getElementById('slider-top-size').value = appState.topSpriteSize || 68;
+            document.getElementById('slider-standing-size').value = appState.standingCharSize || 235;
+
+            document.getElementById('input-track-title').value = appState.trackTitle || '';
+            document.getElementById('input-track-url').value = appState.trackUrl || '';
+            document.getElementById('input-center-title').value = appState.centerTitle || '';
+            document.getElementById('input-daily-status').value = appState.dailyStatus || '';
+
+            openModal('customize-modal');
+            switchModalTab(tab);
+        };
+
+        window.switchModalTab = function(tab) {
+            ['colors', 'images', 'music', 'general'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${t}`);
+                btn.classList.remove('bg-white', 'shadow-sm');
+                btn.classList.add('opacity-70');
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tab}`);
+            activeBtn.classList.add('bg-white', 'shadow-sm');
+            activeBtn.classList.remove('opacity-70');
+        };
+
+        window.saveGeneralSettings = async function() {
+            if (!isOwner) return;
+            appState.centerTitle = document.getElementById('input-center-title').value.trim() || 'things i love:';
+            appState.dailyStatus = document.getElementById('input-daily-status').value.trim();
+            renderAll();
+            closeModal('customize-modal');
+            await saveDiaryToCloud('sanctuary text saved ♡');
+        };
+
+        window.openModal = function(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        };
+
+        window.closeModal = function(id) {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        };
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-msg');
+            toast.textContent = msg;
+            toast.style.opacity = '1';
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2300);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        // Boot
+        window.addEventListener('DOMContentLoaded', () => {
+            initOwnerDraggables();
+            initCursorTrail();
+            initFallingParticles();
+            initSanctuary();
+        });
+    </script>
+</body>
+</html>
