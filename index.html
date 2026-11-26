@@ -710,10 +710,18 @@
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==================== FIREBASE SETUP ====================
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'cute-sanctuary-diary';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'meowmeow-sanctuary';
         const firebaseConfig = typeof __firebase_config !== 'undefined'
             ? JSON.parse(__firebase_config)
-            : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo" };
+            : {
+                apiKey: "AIzaSyDL26DDvtw9oA-7LB6awvEeqAZwrmORhQE",
+                authDomain: "meowmeow-6ec62.firebaseapp.com",
+                projectId: "meowmeow-6ec62",
+                storageBucket: "meowmeow-6ec62.firebasestorage.app",
+                messagingSenderId: "972387391744",
+                appId: "1:972387391744:web:351994f02fe9d89c2efbe5",
+                measurementId: "G-V4E7LLW94X"
+            };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
