@@ -1,22 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>my diary</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>my gentle diary ♡</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='25' x='4' font-size='24' fill='%23dd7fa6'%3E%E2%99%A5%3C/text%3E%3C/svg%3E" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
-  <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Silkscreen:wght@400;700&family=Sniglet:wght@400;800&display=swap" rel="stylesheet" />
+  <style id="dynamic-theme-styles">
     :root {
-      --bg-color: #fdf2f8;
-      --box-bg: rgba(255, 255, 255, 0.88);
-      --text-color: #6b5365;
-      --accent-color: #e283a6;
-      --particle-color: #f4a2c0;
-      --heart-num-color: #6b5365;
-      --font-body: 'Sniglet', 'Quicksand', sans-serif;
+      --bg-color: #fbf5f8;
+      --box-bg: #ffffff;
+      --box-border: #f3e4ed;
+      --box-glow: rgba(235, 198, 220, 0.25);
+      --text-primary: #5e545b;
+      --text-secondary: #8c7b86;
+      --accent-pink: #f4b8d4;
+      --accent-pink-dark: #dd7fa6;
+      --accent-blue: #98b4d8;
+      --accent-pill-bg: #faf3f7;
+      --accent-pill-text: #8c7b86;
+      --font-main: 'Quicksand', sans-serif;
+      --font-pixel: 'Silkscreen', monospace;
+      --font-cute: 'Sniglet', cursive;
+      --diary-width: 460px;
+      --diary-height: 310px;
+      --heart-size: 38px;
+      --orbit-radius: 105px;
+      --orbit-font-size: 13px;
+      --top-char-size: 46px;
+      --badge-size: 34px;
+      --drifter-size: 40px;
     }
 
     * {
@@ -27,29 +43,39 @@
     body {
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      width: 100vw;
-      overflow: hidden;
       background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+      transition: background-color 0.4s ease, color 0.3s ease;
+    }
+
+    #custom-bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      color: var(--text-color);
-      font-family: var(--font-body);
-      transition: background-color 0.4s ease;
+      opacity: 0.42;
+      display: none;
     }
 
-    #bg-video-layer {
+    #custom-bg-video-wrap {
       position: fixed;
-      inset: -24px;
+      inset: 0;
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
       display: none;
     }
 
-    #bg-video-layer video,
-    #bg-video-layer iframe {
+    #custom-bg-video,
+    #custom-bg-yt-frame {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -59,1437 +85,1821 @@
       min-height: 56.25vw;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      pointer-events: none;
       border: 0;
-    }
-
-    #workspace {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      z-index: 10;
-    }
-
-    .draggable-widget {
-      position: absolute;
-      touch-action: none;
-    }
-
-    .diary-card {
-      background: var(--box-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1.5px solid rgba(255, 255, 255, 0.95);
-      border-radius: 32px;
-      box-shadow: 0 12px 32px rgba(226, 131, 166, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-    }
-
-    .diary-card:hover {
-      animation: softBoxBounce 0.65s ease;
-      box-shadow: 0 16px 38px rgba(226, 131, 166, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-    }
-
-    @keyframes softBoxBounce {
-      0%, 100% { transform: translateY(0) scale(1); }
-      35% { transform: translateY(-6px) scale(1.012); }
-      70% { transform: translateY(2px) scale(0.995); }
-    }
-
-    .diary-note-blur {
-      transition: opacity 0.55s ease, filter 0.55s ease, transform 0.55s ease;
-    }
-
-    .diary-note-blur.fading-out {
-      opacity: 0;
-      filter: blur(8px);
-      transform: translateY(-4px);
-    }
-
-    .side-badge {
-      background: rgba(255, 255, 255, 0.86);
-      backdrop-filter: blur(8px);
-      border: 1.5px solid rgba(255, 255, 255, 0.95);
-      box-shadow: 0 6px 18px rgba(226, 131, 166, 0.14);
-      animation: badgeBlurFloat 4.8s ease-in-out infinite;
-    }
-
-    .side-badge:nth-child(2) {
-      animation-delay: 1.4s;
-    }
-
-    @keyframes badgeBlurFloat {
-      0%, 100% {
-        transform: translateY(0px);
-        filter: blur(0px);
-        opacity: 0.96;
-      }
-      50% {
-        transform: translateY(-7px);
-        filter: blur(1.4px);
-        opacity: 0.68;
-      }
-    }
-
-    .secret-badge-charm {
-      position: relative;
-      background: rgba(255, 255, 255, 0.9);
-      border: 2px dashed var(--accent-color);
-      box-shadow: 0 6px 20px rgba(226, 131, 166, 0.2);
-      animation: secretCharmFloat 3.6s ease-in-out infinite;
-    }
-
-    @keyframes secretCharmFloat {
-      0%, 100% { transform: translateY(0) rotate(-2deg); }
-      50% { transform: translateY(-5px) rotate(2deg); }
-    }
-
-    .carousel-heart-bob {
-      animation: heartBob 3.2s ease-in-out infinite;
-    }
-
-    @keyframes heartBob {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(-8px) scale(1.04); }
-    }
-
-    #heart-orbit-ring {
-      position: absolute;
-      inset: 0;
       pointer-events: none;
-      animation: orbitSpin 22s linear infinite;
+      opacity: 0.46;
+      filter: blur(5px);
     }
 
-    @keyframes orbitSpin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    #falling-particles-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
     }
 
-    .heart-orbit-spoke {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 0;
-      height: 0;
-    }
-
-    .heart-orbit-counter {
-      display: inline-block;
-      width: 0;
-      height: 0;
-      animation: orbitCounterSpin 22s linear infinite;
-    }
-
-    @keyframes orbitCounterSpin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(-360deg); }
-    }
-
-    .heart-orbit-label {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      white-space: nowrap;
-      font-family: var(--font-body);
-      font-size: 13px;
-      letter-spacing: 0.02em;
-      text-shadow: 0 2px 10px rgba(255, 255, 255, 0.95), 0 0 6px rgba(226, 131, 166, 0.25);
+    .cereal-piece {
+      position: fixed;
+      top: -60px;
+      pointer-events: none;
+      user-select: none;
+      z-index: 2;
+      will-change: transform, opacity;
+      transition: transform 2.2s cubic-bezier(0.22, 0.85, 0.36, 1), opacity 0.8s ease;
     }
 
     .drifter-track {
       position: fixed;
       left: 0;
-      width: 100vw;
-      height: 44px;
+      right: 0;
+      height: 60px;
       pointer-events: none;
       z-index: 6;
       overflow: hidden;
     }
 
-    .drifter-item-ltr {
-      position: absolute;
-      left: -60px;
-      animation: driftLeftToRight 18s linear infinite;
+    .drifter-track-top {
+      top: 10px;
     }
 
-    .drifter-item-rtl {
+    .drifter-track-bottom {
+      bottom: 14px;
+    }
+
+    .drifter-sprite {
       position: absolute;
-      right: -60px;
-      animation: driftRightToLeft 21s linear infinite;
+      width: var(--drifter-size);
+      height: var(--drifter-size);
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 3px 8px rgba(221, 127, 166, 0.25));
     }
 
     @keyframes driftLeftToRight {
-      0% { transform: translateX(0vw) translateY(0px); }
-      50% { transform: translateX(55vw) translateY(-4px); }
-      100% { transform: translateX(112vw) translateY(0px); }
+      0% {
+        transform: translateX(-80px) translateY(0px) rotate(-4deg);
+      }
+      50% {
+        transform: translateX(50vw) translateY(-6px) rotate(4deg);
+      }
+      100% {
+        transform: translateX(calc(100vw + 80px)) translateY(0px) rotate(-4deg);
+      }
     }
 
     @keyframes driftRightToLeft {
-      0% { transform: translateX(0vw) translateY(0px); }
-      50% { transform: translateX(-55vw) translateY(4px); }
-      100% { transform: translateX(-112vw) translateY(0px); }
+      0% {
+        transform: translateX(calc(100vw + 80px)) translateY(0px) rotate(4deg);
+      }
+      50% {
+        transform: translateX(50vw) translateY(-6px) rotate(-4deg);
+      }
+      100% {
+        transform: translateX(-80px) translateY(0px) rotate(4deg);
+      }
     }
 
-    .cereal-flake {
-      position: fixed;
-      top: -40px;
+    .diary-card {
+      background: var(--box-bg);
+      border: 1.5px solid var(--box-border);
+      border-radius: 30px;
+      box-shadow: 0 14px 36px -8px var(--box-glow), 0 4px 12px rgba(255, 255, 255, 0.8) inset;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+      position: relative;
+    }
+
+    .diary-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 44px -8px var(--box-glow), 0 4px 14px rgba(255, 255, 255, 0.9) inset;
+    }
+
+    #top-peeking-char {
+      position: absolute;
+      top: calc(-0.78 * var(--top-char-size));
+      left: 50%;
+      transform: translateX(-50%);
+      width: var(--top-char-size);
+      height: var(--top-char-size);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 12;
       pointer-events: none;
-      z-index: 5;
-      will-change: transform, opacity;
+      animation: gentlePeek 3.4s ease-in-out infinite;
     }
 
-    .wand-perk {
-      animation: wandTilt 3.4s ease-in-out infinite;
-      transform-origin: bottom left;
+    @keyframes gentlePeek {
+      0%, 100% { transform: translateX(-50%) translateY(0px); }
+      50% { transform: translateX(-50%) translateY(-4px); }
     }
 
-    @keyframes wandTilt {
-      0%, 100% { transform: rotate(-8deg); }
-      50% { transform: rotate(10deg); }
+    #yumekawaii-wand-btn {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 9999px;
+      background: #ffffff;
+      border: 1.5px solid var(--box-border);
+      box-shadow: 0 4px 12px var(--box-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 15;
+      font-size: 14px;
+      color: var(--accent-pink-dark);
+      transition: transform 0.25s ease;
     }
 
-    .custom-scroll::-webkit-scrollbar {
-      width: 4px;
+    #yumekawaii-wand-btn:hover {
+      transform: scale(1.14) rotate(14deg);
     }
 
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: rgba(226, 131, 166, 0.35);
-      border-radius: 999px;
+    @keyframes badgeBlurFloat {
+      0%, 100% {
+        transform: translateY(0px) scale(1);
+        filter: blur(0px);
+        opacity: 0.96;
+      }
+      50% {
+        transform: translateY(-7px) scale(0.96);
+        filter: blur(1.4px);
+        opacity: 0.65;
+      }
+    }
+
+    .side-badge-pill {
+      min-width: var(--badge-size);
+      height: var(--badge-size);
+      padding: 0 11px;
+      border-radius: 9999px;
+      background: var(--box-bg);
+      border: 1.5px solid var(--box-border);
+      box-shadow: 0 6px 16px var(--box-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-cute);
+      font-size: 12px;
+      color: var(--text-secondary);
+      animation: badgeBlurFloat 3.8s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes secretHaloPulse {
+      0%, 100% {
+        transform: translateY(0px) scale(1);
+        filter: drop-shadow(0 0 6px rgba(221, 127, 166, 0.45));
+      }
+      50% {
+        transform: translateY(-6px) scale(1.06);
+        filter: drop-shadow(0 0 14px rgba(221, 127, 166, 0.8));
+      }
+    }
+
+    .secret-badge-btn {
+      min-width: 34px;
+      height: 34px;
+      padding: 0 10px;
+      border-radius: 9999px;
+      background: transparent;
+      border: none;
+      color: var(--accent-pink-dark);
+      font-family: var(--font-cute);
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      animation: secretHaloPulse 3.2s ease-in-out infinite;
+      transition: transform 0.2s ease;
+    }
+
+    .secret-badge-btn:hover {
+      transform: scale(1.15);
+    }
+      50% {
+        transform: translateY(-4px) scale(1.04);
+        box-shadow: 0 0 14px 4px rgba(221, 127, 166, 0.34), 0 8px 20px var(--box-glow);
+      }
+    }
+
+    .secret-badge-btn {
+      min-width: 38px;
+      height: 38px;
+      padding: 0 13px;
+      border-radius: 9999px;
+      background: var(--box-bg);
+      border: 2px dashed var(--accent-pink-dark);
+      color: var(--accent-pink-dark);
+      font-family: var(--font-cute);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      animation: secretHaloPulse 3.2s ease-in-out infinite;
+      transition: transform 0.2s ease;
+    }
+
+    .secret-badge-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .note-text-stage {
+      transition: opacity 0.65s ease, filter 0.65s ease, transform 0.65s ease;
+    }
+
+    .note-blur-out {
+      opacity: 0;
+      filter: blur(7px);
+      transform: translateY(4px);
+    }
+
+    @keyframes heartBob {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-9px) scale(1.04); }
+    }
+
+    @keyframes carouselSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes carouselCounterSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-360deg); }
+    }
+
+    #heart-carousel-ring {
+      position: absolute;
+      inset: 0;
+      animation: carouselSpin 28s linear infinite;
+      pointer-events: none;
+    }
+
+    .carousel-name-anchor {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+    }
+
+    .carousel-name-upright {
+      display: inline-block;
+      transform: translate(-50%, -50%);
+      animation: carouselCounterSpin 28s linear infinite;
+      font-family: var(--font-cute);
+      font-size: var(--orbit-font-size);
+      color: var(--text-secondary);
+      white-space: nowrap;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.95);
+    }
+
+    #big-heart-trigger {
+      animation: heartBob 3.2s ease-in-out infinite;
+      cursor: pointer;
+      transition: filter 0.25s ease;
+      position: relative;
+      z-index: 4;
+    }
+
+    #big-heart-trigger:hover {
+      filter: drop-shadow(0 0 14px rgba(221, 127, 166, 0.55));
+    }
+
+    .draggable-widget {
+      touch-action: none;
+    }
+
+    .drag-handle {
+      cursor: grab;
+      opacity: 0.45;
+      transition: opacity 0.2s ease;
+    }
+
+    .drag-handle:hover {
+      opacity: 0.9;
+    }
+
+    .modal-backdrop {
+      background: rgba(248, 236, 243, 0.65);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border: 1.5px solid var(--box-border);
+      border-radius: 28px;
+      box-shadow: 0 18px 46px rgba(185, 138, 164, 0.22);
+    }
+
+    .soft-input {
+      width: 100%;
+      background: #faf5f8;
+      border: 1.5px solid #f0e0ea;
+      border-radius: 16px;
+      padding: 9px 14px;
+      font-family: var(--font-main);
+      font-size: 13px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .soft-input:focus {
+      border-color: var(--accent-pink-dark);
+    }
+
+    .soft-btn {
+      background: var(--accent-pink);
+      color: #ffffff;
+      border-radius: 9999px;
+      padding: 8px 18px;
+      font-family: var(--font-cute);
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .soft-btn:hover {
+      background: var(--accent-pink-dark);
+      transform: translateY(-1px);
+    }
+
+    .soft-btn-ghost {
+      background: #faf4f7;
+      color: var(--text-secondary);
+      border: 1px solid #eedce6;
+      border-radius: 9999px;
+      padding: 7px 15px;
+      font-family: var(--font-cute);
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .soft-btn-ghost:hover {
+      background: #f3e6ee;
+    }
+
+    .wand-sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 14px;
+      color: var(--accent-pink-dark);
+      animation: sparklePop 0.95s ease-out forwards;
+    }
+
+    @keyframes sparklePop {
+      0% { opacity: 1; transform: translate(0, 0) scale(0.7); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.25); }
     }
   </style>
 </head>
-<body>
-  <div id="bg-video-layer"></div>
-  <div id="falling-layer" class="fixed inset-0 pointer-events-none z-5 overflow-hidden"></div>
-  <div id="trail-layer" class="fixed inset-0 pointer-events-none z-40 overflow-hidden"></div>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8">
 
-  <div id="top-drifter-track" class="drifter-track top-3"></div>
-  <div id="bottom-drifter-track" class="drifter-track bottom-14"></div>
+  <div id="custom-bg-layer"></div>
+  <div id="custom-bg-video-wrap">
+    <video id="custom-bg-video" autoplay muted loop playsinline style="display:none;"></video>
+    <iframe id="custom-bg-yt-frame" allow="autoplay; encrypted-media" style="display:none;"></iframe>
+  </div>
 
-  <div id="workspace">
-    <div id="box-center" class="draggable-widget" style="left: calc(50% - 375px); top: calc(50% - 190px);">
-      <div class="relative flex flex-col items-center">
-        <div id="top-peeking-wrap" class="mb-[-14px] z-20 pointer-events-none flex justify-center">
-          <img id="top-peeking-img" src="" alt="" class="hidden h-14 w-auto object-contain drop-shadow-sm">
-          <span id="top-peeking-sym" class="text-2xl opacity-80" style="color: var(--accent-color);">♡</span>
-        </div>
+  <div id="falling-particles-layer"></div>
 
-        <div class="flex items-center justify-center gap-3">
-          <div id="left-badges-col" class="w-16 flex flex-col items-end gap-3"></div>
+  <div id="top-drifter-track" class="drifter-track drifter-track-top"></div>
+    <div id="bottom-drifter-track" class="drifter-track drifter-track-bottom"></div>
 
-          <div id="diary-box-inner" class="diary-card relative px-7 py-6 flex flex-col justify-between" style="width: 460px; min-height: 290px;">
-            <button id="yumekawaii-wand-btn" type="button" onclick="waveMagicWand()" title="wave wand" class="wand-perk absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white/95 shadow-sm flex items-center justify-center text-base z-30 hover:scale-110 transition">
-              <img id="wand-custom-img" src="" alt="" class="hidden w-6 h-6 object-contain">
-              <span id="wand-custom-sym">✦</span>
+  <audio id="bg-music-player" loop preload="auto"></audio>
+
+  <main id="main-stage" class="relative z-10 w-full max-w-6xl flex flex-row flex-wrap md:flex-nowrap items-center justify-center gap-8 md:gap-16 lg:gap-24 py-10">
+
+    <section id="widget-diary" class="draggable-widget flex flex-col items-center shrink-0">
+      <div class="flex items-center justify-center gap-3">
+        <div id="left-badges-col" class="w-16 flex flex-col items-center justify-center gap-4"></div>
+
+        <div id="diary-box-card" class="diary-card px-7 py-6 flex flex-col justify-between text-center" style="width: min(86vw, var(--diary-width)); min-height: var(--diary-height);">
+          <div id="top-peeking-char"></div>
+
+          <button id="yumekawaii-wand-btn" type="button" title="cast gentle sparkle" onclick="waveMagicWand(event)">✦</button>
+
+          <div class="flex items-center justify-between text-xs" style="color: var(--text-secondary);">
+            <button id="music-toggle-btn" type="button" onclick="toggleBgMusic(event)" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition flex items-center gap-1" title="toggle music">
+              <span id="music-icon">♪</span>
+              <span id="music-status-label" class="text-[11px]">off</span>
             </button>
 
-            <div class="flex items-center justify-between text-xs opacity-75">
-              <button type="button" onclick="toggleAudioPlay()" class="flex items-center gap-1.5 hover:opacity-100 transition">
-                <span id="music-note-icon" style="color: var(--accent-color);">♪</span>
-                <span id="song-title-label" class="truncate max-w-[160px]">lullaby</span>
-              </button>
-              <div class="flex items-center gap-2">
-                <button type="button" onclick="nextDiaryNote()" class="px-2 py-0.5 rounded-full bg-white/70 hover:bg-white text-[11px] transition">next ♡</button>
-                <span class="drag-handle cursor-grab active:cursor-grabbing px-1 opacity-50 hover:opacity-100" title="drag">⋮⋮</span>
-              </div>
-            </div>
+            <span id="diary-title-display" class="font-bold tracking-wide text-sm" style="font-family: var(--font-cute); color: var(--text-primary);">♡ my diary:</span>
 
-            <div class="text-center mt-1">
-              <h2 id="diary-title-text" class="text-base font-bold tracking-wide" style="color: var(--text-color);">♡ my diary:</h2>
-            </div>
-
-            <div class="my-auto py-3 flex flex-col items-center justify-center text-center">
-              <p id="diary-note-body" class="diary-note-blur text-sm leading-relaxed max-w-[380px] whitespace-pre-line">drink a glass of water, unclench your jaw, and take a deep breath.</p>
-              <span id="diary-note-date" class="diary-note-blur mt-3 px-3 py-0.5 rounded-full text-[11px] tracking-wide bg-white/80" style="color: var(--accent-color);">nov 27 ♡</span>
-            </div>
-
-            <div class="text-center">
-              <p id="diary-footer-quote" class="text-xs italic opacity-70">"taking things one gentle step at a time today ♡"</p>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="prevDiaryNote()" class="px-1.5 py-0.5 rounded-full hover:bg-pink-50 text-xs" title="previous note">‹</button>
+              <button type="button" onclick="nextDiaryNote()" class="px-1.5 py-0.5 rounded-full hover:bg-pink-50 text-xs" title="next note">›</button>
+              <span class="drag-handle px-1 text-xs" data-drag-target="widget-diary" title="drag">⋮⋮</span>
             </div>
           </div>
 
-          <div id="right-badges-col" class="w-16 flex flex-col items-start gap-3"></div>
+          <div id="diary-note-stage" class="note-text-stage my-auto py-4 flex flex-col items-center justify-center gap-3">
+            <p id="diary-note-text" class="text-sm sm:text-[15px] leading-relaxed font-medium px-2 whitespace-pre-line" style="color: var(--text-primary);"></p>
+            <span id="diary-note-date" class="inline-block px-3.5 py-1 rounded-full text-[11px] tracking-wide" style="background: var(--accent-pill-bg); color: var(--accent-pill-text); font-family: var(--font-cute);"></span>
+          </div>
+
+          <div class="flex flex-col items-center gap-2">
+            <p id="diary-footer-whisper" class="text-xs italic" style="color: var(--text-secondary);"></p>
+
+            <div id="owner-inline-note-bar" class="hidden flex items-center justify-center gap-2 pt-1">
+              <button type="button" onclick="openNoteManagerModal()" class="soft-btn-ghost text-[11px] py-1 px-3">+ add / edit notes</button>
+            </div>
+          </div>
         </div>
 
-        <div id="secret-badge-slot" class="mt-3 flex justify-center w-full"></div>
+        <div id="right-badges-col" class="w-16 flex flex-col items-center justify-center gap-4"></div>
       </div>
-    </div>
 
-    <div id="heart-stage" class="draggable-widget" style="left: calc(50% + 175px); top: calc(50% - 140px);">
-      <div class="flex flex-col items-center">
-        <div id="heart-orbit-container" class="relative flex items-center justify-center" style="width: 240px; height: 240px;">
-          <div id="heart-orbit-ring"></div>
-          <button type="button" onclick="pulseCarouselHeart()" class="carousel-heart-bob relative z-10 flex items-center justify-center focus:outline-none">
-            <img id="big-heart-custom-img" src="" alt="" class="hidden object-contain drop-shadow-sm" style="width: 78px; height: 78px;">
-            <span id="big-heart-sym" style="font-size: 68px; line-height: 1; color: var(--accent-color); text-shadow: 0 8px 22px rgba(226, 131, 166, 0.35);">♥</span>
-          </button>
+      <div class="mt-4 flex justify-center">
+        <button id="secret-badge-trigger" type="button" onclick="openSecretModal()" class="secret-badge-btn" title="secret note">♡</button>
+      </div>
+    </section>
+
+    <section id="widget-heart" class="draggable-widget flex flex-col items-center justify-center">
+      <div class="flex items-center gap-1 mb-1">
+        <span class="drag-handle text-xs px-2" data-drag-target="widget-heart" title="drag">⋮⋮</span>
+      </div>
+
+      <div id="heart-carousel-stage" class="relative flex items-center justify-center" style="width: calc(var(--orbit-radius) * 2 + 90px); height: calc(var(--orbit-radius) * 2 + 90px);">
+        <div id="heart-carousel-ring"></div>
+
+        <div id="big-heart-trigger" onclick="handleHeartClick()" title="send love">
+          <span id="big-heart-symbol" style="font-size: var(--heart-size); color: var(--accent-pink-dark); line-height: 1; display: inline-block;">♥</span>
+          <img id="big-heart-custom-img" src="" alt="heart" style="width: var(--heart-size); height: var(--heart-size); object-fit: contain; display: none;" />
         </div>
-
-        <button id="add-name-trigger" type="button" onclick="openVisitorNameModal()" class="mt-1 px-3.5 py-1 rounded-full bg-white/80 hover:bg-white text-xs shadow-sm transition" style="color: var(--text-color);">+ add ur name</button>
       </div>
-    </div>
-  </div>
 
-  <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
-    <button id="owner-lock-btn" type="button" onclick="handleOwnerLockClick()" title="owner" class="p-1.5 opacity-60 hover:opacity-100 transition focus:outline-none">
-      <svg id="owner-lock-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-color);">
-        <rect x="4" y="11" width="16" height="10" rx="4"></rect>
-        <path id="owner-lock-shackle" d="M8 11V7a4 4 0 0 1 8 0v4"></path>
-        <circle cx="12" cy="16" r="1.2" fill="currentColor"></circle>
-      </svg>
+      <button id="add-visitor-name-btn" type="button" onclick="openVisitorNameModal()" class="mt-1 px-4 py-1.5 rounded-full text-xs transition hover:scale-105" style="background: var(--box-bg); border: 1.5px solid var(--box-border); color: var(--text-secondary); font-family: var(--font-cute); box-shadow: 0 6px 16px var(--box-glow);">
+        + add ur name
+      </button>
+    </section>
+
+  </main>
+
+  <div class="fixed bottom-3 left-3 z-40 flex items-center gap-2">
+    <button id="owner-lock-btn" type="button" onclick="handleLockClick()" class="p-2 text-base transition hover:scale-110 focus:outline-none" style="background: transparent; border: none; color: var(--text-secondary);" title="owner lock">
+      <span id="owner-lock-icon">♡</span>
     </button>
 
-    <div id="owner-toolbar" class="hidden flex-wrap items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-sm border border-white text-xs">
-      <button type="button" onclick="openEditModal('notes')" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">notes</button>
-      <button type="button" onclick="openEditModal('sizes')" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">sizes</button>
-      <button type="button" onclick="openEditModal('colors')" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">colors</button>
-      <button type="button" onclick="openEditModal('badges')" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">badges</button>
-      <button type="button" onclick="openEditModal('images')" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">images</button>
-      <button type="button" onclick="openEditModal('song')" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">song</button>
-      <button type="button" onclick="resetLayoutPositions()" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">reset pos</button>
-      <button type="button" onclick="copyShareableCode()" class="px-2.5 py-1 rounded-full hover:bg-pink-50 transition">copy code</button>
-      <button type="button" onclick="lockOwnerMode()" class="px-2.5 py-1 rounded-full text-pink-500 hover:bg-pink-50 transition">lock</button>
+    <div id="owner-toolbar" class="hidden flex flex-wrap items-center gap-1.5 px-3 py-1.5 rounded-full shadow-md" style="background: rgba(255,255,255,0.92); border: 1.5px solid var(--box-border); backdrop-filter: blur(8px);">
+      <button type="button" onclick="openEditModal('sizes')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">sizes</button>
+      <button type="button" onclick="openEditModal('colors')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">colors</button>
+      <button type="button" onclick="openEditModal('badges')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">badges</button>
+      <button type="button" onclick="openEditModal('images')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">images / bg</button>
+      <button type="button" onclick="openEditModal('song')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">song</button>
+      <button type="button" onclick="openEditModal('text')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">text / secret</button>
+      <button type="button" onclick="openEditModal('security')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--accent-pink-dark);">cloud / lock</button>
+      <button type="button" onclick="copyBakedCode()" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-secondary);">copy code</button>
+      <button type="button" onclick="resetLayoutPositions()" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-secondary);">reset pos</button>
     </div>
   </div>
 
-  <div id="owner-login-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/20 backdrop-blur-xs p-4">
-    <div class="bg-white/95 rounded-3xl p-6 w-full max-w-sm shadow-xl border border-white">
+  <div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-1.5 rounded-full text-xs shadow-md pointer-events-none opacity-0 transition-opacity duration-300" style="background: #ffffff; border: 1.5px solid var(--box-border); color: var(--text-primary); font-family: var(--font-cute);"></div>
+
+  <div id="visitor-name-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-card w-full max-w-xs p-6 text-center">
+      <h3 class="text-base font-bold mb-1" style="font-family: var(--font-cute); color: var(--text-primary);">leave ur name ♥</h3>
+      <p class="text-xs mb-4" style="color: var(--text-secondary);">ur name floats gently around the heart (1 per person)</p>
+      <input id="visitor-name-input" type="text" maxlength="16" placeholder="ur name..." class="soft-input text-center mb-4" />
+      <div class="flex items-center justify-center gap-2">
+        <button type="button" onclick="closeModal('visitor-name-modal')" class="soft-btn-ghost">cancel</button>
+        <button type="button" onclick="saveVisitorName()" class="soft-btn">save ♥</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="secret-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-card w-full max-w-sm p-6 text-center">
+      <div class="text-lg mb-1" style="color: var(--accent-pink-dark);">♡</div>
+      <h3 id="secret-modal-title" class="text-base font-bold mb-2" style="font-family: var(--font-cute); color: var(--text-primary);">little secret</h3>
+      <p id="secret-modal-body" class="text-sm leading-relaxed mb-5 whitespace-pre-line" style="color: var(--text-secondary);"></p>
+      <button type="button" onclick="closeModal('secret-modal')" class="soft-btn">close ♡</button>
+    </div>
+  </div>
+
+  <div id="lock-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-card w-full max-w-sm p-6 text-center">
+      <div class="flex justify-end">
+        <button type="button" onclick="closeModal('lock-modal')" class="text-sm px-2" style="color: var(--text-secondary);">✕</button>
+      </div>
+      <h3 class="text-base font-bold mb-1" style="font-family: var(--font-cute); color: var(--text-primary);">owner access ♡</h3>
+      <p id="lock-modal-desc" class="text-xs mb-4" style="color: var(--text-secondary);">sign in with your owner account</p>
+
+      <div id="passcode-auth-box" class="space-y-3">
+        <input id="owner-passcode-input" type="password" placeholder="passcode..." class="soft-input text-center" onkeydown="if(event.key==='Enter') submitOwnerPasscode()" />
+        <button type="button" onclick="submitOwnerPasscode()" class="soft-btn w-full">unlock ♡</button>
+      </div>
+
+      <div id="firebase-auth-box" class="space-y-2.5 mt-2">
+        <p id="fb-auth-subtitle" class="text-[11px]" style="color: var(--text-secondary);">sign in to claim owner lock</p>
+        <input id="fb-email-input" type="email" placeholder="owner email..." class="soft-input" />
+        <input id="fb-pass-input" type="password" placeholder="password..." class="soft-input" />
+        <button type="button" onclick="signInWithFirebaseEmail()" class="soft-btn w-full">sign in with email ♡</button>
+        <button type="button" onclick="signInWithFirebaseGoogle()" class="soft-btn-ghost w-full">continue with google</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="notes-manager-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-card w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-3">
-        <h3 id="owner-modal-heading" class="text-sm font-bold">owner access ♡</h3>
-        <button type="button" onclick="closeModal('owner-login-modal')" class="text-sm opacity-60 hover:opacity-100">✕</button>
+        <h3 class="text-base font-bold" style="font-family: var(--font-cute); color: var(--text-primary);">diary notes ♡</h3>
+        <button type="button" onclick="closeModal('notes-manager-modal')" class="text-sm px-2" style="color: var(--text-secondary);">✕</button>
       </div>
-      <p id="owner-modal-desc" class="text-xs opacity-75 mb-4">enter your owner passcode to unlock editing.</p>
-      <input id="owner-pass-input" type="password" placeholder="passcode..." onkeydown="if(event.key==='Enter')submitOwnerPasscode()" class="w-full px-4 py-2.5 rounded-2xl bg-pink-50/70 text-xs outline-none mb-3">
-      <p id="owner-login-error" class="hidden text-xs text-rose-500 mb-2"></p>
-      <button id="owner-submit-btn" type="button" onclick="submitOwnerPasscode()" class="w-full py-2.5 rounded-2xl text-xs font-bold text-white shadow-sm transition" style="background: var(--accent-color);">unlock ♡</button>
+
+      <div class="space-y-2.5 mb-4 p-3 rounded-2xl" style="background: #faf5f8;">
+        <textarea id="new-note-text" rows="3" placeholder="write a gentle note..." class="soft-input"></textarea>
+        <div class="flex items-center gap-2">
+          <input id="new-note-date" type="text" placeholder="date / label (e.g. nov 27 ♡)" class="soft-input" />
+          <button type="button" onclick="addDiaryNote()" class="soft-btn shrink-0">add ♡</button>
+        </div>
+      </div>
+
+      <div id="notes-editor-list" class="space-y-2"></div>
     </div>
   </div>
 
-  <div id="visitor-name-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/20 backdrop-blur-xs p-4">
-    <div class="bg-white/95 rounded-3xl p-6 w-full max-w-xs shadow-xl border border-white text-center">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-xs font-bold">join the carousel ♡</span>
-        <button type="button" onclick="closeModal('visitor-name-modal')" class="text-xs opacity-60 hover:opacity-100">✕</button>
-      </div>
-      <p class="text-[11px] opacity-70 mb-3">add your name to float around the heart (1 per visitor)</p>
-      <input id="visitor-name-input" type="text" maxlength="14" placeholder="ur name..." class="w-full px-3.5 py-2 rounded-2xl bg-pink-50/70 text-xs text-center outline-none mb-3">
-      <button type="button" onclick="saveVisitorName()" class="w-full py-2 rounded-2xl text-xs font-bold text-white transition" style="background: var(--accent-color);">save name ♡</button>
-    </div>
-  </div>
-
-  <div id="secret-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/20 backdrop-blur-xs p-4">
-    <div class="bg-white/95 rounded-3xl p-6 w-full max-w-sm shadow-xl border border-white text-center">
-      <div class="flex items-center justify-between mb-2">
-        <span id="secret-modal-title" class="text-xs font-bold">secret note ♡</span>
-        <button type="button" onclick="closeModal('secret-modal')" class="text-xs opacity-60 hover:opacity-100">✕</button>
-      </div>
-      <p id="secret-modal-body" class="text-xs leading-relaxed py-3 whitespace-pre-line">you found my hidden note ♡ thank you for visiting my little corner.</p>
-    </div>
-  </div>
-
-  <div id="customize-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/20 backdrop-blur-xs p-4">
-    <div class="bg-white/95 rounded-3xl p-6 w-full max-w-lg max-h-[84vh] flex flex-col shadow-xl border border-white">
-      <div class="flex items-center justify-between pb-3 border-b border-pink-100">
-        <div class="flex flex-wrap gap-1.5 text-xs">
-          <button type="button" onclick="switchEditTab('notes')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-100/70">notes</button>
-          <button type="button" onclick="switchEditTab('sizes')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">sizes</button>
-          <button type="button" onclick="switchEditTab('colors')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">colors</button>
-          <button type="button" onclick="switchEditTab('badges')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">badges</button>
-          <button type="button" onclick="switchEditTab('images')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">images</button>
-          <button type="button" onclick="switchEditTab('song')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">song</button>
-          <button type="button" onclick="switchEditTab('security')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">security</button>
-        </div>
-        <button type="button" onclick="closeModal('customize-modal')" class="text-sm opacity-60 hover:opacity-100 ml-2">✕</button>
+  <div id="customize-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-card w-full max-w-lg p-6 max-h-[86vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="customize-modal-title" class="text-base font-bold" style="font-family: var(--font-cute); color: var(--text-primary);">customize ♡</h3>
+        <button type="button" onclick="closeModal('customize-modal')" class="text-sm px-2" style="color: var(--text-secondary);">✕</button>
       </div>
 
-      <div class="overflow-y-auto custom-scroll py-4 pr-1 space-y-4 text-xs flex-1">
-        <div id="tab-notes" class="edit-tab-pane space-y-3">
-          <div>
-            <label class="block mb-1 opacity-75">diary heading</label>
-            <input id="input-diary-title" type="text" class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-          </div>
-          <div>
-            <label class="block mb-1 opacity-75">bottom quote</label>
-            <input id="input-diary-quote" type="text" class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-          </div>
-          <div class="pt-2 border-t border-pink-100">
-            <label class="block mb-1.5 font-bold">add diary note</label>
-            <textarea id="input-new-note-text" rows="2" placeholder="write a diary entry..." class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none mb-2"></textarea>
-            <div class="flex gap-2">
-              <input id="input-new-note-date" type="text" placeholder="date (e.g. nov 27 ♡)" class="flex-1 px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-              <button type="button" onclick="addDiaryNoteEntry()" class="px-4 py-2 rounded-xl text-white font-bold" style="background: var(--accent-color);">add</button>
-            </div>
-          </div>
-          <div id="notes-editor-list" class="space-y-2 pt-2"></div>
+      <div class="flex flex-wrap gap-1.5 mb-4 pb-3 border-b" style="border-color: var(--box-border);">
+        <button type="button" onclick="switchEditTab('sizes')" class="soft-btn-ghost text-xs">sizes</button>
+        <button type="button" onclick="switchEditTab('colors')" class="soft-btn-ghost text-xs">colors</button>
+        <button type="button" onclick="switchEditTab('badges')" class="soft-btn-ghost text-xs">badges</button>
+        <button type="button" onclick="switchEditTab('images')" class="soft-btn-ghost text-xs">images / bg</button>
+        <button type="button" onclick="switchEditTab('song')" class="soft-btn-ghost text-xs">song</button>
+        <button type="button" onclick="switchEditTab('text')" class="soft-btn-ghost text-xs">text / secret</button>
+        <button type="button" onclick="switchEditTab('security')" class="soft-btn-ghost text-xs">cloud / lock</button>
+      </div>
+
+      <div id="tab-sizes" class="edit-tab-pane space-y-3 hidden">
+        <div>
+          <label class="text-xs block mb-1">diary box width (<span id="val-diary-w">460</span>px)</label>
+          <input id="size-diary-w" type="range" min="280" max="620" value="460" class="w-full" oninput="updateSizeSetting('diaryWidth', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">diary box height (<span id="val-diary-h">310</span>px)</label>
+          <input id="size-diary-h" type="range" min="220" max="500" value="310" class="w-full" oninput="updateSizeSetting('diaryHeight', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">center heart size (<span id="val-heart-sz">38</span>px)</label>
+          <input id="size-heart-sz" type="range" min="22" max="96" value="38" class="w-full" oninput="updateSizeSetting('heartSize', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">carousel radius (<span id="val-orbit-r">105</span>px)</label>
+          <input id="size-orbit-r" type="range" min="65" max="180" value="105" class="w-full" oninput="updateSizeSetting('orbitRadius', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">carousel name text size (<span id="val-orbit-fs">13</span>px)</label>
+          <input id="size-orbit-fs" type="range" min="10" max="20" value="13" class="w-full" oninput="updateSizeSetting('orbitFontSize', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">top peeking character size (<span id="val-top-char">46</span>px)</label>
+          <input id="size-top-char" type="range" min="28" max="90" value="46" class="w-full" oninput="updateSizeSetting('topCharSize', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">side badge size (<span id="val-badge-sz">34</span>px)</label>
+          <input id="size-badge-sz" type="range" min="24" max="56" value="34" class="w-full" oninput="updateSizeSetting('badgeSize', this.value)" />
+        </div>
+      </div>
+
+      <div id="tab-colors" class="edit-tab-pane grid grid-cols-2 gap-3 hidden">
+        <div>
+          <label class="text-xs block mb-1">page background</label>
+          <input id="color-bg" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('bgColor', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">diary box fill</label>
+          <input id="color-box-bg" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('boxBg', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">box border</label>
+          <input id="color-box-border" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('boxBorder', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">main text</label>
+          <input id="color-text-primary" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('textPrimary', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">secondary text</label>
+          <input id="color-text-secondary" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('textSecondary', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">heart & accent</label>
+          <input id="color-accent-pink-dark" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('accentPinkDark', this.value)" />
+        </div>
+      </div>
+
+      <div id="tab-badges" class="edit-tab-pane space-y-3 hidden">
+        <p class="text-xs" style="color: var(--text-secondary);">first 2 float on the left of your diary, next 2 float on the right. secret badge sits below.</p>
+        <div id="badges-editor-list" class="space-y-2"></div>
+        <div class="pt-2 border-t" style="border-color: var(--box-border);">
+          <label class="text-xs block mb-1">secret badge label / symbol</label>
+          <input id="input-secret-badge-label" type="text" class="soft-input" onchange="updateTextSetting('secretBadgeLabel', this.value)" />
+        </div>
+      </div>
+
+      <div id="tab-images" class="edit-tab-pane space-y-4 hidden">
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">top peeking character (png/gif)</p>
+          <input id="input-peeking-url" type="text" placeholder="image url..." class="soft-input" onchange="updateImageSetting('peekingCharUrl', this.value)" />
+          <input type="file" accept="image/*" class="text-xs" onchange="handleImageUpload(event, 'peekingCharUrl')" />
         </div>
 
-        <div id="tab-sizes" class="edit-tab-pane hidden space-y-3">
-          <div>
-            <label class="flex justify-between mb-1"><span>diary width</span><span id="val-box-w">460px</span></label>
-            <input id="size-box-w" type="range" min="320" max="620" value="460" oninput="updateLiveSizes()" class="w-full">
-          </div>
-          <div>
-            <label class="flex justify-between mb-1"><span>diary height</span><span id="val-box-h">290px</span></label>
-            <input id="size-box-h" type="range" min="220" max="460" value="290" oninput="updateLiveSizes()" class="w-full">
-          </div>
-          <div>
-            <label class="flex justify-between mb-1"><span>carousel heart size</span><span id="val-heart-sz">68px</span></label>
-            <input id="size-heart-sz" type="range" min="44" max="120" value="68" oninput="updateLiveSizes()" class="w-full">
-          </div>
-          <div>
-            <label class="flex justify-between mb-1"><span>name orbit radius</span><span id="val-orbit-r">86px</span></label>
-            <input id="size-orbit-r" type="range" min="58" max="140" value="86" oninput="updateLiveSizes()" class="w-full">
-          </div>
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">center heart (png/gif, leave blank for ♥)</p>
+          <input id="input-heart-url" type="text" placeholder="heart image url..." class="soft-input" onchange="updateImageSetting('heartImgUrl', this.value)" />
+          <input type="file" accept="image/*" class="text-xs" onchange="handleImageUpload(event, 'heartImgUrl')" />
         </div>
 
-        <div id="tab-colors" class="edit-tab-pane hidden space-y-3">
-          <div class="grid grid-cols-2 gap-3">
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">top & bottom floating side-to-side png/gif</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div>
-              <label class="block mb-1 opacity-75">background</label>
-              <input id="color-bg" type="color" onchange="updateLiveColors()" class="w-full h-9 rounded-xl cursor-pointer">
+              <label class="text-[11px] block mb-1">top drifter url</label>
+              <input id="input-top-drifter-url" type="text" placeholder="top png/gif url..." class="soft-input" onchange="updateImageSetting('topDrifterUrl', this.value)" />
+              <input type="file" accept="image/*" class="text-[11px] mt-1" onchange="handleImageUpload(event, 'topDrifterUrl')" />
             </div>
             <div>
-              <label class="block mb-1 opacity-75">text</label>
-              <input id="color-text" type="color" onchange="updateLiveColors()" class="w-full h-9 rounded-xl cursor-pointer">
+              <label class="text-[11px] block mb-1">bottom drifter url</label>
+              <input id="input-bottom-drifter-url" type="text" placeholder="bottom png/gif url..." class="soft-input" onchange="updateImageSetting('bottomDrifterUrl', this.value)" />
+              <input type="file" accept="image/*" class="text-[11px] mt-1" onchange="handleImageUpload(event, 'bottomDrifterUrl')" />
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">3 cereal-pour falling pieces</p>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <input id="input-fall-0" type="text" placeholder="symbol or url" class="soft-input text-xs" onchange="updateFallingSlot(0, this.value)" />
+              <input type="file" accept="image/*" class="text-[10px] mt-1 w-full" onchange="handleFallingSlotUpload(event, 0)" />
             </div>
             <div>
-              <label class="block mb-1 opacity-75">accent & heart</label>
-              <input id="color-accent" type="color" onchange="updateLiveColors()" class="w-full h-9 rounded-xl cursor-pointer">
+              <input id="input-fall-1" type="text" placeholder="symbol or url" class="soft-input text-xs" onchange="updateFallingSlot(1, this.value)" />
+              <input type="file" accept="image/*" class="text-[10px] mt-1 w-full" onchange="handleFallingSlotUpload(event, 1)" />
             </div>
             <div>
-              <label class="block mb-1 opacity-75">falling pieces</label>
-              <input id="color-particle" type="color" onchange="updateLiveColors()" class="w-full h-9 rounded-xl cursor-pointer">
+              <input id="input-fall-2" type="text" placeholder="symbol or url" class="soft-input text-xs" onchange="updateFallingSlot(2, this.value)" />
+              <input type="file" accept="image/*" class="text-[10px] mt-1 w-full" onchange="handleFallingSlotUpload(event, 2)" />
             </div>
           </div>
         </div>
 
-        <div id="tab-badges" class="edit-tab-pane hidden space-y-3">
-          <p class="opacity-70">first 2 badges float on the left of the diary, next 2 float on the right.</p>
-          <div id="badges-editor-list" class="space-y-2"></div>
-          <div class="pt-2 border-t border-pink-100 space-y-2">
-            <label class="block font-bold">secret badge (below diary)</label>
-            <input id="input-secret-sym" type="text" placeholder="symbol (e.g. ♡)" class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-            <input id="input-secret-title" type="text" placeholder="secret title" class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-            <textarea id="input-secret-body" rows="2" placeholder="secret message..." class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none"></textarea>
-          </div>
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">background image / gif</p>
+          <input id="input-bg-img-url" type="text" placeholder="background image/gif url..." class="soft-input" onchange="updateImageSetting('bgImageUrl', this.value)" />
+          <input type="file" accept="image/*" class="text-xs" onchange="handleImageUpload(event, 'bgImageUrl')" />
         </div>
 
-        <div id="tab-images" class="edit-tab-pane hidden space-y-4">
-          <div class="p-3 rounded-2xl bg-pink-50/50 space-y-2">
-            <label class="block font-bold">looping background video / youtube</label>
-            <input id="input-bg-video-url" type="text" placeholder="youtube link or direct .mp4/.webm url..." class="w-full px-3 py-2 rounded-xl bg-white outline-none">
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <label class="block text-[11px] opacity-70 mb-0.5">start (sec)</label>
-                <input id="input-bg-video-start" type="number" min="0" value="0" class="w-full px-2.5 py-1.5 rounded-xl bg-white outline-none">
-              </div>
-              <div>
-                <label class="block text-[11px] opacity-70 mb-0.5">end (sec, 0=full)</label>
-                <input id="input-bg-video-end" type="number" min="0" value="0" class="w-full px-2.5 py-1.5 rounded-xl bg-white outline-none">
-              </div>
-              <div>
-                <label class="block text-[11px] opacity-70 mb-0.5">blur (px)</label>
-                <input id="input-bg-video-blur" type="number" min="0" max="24" value="6" class="w-full px-2.5 py-1.5 rounded-xl bg-white outline-none">
-              </div>
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">looping blurred background video / youtube</p>
+          <input id="input-bg-video-url" type="text" placeholder="youtube link or .mp4/.webm url..." class="soft-input" onchange="updateVideoBgSetting()" />
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="text-[11px] block">start (sec)</label>
+              <input id="input-bg-video-start" type="number" min="0" value="0" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
             </div>
-            <button type="button" onclick="clearBgVideo()" class="text-[11px] text-rose-500 hover:underline">remove background video</button>
-          </div>
-
-          <div class="p-3 rounded-2xl bg-pink-50/50 space-y-2">
-            <label class="block font-bold">background image / gif</label>
-            <div class="flex gap-2">
-              <input id="input-bg-img-url" type="text" placeholder="image/gif url..." class="flex-1 px-3 py-1.5 rounded-xl bg-white outline-none">
-              <label class="px-3 py-1.5 rounded-xl bg-white cursor-pointer hover:bg-pink-100">upload<input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'bgImage')"></label>
+            <div>
+              <label class="text-[11px] block">end (sec, 0=full)</label>
+              <input id="input-bg-video-end" type="number" min="0" value="0" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
             </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div class="p-3 rounded-2xl bg-pink-50/50 space-y-1.5">
-              <label class="block font-bold">peeking character (top)</label>
-              <input id="input-peek-url" type="text" placeholder="png/gif url..." class="w-full px-2.5 py-1.5 rounded-xl bg-white outline-none">
-              <label class="inline-block px-2.5 py-1 rounded-xl bg-white cursor-pointer text-[11px]">upload png/gif<input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'peekImg')"></label>
+            <div>
+              <label class="text-[11px] block">blur (px)</label>
+              <input id="input-bg-video-blur" type="number" min="0" max="24" value="5" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
             </div>
-
-            <div class="p-3 rounded-2xl bg-pink-50/50 space-y-1.5">
-              <label class="block font-bold">carousel heart</label>
-              <input id="input-heart-url" type="text" placeholder="png/gif url..." class="w-full px-2.5 py-1.5 rounded-xl bg-white outline-none">
-              <label class="inline-block px-2.5 py-1 rounded-xl bg-white cursor-pointer text-[11px]">upload png/gif<input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'heartImg')"></label>
-            </div>
-
-            <div class="p-3 rounded-2xl bg-pink-50/50 space-y-1.5">
-              <label class="block font-bold">magic wand</label>
-              <div class="flex gap-1.5">
-                <input id="input-wand-sym" type="text" maxlength="4" placeholder="✦" class="w-12 px-2 py-1 rounded-xl bg-white text-center outline-none">
-                <label class="flex-1 text-center px-2 py-1 rounded-xl bg-white cursor-pointer text-[11px]">upload<input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'wandImg')"></label>
-              </div>
-            </div>
-
-            <div class="p-3 rounded-2xl bg-pink-50/50 space-y-1.5">
-              <label class="block font-bold">top & bottom drifters</label>
-              <div class="flex gap-1.5">
-                <label class="flex-1 text-center px-2 py-1 rounded-xl bg-white cursor-pointer text-[11px]">top png<input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'topDrifterImg')"></label>
-                <label class="flex-1 text-center px-2 py-1 rounded-xl bg-white cursor-pointer text-[11px]">bottom png<input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'bottomDrifterImg')"></label>
-              </div>
-            </div>
-          </div>
-
-          <div class="p-3 rounded-2xl bg-pink-50/50 space-y-2">
-            <label class="block font-bold">3 falling cereal pieces (symbols or png/gif)</label>
-            <div class="grid grid-cols-3 gap-2">
-              <div class="space-y-1">
-                <input id="input-fall-0" type="text" maxlength="4" class="w-full px-2 py-1 rounded-xl bg-white text-center outline-none">
-                <label class="block text-center px-2 py-1 rounded-xl bg-white cursor-pointer text-[11px]">png 1<input type="file" accept="image/*" class="hidden" onchange="handleFallingSlotUpload(event, 0)"></label>
-              </div>
-              <div class="space-y-1">
-                <input id="input-fall-1" type="text" maxlength="4" class="w-full px-2 py-1 rounded-xl bg-white text-center outline-none">
-                <label class="block text-center px-2 py-1 rounded-xl bg-white cursor-pointer text-[11px]">png 2<input type="file" accept="image/*" class="hidden" onchange="handleFallingSlotUpload(event, 1)"></label>
-              </div>
-              <div class="space-y-1">
-                <input id="input-fall-2" type="text" maxlength="4" class="w-full px-2 py-1 rounded-xl bg-white text-center outline-none">
-                <label class="block text-center px-2 py-1 rounded-xl bg-white cursor-pointer text-[11px]">png 3<input type="file" accept="image/*" class="hidden" onchange="handleFallingSlotUpload(event, 2)"></label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="tab-song" class="edit-tab-pane hidden space-y-3">
-          <div>
-            <label class="block mb-1 opacity-75">song label</label>
-            <input id="input-song-title" type="text" class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-          </div>
-          <div>
-            <label class="block mb-1 opacity-75">youtube link or direct audio url (.mp3/.ogg)</label>
-            <input id="input-song-url" type="text" placeholder="https://..." class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-          </div>
-        </div>
-
-        <div id="tab-security" class="edit-tab-pane hidden space-y-3">
-          <div>
-            <label class="block mb-1 opacity-75">change owner passcode</label>
-            <input id="input-new-passcode" type="password" placeholder="new passcode (leave blank to keep current)..." class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
-          </div>
-          <div class="p-3 rounded-2xl bg-pink-50/50 space-y-2">
-            <p class="font-bold">how github pages saving works ♡</p>
-            <p class="opacity-75 leading-relaxed">github pages hosts static files, so after you customize your page, click <b>copy code</b> in your bottom bar and paste it into your github <code>index.html</code> to bake all your notes, images, and passcode permanently into your live site.</p>
           </div>
         </div>
       </div>
 
-      <div class="pt-3 border-t border-pink-100 flex justify-end gap-2">
-        <button type="button" onclick="saveAllEdits()" class="px-5 py-2 rounded-full text-xs font-bold text-white shadow-sm transition" style="background: var(--accent-color);">save changes ♡</button>
+      <div id="tab-song" class="edit-tab-pane space-y-3 hidden">
+        <p class="text-xs" style="color: var(--text-secondary);">plays softly when visitors click the screen or music note</p>
+        <input id="input-song-url" type="text" placeholder="direct .mp3 / audio url..." class="soft-input" onchange="updateSongSetting(this.value)" />
+        <input type="file" accept="audio/*" class="text-xs" onchange="handleAudioUpload(event)" />
+      </div>
+
+      <div id="tab-text" class="edit-tab-pane space-y-3 hidden">
+        <div>
+          <label class="text-xs block mb-1">diary box title</label>
+          <input id="input-diary-title" type="text" class="soft-input" onchange="updateTextSetting('diaryTitle', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">diary bottom whisper</label>
+          <input id="input-diary-whisper" type="text" class="soft-input" onchange="updateTextSetting('diaryWhisper', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">secret popup title</label>
+          <input id="input-secret-title" type="text" class="soft-input" onchange="updateTextSetting('secretTitle', this.value)" />
+        </div>
+        <div>
+          <label class="text-xs block mb-1">secret popup message</label>
+          <textarea id="input-secret-body" rows="3" class="soft-input" onchange="updateTextSetting('secretBody', this.value)"></textarea>
+        </div>
+      </div>
+
+      <div id="tab-security" class="edit-tab-pane space-y-4 hidden">
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">local owner passcode</p>
+          <p class="text-[11px]" style="color: var(--text-secondary);">change your secret passcode used to unlock this page</p>
+          <input id="input-new-passcode" type="password" placeholder="new passcode..." class="soft-input" />
+          <button type="button" onclick="changeOwnerPasscode()" class="soft-btn text-xs">update passcode ♡</button>
+        </div>
+
+        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
+          <p class="text-xs font-bold">firebase live cloud sync</p>
+          <p class="text-[11px]" style="color: var(--text-secondary);">paste your firebaseConfig JSON or JS object so edits & visitor heart names sync live on github pages</p>
+          <textarea id="input-firebase-config" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' class="soft-input font-mono text-[11px]"></textarea>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="saveFirebaseConfig()" class="soft-btn text-xs">connect & sync live ♡</button>
+            <span id="firebase-status-badge" class="text-[11px]" style="color: var(--text-secondary);">not connected</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div id="toast-box" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2 rounded-full bg-white/95 shadow-md text-xs border border-pink-100"></div>
-  <audio id="bg-audio" loop></audio>
-  <div id="yt-music-holder" class="hidden"></div>
+  <script id="baked-state-data" type="application/json">{}</script>
 
-  <script id="baked-state-data" type="application/json">null</script>
-  <script>
-    const defaultState = {
-      passHash: '',
-      diaryTitle: '♡ my diary:',
-      diaryQuote: '"taking things one gentle step at a time today ♡"',
-      notes: [
-        { text: 'drink a glass of water, unclench your jaw, and take a deep breath.', date: 'nov 27 ♡' },
-        { text: 'soft mornings, warm tea, and quiet little moments to myself.', date: 'nov 26 ♡' },
-        { text: 'everything blooms in its own gentle time.', date: 'nov 24 ♡' }
-      ],
-      badges: [
-        { label: 'miffy', img: '' },
-        { label: '♡', img: '' },
-        { label: 'angel', img: '' },
-        { label: '✦', img: '' }
-      ],
-      secretBadge: {
-        sym: '♡',
-        title: 'little secret ♡',
-        body: 'thank you for stopping by my little diary corner. wishing you the softest day ♡'
-      },
-      carouselNames: ['bunny ♡', 'angel ✦', 'meow', 'lovely'],
-      colors: {
-        bg: '#fdf2f8',
-        text: '#6b5365',
-        accent: '#e283a6',
-        particle: '#f4a2c0'
-      },
-      sizes: {
-        boxW: 460,
-        boxH: 290,
-        heartSz: 68,
-        orbitR: 86
-      },
-      media: {
-        bgImage: '',
-        bgVideoUrl: '',
-        bgVideoStart: 0,
-        bgVideoEnd: 0,
-        bgVideoBlur: 6,
-        peekImg: '',
-        heartImg: '',
-        wandImg: '',
-        wandSym: '✦',
-        topDrifterImg: '',
-        bottomDrifterImg: '',
-        fallingSlots: [
-          { sym: '♡', img: '' },
-          { sym: '✿', img: '' },
-          { sym: '✦', img: '' }
-        ]
-      },
-      song: {
-        title: 'lullaby',
-        url: ''
-      },
-      positions: {}
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const DEFAULT_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyDL26DDvtw9oA-7LB6awvEeqAZwrmORhQE",
+      authDomain: "meowmeow-6ec62.firebaseapp.com",
+      projectId: "meowmeow-6ec62",
+      storageBucket: "meowmeow-6ec62.firebasestorage.app",
+      messagingSenderId: "972387391744",
+      appId: "1:972387391744:web:351994f02fe9d89c2efbe5",
+      measurementId: "G-V4E7LLW94X"
     };
 
-    function hashPasscode(str) {
-      let h1 = 0xdeadbeef ^ str.length;
-      let h2 = 0x41c6ce57 ^ str.length;
-      for (let i = 0; i < str.length; i++) {
-        const ch = str.charCodeAt(i);
-        h1 = Math.imul(h1 ^ ch, 2654435761);
-        h2 = Math.imul(h2 ^ ch, 1597334677);
+    const DEFAULT_STATE = {
+      passcodeHash: "",
+      firebaseConfig: DEFAULT_FIREBASE_CONFIG,
+      ownerUid: "",
+      diaryTitle: "♡ my diary:",
+      diaryWhisper: "\"taking things one gentle step at a time ♡\"",
+      secretBadgeLabel: "♡",
+      secretTitle: "little secret",
+      secretBody: "thank you for visiting my little corner. drink some water and be gentle with yourself today ♡",
+      notes: [
+        { id: "n1", text: "drink a glass of water,\nunclench your jaw, and take\na deep breath.", date: "today ♡" },
+        { id: "n2", text: "soft mornings, warm tea, and quiet little moments.", date: "nov 27 ♡" }
+      ],
+      visitorNames: [
+        { id: "v1", name: "bunny ♡" },
+        { id: "v2", name: "meow" },
+        { id: "v3", name: "angel ✦" }
+      ],
+      badges: [
+        { id: "b1", label: "miffy", img: "" },
+        { id: "b2", label: "✦", img: "" },
+        { id: "b3", label: "♥", img: "" },
+        { id: "b4", label: "♡", img: "" }
+      ],
+      sizes: {
+        diaryWidth: 460,
+        diaryHeight: 310,
+        heartSize: 38,
+        orbitRadius: 105,
+        orbitFontSize: 13,
+        topCharSize: 46,
+        badgeSize: 34,
+        drifterSize: 40
+      },
+      colors: {
+        bgColor: "#fbf5f8",
+        boxBg: "#ffffff",
+        boxBorder: "#f3e4ed",
+        textPrimary: "#5e545b",
+        textSecondary: "#8c7b86",
+        accentPinkDark: "#dd7fa6"
+      },
+      images: {
+        peekingCharUrl: "",
+        heartImgUrl: "",
+        topDrifterUrl: "",
+        bottomDrifterUrl: "",
+        bgImageUrl: "",
+        bgVideoUrl: "",
+        bgVideoStart: 0,
+        bgVideoEnd: 0,
+        bgVideoBlur: 5,
+        fallingSlots: ["♡", "✦", "♥"]
+      },
+      songUrl: "",
+      positions: {
+        "widget-diary": { x: 0, y: 0 },
+        "widget-heart": { x: 0, y: 0 }
       }
-      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-      return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
-    }
+    };
 
-    function loadInitialState() {
-      const base = JSON.parse(JSON.stringify(defaultState));
-      try {
-        const bakedEl = document.getElementById('baked-state-data');
-        if (bakedEl && bakedEl.textContent && bakedEl.textContent.trim() !== 'null') {
-          const parsed = JSON.parse(bakedEl.textContent);
-          return {
-            ...base,
-            ...parsed,
-            colors: { ...base.colors, ...(parsed.colors || {}) },
-            sizes: { ...base.sizes, ...(parsed.sizes || {}) },
-            media: { ...base.media, ...(parsed.media || {}) },
-            song: { ...base.song, ...(parsed.song || {}) },
-            secretBadge: { ...base.secretBadge, ...(parsed.secretBadge || {}) }
-          };
-        }
-      } catch (e) {}
-      return base;
-    }
-
-    let state = loadInitialState();
+    let state = structuredClone(DEFAULT_STATE);
     let isOwnerUnlocked = false;
     let currentNoteIndex = 0;
-    let audioStarted = false;
-    let bgVideoTimer = null;
-    let cerealTimer = null;
+    let noteCycleTimer = null;
+    let ytLoopTimer = null;
+    let fbApp = null;
+    let fbAuth = null;
+    let fbDb = null;
+    let fbUnsubState = null;
+    let fbUnsubNames = null;
+    let cerealInterval = null;
     let cerealPileCount = 0;
-    let myVisitorName = '';
+    let visitorClientId = crypto.randomUUID();
+
+    function loadInitialState() {
+      try {
+        const bakedEl = document.getElementById("baked-state-data");
+        if (bakedEl && bakedEl.textContent.trim().length > 2) {
+          const parsedBaked = JSON.parse(bakedEl.textContent);
+          state = mergeDeep(structuredClone(DEFAULT_STATE), parsedBaked);
+        }
+      } catch (e) {}
+      if (!state.firebaseConfig || !state.firebaseConfig.apiKey) {
+        state.firebaseConfig = DEFAULT_FIREBASE_CONFIG;
+      }
+    }
+
+    function mergeDeep(target, source) {
+      if (!source || typeof source !== "object") return target;
+      for (const key of Object.keys(source)) {
+        if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
+          if (!target[key] || typeof target[key] !== "object") target[key] = {};
+          mergeDeep(target[key], source[key]);
+        } else if (source[key] !== undefined) {
+          target[key] = source[key];
+        }
+      }
+      return target;
+    }
+
+    async function hashString(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
 
     function showToast(msg) {
-      const box = document.getElementById('toast-box');
-      if (!box) return;
-      box.textContent = msg;
-      box.classList.remove('hidden');
-      clearTimeout(box._t);
-      box._t = setTimeout(() => box.classList.add('hidden'), 2400);
+      const el = document.getElementById("toast-banner");
+      el.textContent = msg;
+      el.style.opacity = "1";
+      clearTimeout(el._t);
+      el._t = setTimeout(() => { el.style.opacity = "0"; }, 2200);
     }
 
-    function openModal(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.remove('hidden');
-        el.classList.add('flex');
+    async function persistState() {
+      if (fbDb && isOwnerUnlocked && fbAuth && fbAuth.currentUser) {
+        try {
+          const cleanState = structuredClone(state);
+          await setDoc(doc(fbDb, "diary_sanctuary", "main_state"), cleanState, { merge: true });
+        } catch (e) {}
       }
-    }
-
-    function closeModal(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.add('hidden');
-        el.classList.remove('flex');
-      }
-    }
-
-    function extractYouTubeId(url) {
-      if (!url) return '';
-      const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
-      return m ? m[1] : '';
     }
 
     function applyThemeAndSizes() {
-      document.documentElement.style.setProperty('--bg-color', state.colors.bg);
-      document.documentElement.style.setProperty('--text-color', state.colors.text);
-      document.documentElement.style.setProperty('--accent-color', state.colors.accent);
-      document.documentElement.style.setProperty('--particle-color', state.colors.particle);
+      const root = document.documentElement;
+      root.style.setProperty("--bg-color", state.colors.bgColor);
+      root.style.setProperty("--box-bg", state.colors.boxBg);
+      root.style.setProperty("--box-border", state.colors.boxBorder);
+      root.style.setProperty("--text-primary", state.colors.textPrimary);
+      root.style.setProperty("--text-secondary", state.colors.textSecondary);
+      root.style.setProperty("--accent-pink-dark", state.colors.accentPinkDark);
 
-      if (state.media.bgImage) {
-        document.body.style.backgroundImage = `url("${state.media.bgImage}")`;
-      } else {
-        document.body.style.backgroundImage = 'none';
-      }
+      root.style.setProperty("--diary-width", state.sizes.diaryWidth + "px");
+      root.style.setProperty("--diary-height", state.sizes.diaryHeight + "px");
+      root.style.setProperty("--heart-size", state.sizes.heartSize + "px");
+      root.style.setProperty("--orbit-radius", state.sizes.orbitRadius + "px");
+      root.style.setProperty("--orbit-font-size", state.sizes.orbitFontSize + "px");
+      root.style.setProperty("--top-char-size", state.sizes.topCharSize + "px");
+      root.style.setProperty("--badge-size", state.sizes.badgeSize + "px");
 
-      const diaryInner = document.getElementById('diary-box-inner');
-      if (diaryInner) {
-        diaryInner.style.width = `${state.sizes.boxW}px`;
-        diaryInner.style.minHeight = `${state.sizes.boxH}px`;
-      }
+      document.getElementById("diary-title-display").textContent = state.diaryTitle;
+      document.getElementById("diary-footer-whisper").textContent = state.diaryWhisper;
+      document.getElementById("secret-badge-trigger").textContent = state.secretBadgeLabel || "♡";
+      document.getElementById("secret-modal-title").textContent = state.secretTitle;
+      document.getElementById("secret-modal-body").textContent = state.secretBody;
 
-      const bigHeartSym = document.getElementById('big-heart-sym');
-      const bigHeartImg = document.getElementById('big-heart-custom-img');
-      if (bigHeartSym) bigHeartSym.style.fontSize = `${state.sizes.heartSz}px`;
-      if (bigHeartImg) {
-        bigHeartImg.style.width = `${Math.round(state.sizes.heartSz * 1.15)}px`;
-        bigHeartImg.style.height = `${Math.round(state.sizes.heartSz * 1.15)}px`;
-      }
-
-      const orbitContainer = document.getElementById('heart-orbit-container');
-      if (orbitContainer) {
-        const boxSz = Math.max(210, state.sizes.orbitR * 2 + 64);
-        orbitContainer.style.width = `${boxSz}px`;
-        orbitContainer.style.height = `${boxSz}px`;
-      }
+      applyPositions();
+      renderPeekingChar();
+      renderHeartCenter();
+      renderBadges();
+      renderDrifters();
+      renderBackgroundMedia();
     }
 
-    function applyBackgroundVideo() {
-      const layer = document.getElementById('bg-video-layer');
-      if (!layer) return;
-      clearInterval(bgVideoTimer);
-      layer.innerHTML = '';
-
-      const url = (state.media.bgVideoUrl || '').trim();
-      if (!url) {
-        layer.style.display = 'none';
-        return;
-      }
-
-      const blurPx = Number(state.media.bgVideoBlur) || 0;
-      const startSec = Math.max(0, Number(state.media.bgVideoStart) || 0);
-      const endSec = Math.max(0, Number(state.media.bgVideoEnd) || 0);
-      layer.style.filter = `blur(${blurPx}px)`;
-      layer.style.display = 'block';
-
-      const ytId = extractYouTubeId(url);
-      if (ytId) {
-        const iframe = document.createElement('iframe');
-        const endParam = endSec > startSec ? `&end=${endSec}` : '';
-        iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${ytId}&start=${startSec}${endParam}&playsinline=1&rel=0&modestbranding=1`;
-        iframe.allow = 'autoplay; encrypted-media';
-        layer.appendChild(iframe);
-
-        if (endSec > startSec) {
-          const loopMs = (endSec - startSec) * 1000;
-          bgVideoTimer = setInterval(() => {
-            iframe.src = iframe.src;
-          }, loopMs);
+    function applyPositions() {
+      for (const id of ["widget-diary", "widget-heart"]) {
+        const el = document.getElementById(id);
+        const pos = state.positions?.[id] || { x: 0, y: 0 };
+        if (el) {
+          el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
         }
-      } else {
-        const vid = document.createElement('video');
-        vid.src = url;
-        vid.autoplay = true;
-        vid.muted = true;
-        vid.loop = true;
-        vid.playsInline = true;
-        vid.addEventListener('loadedmetadata', () => {
-          if (startSec > 0) vid.currentTime = startSec;
-          vid.play().catch(() => {});
-        });
-        vid.addEventListener('timeupdate', () => {
-          if (endSec > startSec && vid.currentTime >= endSec) {
-            vid.currentTime = startSec;
-          }
-        });
-        layer.appendChild(vid);
       }
     }
 
-    function renderCharacterMedia() {
-      const peekImg = document.getElementById('top-peeking-img');
-      const peekSym = document.getElementById('top-peeking-sym');
-      if (state.media.peekImg) {
-        peekImg.src = state.media.peekImg;
-        peekImg.classList.remove('hidden');
-        peekSym.classList.add('hidden');
+    function renderPeekingChar() {
+      const box = document.getElementById("top-peeking-char");
+      if (state.images.peekingCharUrl) {
+        box.innerHTML = `<img src="${state.images.peekingCharUrl}" alt="peeking" style="width:100%;height:100%;object-fit:contain;" />`;
       } else {
-        peekImg.classList.add('hidden');
-        peekSym.classList.remove('hidden');
+        box.innerHTML = `<span style="font-size: calc(var(--top-char-size) * 0.65); color: var(--accent-pink-dark);">♡</span>`;
       }
+    }
 
-      const heartImg = document.getElementById('big-heart-custom-img');
-      const heartSym = document.getElementById('big-heart-sym');
-      if (state.media.heartImg) {
-        heartImg.src = state.media.heartImg;
-        heartImg.classList.remove('hidden');
-        heartSym.classList.add('hidden');
+    function renderHeartCenter() {
+      const sym = document.getElementById("big-heart-symbol");
+      const img = document.getElementById("big-heart-custom-img");
+      if (state.images.heartImgUrl) {
+        sym.style.display = "none";
+        img.src = state.images.heartImgUrl;
+        img.style.display = "block";
       } else {
-        heartImg.classList.add('hidden');
-        heartSym.classList.remove('hidden');
+        img.style.display = "none";
+        sym.style.display = "inline-block";
       }
+      renderCarouselNames();
+    }
 
-      const wandImg = document.getElementById('wand-custom-img');
-      const wandSym = document.getElementById('wand-custom-sym');
-      if (state.media.wandImg) {
-        wandImg.src = state.media.wandImg;
-        wandImg.classList.remove('hidden');
-        wandSym.classList.add('hidden');
-      } else {
-        wandImg.classList.add('hidden');
-        wandSym.classList.remove('hidden');
-        wandSym.textContent = state.media.wandSym || '✦';
-      }
+    function renderCarouselNames() {
+      const ring = document.getElementById("heart-carousel-ring");
+      ring.innerHTML = "";
+      const list = (state.visitorNames || []).slice(0, 12);
+      const count = list.length;
+      if (!count) return;
+      const radius = Number(state.sizes.orbitRadius) || 105;
 
-      const topTrack = document.getElementById('top-drifter-track');
-      const botTrack = document.getElementById('bottom-drifter-track');
-      topTrack.innerHTML = '';
-      botTrack.innerHTML = '';
+      list.forEach((item, idx) => {
+        const angle = (360 / count) * idx;
+        const rad = (angle * Math.PI) / 180;
+        const x = Math.cos(rad) * radius;
+        const y = Math.sin(rad) * radius;
 
-      if (state.media.topDrifterImg) {
-        const img = document.createElement('img');
-        img.src = state.media.topDrifterImg;
-        img.className = 'drifter-item-ltr h-9 w-auto object-contain opacity-85';
+        const anchor = document.createElement("div");
+        anchor.className = "carousel-name-anchor";
+        anchor.style.transform = `translate(${x}px, ${y}px)`;
+
+        const label = document.createElement("span");
+        label.className = "carousel-name-upright";
+        label.textContent = item.name;
+
+        anchor.appendChild(label);
+        ring.appendChild(anchor);
+      });
+    }
+
+    function renderBadges() {
+      const leftCol = document.getElementById("left-badges-col");
+      const rightCol = document.getElementById("right-badges-col");
+      leftCol.innerHTML = "";
+      rightCol.innerHTML = "";
+
+      const items = (state.badges || []).slice(0, 4);
+      items.forEach((b, i) => {
+        const pill = document.createElement("div");
+        pill.className = "side-badge-pill";
+        pill.style.animationDelay = `${i * 0.65}s`;
+        if (b.img) {
+          pill.innerHTML = `<img src="${b.img}" alt="badge" style="width:20px;height:20px;object-fit:contain;" />`;
+        } else {
+          pill.textContent = b.label || "♡";
+        }
+        if (i < 2) leftCol.appendChild(pill);
+        else rightCol.appendChild(pill);
+      });
+    }
+
+    function renderDrifters() {
+      const topTrack = document.getElementById("top-drifter-track");
+      const botTrack = document.getElementById("bottom-drifter-track");
+      topTrack.innerHTML = "";
+      botTrack.innerHTML = "";
+
+      if (state.images.topDrifterUrl) {
+        const img = document.createElement("img");
+        img.src = state.images.topDrifterUrl;
+        img.className = "drifter-sprite";
+        img.style.animation = "driftLeftToRight 22s linear infinite";
         topTrack.appendChild(img);
       }
-      if (state.media.bottomDrifterImg) {
-        const img = document.createElement('img');
-        img.src = state.media.bottomDrifterImg;
-        img.className = 'drifter-item-rtl h-9 w-auto object-contain opacity-85';
+
+      if (state.images.bottomDrifterUrl) {
+        const img = document.createElement("img");
+        img.src = state.images.bottomDrifterUrl;
+        img.className = "drifter-sprite";
+        img.style.animation = "driftRightToLeft 25s linear infinite";
         botTrack.appendChild(img);
       }
     }
 
-    function renderDiaryContent(animate = false) {
-      document.getElementById('diary-title-text').textContent = state.diaryTitle;
-      document.getElementById('diary-footer-quote').textContent = state.diaryQuote;
-      document.getElementById('song-title-label').textContent = state.song.title || 'lullaby';
+    function extractYoutubeId(url) {
+      if (!url) return null;
+      const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : null;
+    }
 
-      const notes = state.notes.length ? state.notes : [{ text: '...', date: '♡' }];
+    function renderBackgroundMedia() {
+      const imgLayer = document.getElementById("custom-bg-layer");
+      const vidWrap = document.getElementById("custom-bg-video-wrap");
+      const vidEl = document.getElementById("custom-bg-video");
+      const ytEl = document.getElementById("custom-bg-yt-frame");
+
+      if (state.images.bgImageUrl) {
+        imgLayer.style.backgroundImage = `url('${state.images.bgImageUrl}')`;
+        imgLayer.style.display = "block";
+      } else {
+        imgLayer.style.display = "none";
+      }
+
+      clearInterval(ytLoopTimer);
+      const vUrl = (state.images.bgVideoUrl || "").trim();
+      const blurPx = Number(state.images.bgVideoBlur ?? 5);
+      const startSec = Math.max(0, Number(state.images.bgVideoStart || 0));
+      const endSec = Math.max(0, Number(state.images.bgVideoEnd || 0));
+
+      if (!vUrl) {
+        vidWrap.style.display = "none";
+        vidEl.style.display = "none";
+        ytEl.style.display = "none";
+        ytEl.src = "";
+        return;
+      }
+
+      vidWrap.style.display = "block";
+      const ytId = extractYoutubeId(vUrl);
+
+      if (ytId) {
+        vidEl.style.display = "none";
+        vidEl.pause();
+        ytEl.style.display = "block";
+        ytEl.style.filter = `blur(${blurPx}px)`;
+        const endParam = endSec > startSec ? `&end=${endSec}` : "";
+        const srcUrl = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${ytId}&start=${startSec}${endParam}&modestbranding=1&rel=0&playsinline=1`;
+        if (ytEl.src !== srcUrl) {
+          ytEl.src = srcUrl;
+        }
+        if (endSec > startSec) {
+          const spanMs = (endSec - startSec) * 1000;
+          ytLoopTimer = setInterval(() => {
+            ytEl.src = srcUrl;
+          }, spanMs);
+        }
+      } else {
+        ytEl.style.display = "none";
+        ytEl.src = "";
+        vidEl.style.display = "block";
+        vidEl.style.filter = `blur(${blurPx}px)`;
+        if (vidEl.src !== vUrl) {
+          vidEl.src = vUrl;
+        }
+        vidEl.currentTime = startSec;
+        vidEl.play().catch(() => {});
+        vidEl.ontimeupdate = () => {
+          if (endSec > startSec && vidEl.currentTime >= endSec) {
+            vidEl.currentTime = startSec;
+          }
+        };
+      }
+    }
+
+    function renderDiaryNote(animate = true) {
+      const stage = document.getElementById("diary-note-stage");
+      const textEl = document.getElementById("diary-note-text");
+      const dateEl = document.getElementById("diary-note-date");
+      const notes = state.notes && state.notes.length ? state.notes : [{ text: "...", date: "" }];
       if (currentNoteIndex >= notes.length) currentNoteIndex = 0;
-      const entry = notes[currentNoteIndex];
-
-      const bodyEl = document.getElementById('diary-note-body');
-      const dateEl = document.getElementById('diary-note-date');
+      const note = notes[currentNoteIndex];
 
       if (animate) {
-        bodyEl.classList.add('fading-out');
-        dateEl.classList.add('fading-out');
+        stage.classList.add("note-blur-out");
         setTimeout(() => {
-          bodyEl.textContent = entry.text;
-          dateEl.textContent = entry.date;
-          bodyEl.classList.remove('fading-out');
-          dateEl.classList.remove('fading-out');
-        }, 320);
+          textEl.textContent = note.text;
+          dateEl.textContent = note.date || "♡";
+          stage.classList.remove("note-blur-out");
+        }, 420);
       } else {
-        bodyEl.textContent = entry.text;
-        dateEl.textContent = entry.date;
+        textEl.textContent = note.text;
+        dateEl.textContent = note.date || "♡";
       }
     }
 
-    function nextDiaryNote() {
-      if (state.notes.length <= 1) return;
-      currentNoteIndex = (currentNoteIndex + 1) % state.notes.length;
-      renderDiaryContent(true);
-    }
-
-    function renderBadgesAroundDiary() {
-      const leftCol = document.getElementById('left-badges-col');
-      const rightCol = document.getElementById('right-badges-col');
-      const secretSlot = document.getElementById('secret-badge-slot');
-      leftCol.innerHTML = '';
-      rightCol.innerHTML = '';
-      secretSlot.innerHTML = '';
-
-      state.badges.slice(0, 4).forEach((b, idx) => {
-        const pill = document.createElement('div');
-        pill.className = 'side-badge px-3 py-1.5 rounded-full text-xs flex items-center justify-center';
-        if (b.img) {
-          const img = document.createElement('img');
-          img.src = b.img;
-          img.className = 'h-5 w-5 object-contain';
-          pill.appendChild(img);
-        } else {
-          pill.textContent = b.label || '♡';
+    function startNoteAutoCycle() {
+      clearInterval(noteCycleTimer);
+      noteCycleTimer = setInterval(() => {
+        if ((state.notes || []).length > 1) {
+          currentNoteIndex = (currentNoteIndex + 1) % state.notes.length;
+          renderDiaryNote(true);
         }
-        if (idx < 2) leftCol.appendChild(pill);
-        else rightCol.appendChild(pill);
-      });
-
-      const secBtn = document.createElement('button');
-      secBtn.type = 'button';
-      secBtn.className = 'secret-badge-charm w-10 h-10 rounded-full flex items-center justify-center text-sm focus:outline-none';
-      secBtn.style.color = 'var(--accent-color)';
-      secBtn.textContent = state.secretBadge.sym || '♡';
-      secBtn.onclick = () => {
-        document.getElementById('secret-modal-title').textContent = state.secretBadge.title || 'secret ♡';
-        document.getElementById('secret-modal-body').textContent = state.secretBadge.body || '♡';
-        openModal('secret-modal');
-      };
-      secretSlot.appendChild(secBtn);
+      }, 6500);
     }
 
-    function renderCarouselNames() {
-      const ring = document.getElementById('heart-orbit-ring');
-      if (!ring) return;
-      ring.innerHTML = '';
+    window.nextDiaryNote = function () {
+      if (!(state.notes || []).length) return;
+      currentNoteIndex = (currentNoteIndex + 1) % state.notes.length;
+      renderDiaryNote(true);
+      startNoteAutoCycle();
+    };
 
-      const names = state.carouselNames.slice(0, 12);
-      const radius = state.sizes.orbitR || 86;
-      const step = names.length ? 360 / names.length : 360;
-
-      names.forEach((name, i) => {
-        const angle = i * step;
-        const spoke = document.createElement('div');
-        spoke.className = 'heart-orbit-spoke';
-        spoke.style.transform = `rotate(${angle}deg) translate(${radius}px) rotate(-${angle}deg)`;
-
-        const counter = document.createElement('span');
-        counter.className = 'heart-orbit-counter';
-
-        const label = document.createElement('span');
-        label.className = 'heart-orbit-label';
-        label.style.color = 'var(--text-color)';
-        label.textContent = name;
-
-        counter.appendChild(label);
-        spoke.appendChild(counter);
-        ring.appendChild(spoke);
-      });
-
-      const trigger = document.getElementById('add-name-trigger');
-      if (trigger) {
-        trigger.textContent = myVisitorName ? `♡ ${myVisitorName}` : '+ add ur name';
-      }
-    }
-
-    function openVisitorNameModal() {
-      const inp = document.getElementById('visitor-name-input');
-      inp.value = myVisitorName;
-      openModal('visitor-name-modal');
-    }
-
-    function saveVisitorName() {
-      const raw = document.getElementById('visitor-name-input').value.trim();
-      if (!raw) return;
-      if (myVisitorName) {
-        const idx = state.carouselNames.indexOf(myVisitorName);
-        if (idx !== -1) state.carouselNames[idx] = raw;
-        else state.carouselNames.push(raw);
-      } else {
-        state.carouselNames.push(raw);
-      }
-      myVisitorName = raw;
-      renderCarouselNames();
-      closeModal('visitor-name-modal');
-      showToast('added to the carousel ♡');
-    }
-
-    function pulseCarouselHeart() {
-      spawnBurstAt(window.innerWidth * 0.65, window.innerHeight * 0.45);
-    }
-
-    function waveMagicWand() {
-      nextDiaryNote();
-      spawnBurstAt(window.innerWidth * 0.45, window.innerHeight * 0.35);
-    }
-
-    function spawnBurstAt(x, y) {
-      const layer = document.getElementById('trail-layer');
-      for (let i = 0; i < 6; i++) {
-        const dot = document.createElement('span');
-        dot.textContent = i % 2 === 0 ? '♡' : '✦';
-        dot.style.position = 'fixed';
-        dot.style.left = `${x + (Math.random() - 0.5) * 40}px`;
-        dot.style.top = `${y + (Math.random() - 0.5) * 40}px`;
-        dot.style.color = 'var(--accent-color)';
-        dot.style.fontSize = '14px';
-        dot.style.transition = 'transform 0.8s ease, opacity 0.8s ease';
-        layer.appendChild(dot);
-        requestAnimationFrame(() => {
-          dot.style.transform = `translate(${(Math.random() - 0.5) * 70}px, -45px) scale(0.6)`;
-          dot.style.opacity = '0';
-        });
-        setTimeout(() => dot.remove(), 850);
-      }
-    }
+    window.prevDiaryNote = function () {
+      if (!(state.notes || []).length) return;
+      currentNoteIndex = (currentNoteIndex - 1 + state.notes.length) % state.notes.length;
+      renderDiaryNote(true);
+      startNoteAutoCycle();
+    };
 
     function startCerealPour() {
-      clearInterval(cerealTimer);
-      const layer = document.getElementById('falling-layer');
-      layer.innerHTML = '';
-      cerealPileCount = 0;
+      clearInterval(cerealInterval);
+      const layer = document.getElementById("falling-particles-layer");
+      cerealInterval = setInterval(() => {
+        const slots = (state.images.fallingSlots || []).filter(Boolean);
+        if (!slots.length) return;
 
-      cerealTimer = setInterval(() => {
-        const slots = state.media.fallingSlots;
-        const slot = slots[Math.floor(Math.random() * slots.length)];
-        const piece = document.createElement('div');
-        piece.className = 'cereal-flake';
+        if (cerealPileCount > 45) {
+          const oldest = layer.firstElementChild;
+          if (oldest) oldest.remove();
+          cerealPileCount--;
+        }
 
-        const startX = Math.random() * (window.innerWidth - 40) + 12;
-        const rotEnd = (Math.random() - 0.5) * 260;
-        const pileRow = Math.floor(cerealPileCount / 28);
-        const targetY = window.innerHeight - 24 - Math.min(pileRow * 10, 46) - Math.random() * 10;
-        cerealPileCount++;
+        const choice = slots[Math.floor(Math.random() * slots.length)];
+        const piece = document.createElement("div");
+        piece.className = "cereal-piece";
 
-        piece.style.left = `${startX}px`;
-        piece.style.top = '-36px';
+        const startX = Math.random() * (window.innerWidth - 40) + 10;
+        const rotEnd = (Math.random() * 140 - 70).toFixed(0);
+        const pileOffset = Math.min(26, Math.floor(cerealPileCount * 0.45));
+        const targetY = window.innerHeight - 28 - pileOffset - Math.random() * 12;
 
-        if (slot.img) {
-          const img = document.createElement('img');
-          img.src = slot.img;
-          img.className = 'w-5 h-5 object-contain';
-          piece.appendChild(img);
+        piece.style.left = startX + "px";
+        piece.style.transform = "translateY(0px) rotate(0deg)";
+
+        if (choice.startsWith("http") || choice.startsWith("data:")) {
+          piece.innerHTML = `<img src="${choice}" alt="" style="width:22px;height:22px;object-fit:contain;" />`;
         } else {
-          piece.textContent = slot.sym || '♡';
-          piece.style.color = 'var(--particle-color)';
-          piece.style.fontSize = `${13 + Math.floor(Math.random() * 6)}px`;
+          piece.textContent = choice;
+          piece.style.fontSize = "16px";
+          piece.style.color = "var(--accent-pink-dark)";
         }
 
         layer.appendChild(piece);
+        cerealPileCount++;
+
         void piece.offsetWidth;
-
-        const fallDuration = 3.2 + Math.random() * 1.4;
-        piece.style.transition = `transform ${fallDuration}s cubic-bezier(0.25, 0.8, 0.35, 1), opacity 0.9s ease`;
-        piece.style.transform = `translateY(${targetY + 36}px) rotate(${rotEnd}deg)`;
-
         setTimeout(() => {
-          piece.style.opacity = '0';
-          setTimeout(() => {
-            piece.remove();
-            cerealPileCount = Math.max(0, cerealPileCount - 1);
-          }, 950);
-        }, (fallDuration + 4.5) * 1000);
-      }, 950);
+          piece.style.transform = `translateY(${targetY + 60}px) rotate(${rotEnd}deg)`;
+        }, 30);
+      }, 1700);
     }
 
-    function initDragWidgets() {
-      document.querySelectorAll('.draggable-widget').forEach(widget => {
-        if (state.positions[widget.id]) {
-          widget.style.left = state.positions[widget.id].left;
-          widget.style.top = state.positions[widget.id].top;
+    window.waveMagicWand = function (e) {
+      if (e) e.stopPropagation();
+      const btn = document.getElementById("yumekawaii-wand-btn");
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      for (let i = 0; i < 9; i++) {
+        const sp = document.createElement("span");
+        sp.className = "wand-sparkle";
+        sp.textContent = i % 2 === 0 ? "✦" : "♡";
+        const angle = (Math.PI * 2 * i) / 9;
+        const dist = 26 + Math.random() * 32;
+        sp.style.left = cx + "px";
+        sp.style.top = cy + "px";
+        sp.style.setProperty("--dx", Math.cos(angle) * dist + "px");
+        sp.style.setProperty("--dy", Math.sin(angle) * dist + "px");
+        document.body.appendChild(sp);
+        setTimeout(() => sp.remove(), 960);
+      }
+    };
+
+    let musicUnlockedByClick = false;
+    window.toggleBgMusic = function (e) {
+      if (e) e.stopPropagation();
+      const audio = document.getElementById("bg-music-player");
+      const label = document.getElementById("music-status-label");
+      if (!state.songUrl) {
+        showToast("no song added yet ♡");
+        return;
+      }
+      if (audio.paused) {
+        audio.src = state.songUrl;
+        audio.play().then(() => {
+          label.textContent = "on";
+        }).catch(() => {});
+      } else {
+        audio.pause();
+        label.textContent = "off";
+      }
+    };
+
+    document.addEventListener("click", () => {
+      if (!musicUnlockedByClick && state.songUrl) {
+        musicUnlockedByClick = true;
+        const audio = document.getElementById("bg-music-player");
+        if (audio.paused) {
+          audio.src = state.songUrl;
+          audio.play().then(() => {
+            document.getElementById("music-status-label").textContent = "on";
+          }).catch(() => {});
         }
-        let dragging = false;
-        let offsetX = 0;
-        let offsetY = 0;
+      }
+    }, { once: false });
 
-        widget.addEventListener('pointerdown', e => {
-          if (e.target.closest('button, input, textarea')) return;
-          dragging = true;
-          const rect = widget.getBoundingClientRect();
-          offsetX = e.clientX - rect.left;
-          offsetY = e.clientY - rect.top;
-          widget.setPointerCapture(e.pointerId);
-        });
+    window.handleHeartClick = function () {
+      const heart = document.getElementById("big-heart-trigger");
+      const rect = heart.getBoundingClientRect();
+      for (let i = 0; i < 6; i++) {
+        const sp = document.createElement("span");
+        sp.className = "wand-sparkle";
+        sp.textContent = "♥";
+        sp.style.left = (rect.left + rect.width / 2) + "px";
+        sp.style.top = (rect.top + rect.height / 2) + "px";
+        sp.style.setProperty("--dx", (Math.random() * 70 - 35) + "px");
+        sp.style.setProperty("--dy", (-25 - Math.random() * 45) + "px");
+        document.body.appendChild(sp);
+        setTimeout(() => sp.remove(), 960);
+      }
+    };
 
-        widget.addEventListener('pointermove', e => {
-          if (!dragging) return;
-          const left = `${Math.max(8, Math.min(window.innerWidth - 80, e.clientX - offsetX))}px`;
-          const top = `${Math.max(8, Math.min(window.innerHeight - 80, e.clientY - offsetY))}px`;
-          widget.style.left = left;
-          widget.style.top = top;
-          state.positions[widget.id] = { left, top };
-        });
-
-        widget.addEventListener('pointerup', e => {
-          if (!dragging) return;
-          dragging = false;
-          widget.releasePointerCapture(e.pointerId);
-        });
-      });
+    function getVisitorToken() {
+      if (fbAuth && fbAuth.currentUser && fbAuth.currentUser.uid) {
+        return fbAuth.currentUser.uid;
+      }
+      return visitorClientId;
     }
 
-    function resetLayoutPositions() {
-      state.positions = {};
-      const box = document.getElementById('box-center');
-      const heart = document.getElementById('heart-stage');
-      if (box) {
-        box.style.left = 'calc(50% - 375px)';
-        box.style.top = 'calc(50% - 190px)';
-      }
-      if (heart) {
-        heart.style.left = 'calc(50% + 175px)';
-        heart.style.top = 'calc(50% - 140px)';
-      }
-      showToast('positions reset ♡');
-    }
+    window.openVisitorNameModal = function () {
+      const tok = getVisitorToken();
+      const existing = (state.visitorNames || []).find(v => v.id === tok);
+      document.getElementById("visitor-name-input").value = existing ? existing.name : "";
+      openModal("visitor-name-modal");
+    };
 
-    function handleOwnerLockClick() {
+    window.saveVisitorName = async function () {
+      const raw = document.getElementById("visitor-name-input").value.trim();
+      if (!raw) return;
+      const tok = getVisitorToken();
+      const idx = (state.visitorNames || []).findIndex(v => v.id === tok);
+      if (idx >= 0) {
+        state.visitorNames[idx].name = raw;
+      } else {
+        state.visitorNames.push({ id: tok, name: raw });
+      }
+      renderCarouselNames();
+      closeModal("visitor-name-modal");
+      showToast("added to the heart ♥");
+
+      if (fbDb) {
+        try {
+          await setDoc(doc(fbDb, "diary_visitor_names", tok), { name: raw, updatedAt: Date.now() });
+        } catch (e) {}
+      }
+    };
+
+    window.openSecretModal = function () {
+      openModal("secret-modal");
+    };
+
+    window.openModal = function (id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove("hidden");
+        el.classList.add("flex");
+      }
+    };
+
+    window.closeModal = function (id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.add("hidden");
+        el.classList.remove("flex");
+      }
+    };
+
+    window.handleLockClick = function () {
       if (isOwnerUnlocked) {
-        document.getElementById('owner-toolbar').classList.toggle('hidden');
-        document.getElementById('owner-toolbar').classList.toggle('flex');
-      } else {
-        document.getElementById('owner-login-error').classList.add('hidden');
-        document.getElementById('owner-pass-input').value = '';
-        const heading = document.getElementById('owner-modal-heading');
-        const desc = document.getElementById('owner-modal-desc');
-        const btn = document.getElementById('owner-submit-btn');
-        if (!state.passHash) {
-          heading.textContent = 'create owner passcode ♡';
-          desc.textContent = 'no passcode is set yet. choose a private passcode so only you can unlock editing.';
-          btn.textContent = 'set passcode & unlock ♡';
-        } else {
-          heading.textContent = 'owner access ♡';
-          desc.textContent = 'enter your private owner passcode to unlock editing.';
-          btn.textContent = 'unlock ♡';
-        }
-        openModal('owner-login-modal');
-      }
-    }
-
-    function submitOwnerPasscode() {
-      const val = document.getElementById('owner-pass-input').value.trim();
-      const err = document.getElementById('owner-login-error');
-      if (!val || val.length < 4) {
-        err.textContent = 'please enter at least 4 characters';
-        err.classList.remove('hidden');
+        isOwnerUnlocked = false;
+        updateOwnerUI();
+        showToast("locked ♡");
         return;
       }
-      if (!state.passHash) {
-        state.passHash = hashPasscode(val);
-        isOwnerUnlocked = true;
-        document.getElementById('owner-lock-shackle').setAttribute('d', 'M8 11V7a4 4 0 0 1 7.6-1.7');
-        const bar = document.getElementById('owner-toolbar');
-        bar.classList.remove('hidden');
-        bar.classList.add('flex');
-        closeModal('owner-login-modal');
-        showToast('passcode set & unlocked ♡ remember to copy code for github');
+      const desc = document.getElementById("lock-modal-desc");
+      const passBox = document.getElementById("passcode-auth-box");
+      const fbSub = document.getElementById("fb-auth-subtitle");
+
+      if (state.firebaseConfig && state.firebaseConfig.apiKey) {
+        passBox.classList.add("hidden");
+        desc.textContent = state.ownerUid ? "owner sign in required" : "sign in with your account to claim ownership";
+        if (fbSub) fbSub.textContent = state.ownerUid ? "only the claimed owner account can unlock" : "first sign in locks ownership to your account";
+      } else {
+        passBox.classList.remove("hidden");
+        desc.textContent = state.passcodeHash ? "enter your owner passcode to unlock" : "create your private owner passcode";
+      }
+      document.getElementById("owner-passcode-input").value = "";
+      openModal("lock-modal");
+    };
+
+    window.submitOwnerPasscode = async function () {
+      const val = document.getElementById("owner-passcode-input").value;
+      if (!val || val.length < 2) {
+        showToast("enter a passcode first");
         return;
       }
-      if (hashPasscode(val) === state.passHash) {
+      const hashed = await hashString(val);
+      if (!state.passcodeHash) {
+        state.passcodeHash = hashed;
         isOwnerUnlocked = true;
-        document.getElementById('owner-lock-shackle').setAttribute('d', 'M8 11V7a4 4 0 0 1 7.6-1.7');
-        const bar = document.getElementById('owner-toolbar');
-        bar.classList.remove('hidden');
-        bar.classList.add('flex');
-        closeModal('owner-login-modal');
-        showToast('unlocked ♡');
+        await persistState();
+        updateOwnerUI();
+        closeModal("lock-modal");
+        showToast("passcode set & unlocked ♡");
+      } else if (hashed === state.passcodeHash) {
+        isOwnerUnlocked = true;
+        updateOwnerUI();
+        closeModal("lock-modal");
+        showToast("welcome back ♡");
       } else {
-        err.textContent = 'incorrect passcode';
-        err.classList.remove('hidden');
+        showToast("wrong passcode");
+      }
+    };
+
+    function updateOwnerUI() {
+      const toolbar = document.getElementById("owner-toolbar");
+      const noteBar = document.getElementById("owner-inline-note-bar");
+      const lockIcon = document.getElementById("owner-lock-icon");
+      if (isOwnerUnlocked) {
+        toolbar.classList.remove("hidden");
+        noteBar.classList.remove("hidden");
+        lockIcon.textContent = "♥";
+      } else {
+        toolbar.classList.add("hidden");
+        noteBar.classList.add("hidden");
+        lockIcon.textContent = "♡";
       }
     }
 
-    function lockOwnerMode() {
-      isOwnerUnlocked = false;
-      document.getElementById('owner-lock-shackle').setAttribute('d', 'M8 11V7a4 4 0 0 1 8 0v4');
-      const bar = document.getElementById('owner-toolbar');
-      bar.classList.add('hidden');
-      bar.classList.remove('flex');
-      showToast('locked ♡');
-    }
-
-    function switchEditTab(tab) {
-      document.querySelectorAll('.edit-tab-pane').forEach(p => p.classList.add('hidden'));
-      const target = document.getElementById(`tab-${tab}`);
-      if (target) target.classList.remove('hidden');
-    }
-
-    function openEditModal(tab = 'notes') {
-      document.getElementById('input-diary-title').value = state.diaryTitle;
-      document.getElementById('input-diary-quote').value = state.diaryQuote;
-
-      document.getElementById('size-box-w').value = state.sizes.boxW;
-      document.getElementById('size-box-h').value = state.sizes.boxH;
-      document.getElementById('size-heart-sz').value = state.sizes.heartSz;
-      document.getElementById('size-orbit-r').value = state.sizes.orbitR;
-
-      document.getElementById('color-bg').value = state.colors.bg;
-      document.getElementById('color-text').value = state.colors.text;
-      document.getElementById('color-accent').value = state.colors.accent;
-      document.getElementById('color-particle').value = state.colors.particle;
-
-      document.getElementById('input-secret-sym').value = state.secretBadge.sym;
-      document.getElementById('input-secret-title').value = state.secretBadge.title;
-      document.getElementById('input-secret-body').value = state.secretBadge.body;
-
-      document.getElementById('input-bg-video-url').value = state.media.bgVideoUrl;
-      document.getElementById('input-bg-video-start').value = state.media.bgVideoStart;
-      document.getElementById('input-bg-video-end').value = state.media.bgVideoEnd;
-      document.getElementById('input-bg-video-blur').value = state.media.bgVideoBlur;
-
-      document.getElementById('input-bg-img-url').value = state.media.bgImage;
-      document.getElementById('input-peek-url').value = state.media.peekImg;
-      document.getElementById('input-heart-url').value = state.media.heartImg;
-      document.getElementById('input-wand-sym').value = state.media.wandSym;
-
-      state.media.fallingSlots.forEach((s, i) => {
-        const el = document.getElementById(`input-fall-${i}`);
-        if (el) el.value = s.sym;
-      });
-
-      document.getElementById('input-song-title').value = state.song.title;
-      document.getElementById('input-song-url').value = state.song.url;
-      document.getElementById('input-new-passcode').value = '';
-
+    window.openNoteManagerModal = function () {
       renderNotesEditorList();
-      renderBadgesEditorList();
-      switchEditTab(tab);
-      openModal('customize-modal');
-    }
+      openModal("notes-manager-modal");
+    };
 
     function renderNotesEditorList() {
-      const list = document.getElementById('notes-editor-list');
-      list.innerHTML = '';
-      state.notes.forEach((n, idx) => {
-        const row = document.createElement('div');
-        row.className = 'flex items-center justify-between gap-2 p-2.5 rounded-xl bg-pink-50/60';
-        row.innerHTML = `<div class="truncate"><span class="font-bold mr-2">${n.date}</span><span>${n.text}</span></div>`;
-        const del = document.createElement('button');
-        del.type = 'button';
-        del.className = 'text-rose-400 hover:text-rose-600 px-1.5';
-        del.textContent = '✕';
-        del.onclick = () => {
-          state.notes.splice(idx, 1);
-          renderNotesEditorList();
-          renderDiaryContent();
-        };
-        row.appendChild(del);
+      const list = document.getElementById("notes-editor-list");
+      list.innerHTML = "";
+      (state.notes || []).forEach((n, idx) => {
+        const row = document.createElement("div");
+        row.className = "p-3 rounded-2xl flex items-start justify-between gap-2 text-xs";
+        row.style.background = "#faf5f8";
+        row.innerHTML = `
+          <div>
+            <p class="font-medium whitespace-pre-line">${escapeHtml(n.text)}</p>
+            <span class="text-[11px]" style="color:var(--text-secondary);">${escapeHtml(n.date || "")}</span>
+          </div>
+          <button type="button" onclick="deleteDiaryNote(${idx})" class="px-2 py-1 rounded-full hover:bg-pink-100" style="color:var(--accent-pink-dark);">✕</button>
+        `;
         list.appendChild(row);
       });
     }
 
-    function addDiaryNoteEntry() {
-      const text = document.getElementById('input-new-note-text').value.trim();
-      const date = document.getElementById('input-new-note-date').value.trim() || 'today ♡';
+    window.addDiaryNote = async function () {
+      const text = document.getElementById("new-note-text").value.trim();
+      const date = document.getElementById("new-note-date").value.trim() || "today ♡";
       if (!text) return;
-      state.notes.unshift({ text, date });
+      state.notes.unshift({ id: crypto.randomUUID(), text, date });
       currentNoteIndex = 0;
-      document.getElementById('input-new-note-text').value = '';
-      document.getElementById('input-new-note-date').value = '';
+      document.getElementById("new-note-text").value = "";
+      document.getElementById("new-note-date").value = "";
       renderNotesEditorList();
-      renderDiaryContent();
+      renderDiaryNote(false);
+      await persistState();
+      showToast("note added ♡");
+    };
+
+    window.deleteDiaryNote = async function (idx) {
+      state.notes.splice(idx, 1);
+      if (!state.notes.length) {
+        state.notes.push({ id: crypto.randomUUID(), text: "write something gentle...", date: "♡" });
+      }
+      currentNoteIndex = 0;
+      renderNotesEditorList();
+      renderDiaryNote(false);
+      await persistState();
+    };
+
+    window.openEditModal = function (tab) {
+      populateEditInputs();
+      switchEditTab(tab || "sizes");
+      openModal("customize-modal");
+    };
+
+    window.switchEditTab = function (tab) {
+      document.querySelectorAll(".edit-tab-pane").forEach(p => p.classList.add("hidden"));
+      const active = document.getElementById("tab-" + tab);
+      if (active) active.classList.remove("hidden");
+    };
+
+    function populateEditInputs() {
+      document.getElementById("size-diary-w").value = state.sizes.diaryWidth;
+      document.getElementById("val-diary-w").textContent = state.sizes.diaryWidth;
+      document.getElementById("size-diary-h").value = state.sizes.diaryHeight;
+      document.getElementById("val-diary-h").textContent = state.sizes.diaryHeight;
+      document.getElementById("size-heart-sz").value = state.sizes.heartSize;
+      document.getElementById("val-heart-sz").textContent = state.sizes.heartSize;
+      document.getElementById("size-orbit-r").value = state.sizes.orbitRadius;
+      document.getElementById("val-orbit-r").textContent = state.sizes.orbitRadius;
+      document.getElementById("size-orbit-fs").value = state.sizes.orbitFontSize;
+      document.getElementById("val-orbit-fs").textContent = state.sizes.orbitFontSize;
+      document.getElementById("size-top-char").value = state.sizes.topCharSize;
+      document.getElementById("val-top-char").textContent = state.sizes.topCharSize;
+      document.getElementById("size-badge-sz").value = state.sizes.badgeSize;
+      document.getElementById("val-badge-sz").textContent = state.sizes.badgeSize;
+
+      document.getElementById("color-bg").value = state.colors.bgColor;
+      document.getElementById("color-box-bg").value = state.colors.boxBg;
+      document.getElementById("color-box-border").value = state.colors.boxBorder;
+      document.getElementById("color-text-primary").value = state.colors.textPrimary;
+      document.getElementById("color-text-secondary").value = state.colors.textSecondary;
+      document.getElementById("color-accent-pink-dark").value = state.colors.accentPinkDark;
+
+      document.getElementById("input-secret-badge-label").value = state.secretBadgeLabel || "♡";
+      document.getElementById("input-peeking-url").value = state.images.peekingCharUrl || "";
+      document.getElementById("input-heart-url").value = state.images.heartImgUrl || "";
+      document.getElementById("input-top-drifter-url").value = state.images.topDrifterUrl || "";
+      document.getElementById("input-bottom-drifter-url").value = state.images.bottomDrifterUrl || "";
+      document.getElementById("input-bg-img-url").value = state.images.bgImageUrl || "";
+      document.getElementById("input-bg-video-url").value = state.images.bgVideoUrl || "";
+      document.getElementById("input-bg-video-start").value = state.images.bgVideoStart || 0;
+      document.getElementById("input-bg-video-end").value = state.images.bgVideoEnd || 0;
+      document.getElementById("input-bg-video-blur").value = state.images.bgVideoBlur ?? 5;
+
+      const slots = state.images.fallingSlots || ["♡", "✦", "♥"];
+      document.getElementById("input-fall-0").value = slots[0] || "";
+      document.getElementById("input-fall-1").value = slots[1] || "";
+      document.getElementById("input-fall-2").value = slots[2] || "";
+
+      document.getElementById("input-song-url").value = state.songUrl || "";
+      document.getElementById("input-diary-title").value = state.diaryTitle || "";
+      document.getElementById("input-diary-whisper").value = state.diaryWhisper || "";
+      document.getElementById("input-secret-title").value = state.secretTitle || "";
+      document.getElementById("input-secret-body").value = state.secretBody || "";
+
+      if (state.firebaseConfig) {
+        document.getElementById("input-firebase-config").value = JSON.stringify(state.firebaseConfig, null, 2);
+      }
+      renderBadgesEditorList();
     }
 
     function renderBadgesEditorList() {
-      const list = document.getElementById('badges-editor-list');
-      list.innerHTML = '';
-      state.badges.forEach((b, idx) => {
-        const row = document.createElement('div');
-        row.className = 'flex items-center gap-2';
-        const inp = document.createElement('input');
-        inp.type = 'text';
-        inp.value = b.label;
-        inp.className = 'flex-1 px-3 py-1.5 rounded-xl bg-pink-50/70 outline-none';
-        inp.oninput = e => {
-          state.badges[idx].label = e.target.value;
-          renderBadgesAroundDiary();
-        };
-        const up = document.createElement('label');
-        up.className = 'px-2.5 py-1.5 rounded-xl bg-pink-50 cursor-pointer text-[11px]';
-        up.textContent = 'png';
-        const fileInp = document.createElement('input');
-        fileInp.type = 'file';
-        fileInp.accept = 'image/*';
-        fileInp.className = 'hidden';
-        fileInp.onchange = e => {
-          const f = e.target.files?.[0];
-          if (!f) return;
-          const reader = new FileReader();
-          reader.onload = ev => {
-            state.badges[idx].img = ev.target.result;
-            renderBadgesAroundDiary();
-          };
-          reader.readAsDataURL(f);
-        };
-        up.appendChild(fileInp);
-        row.appendChild(inp);
-        row.appendChild(up);
-        list.appendChild(row);
+      const container = document.getElementById("badges-editor-list");
+      container.innerHTML = "";
+      (state.badges || []).slice(0, 4).forEach((b, i) => {
+        const sideLabel = i < 2 ? `left #${i + 1}` : `right #${i - 1}`;
+        const row = document.createElement("div");
+        row.className = "flex items-center gap-2";
+        row.innerHTML = `
+          <span class="text-[11px] w-14 shrink-0" style="color:var(--text-secondary);">${sideLabel}</span>
+          <input type="text" value="${escapeHtml(b.label || "")}" placeholder="text/symbol" class="soft-input text-xs" onchange="updateBadgeItem(${i}, 'label', this.value)" />
+          <input type="text" value="${escapeHtml(b.img || "")}" placeholder="png/gif url" class="soft-input text-xs" onchange="updateBadgeItem(${i}, 'img', this.value)" />
+        `;
+        container.appendChild(row);
       });
     }
 
-    function updateLiveSizes() {
-      state.sizes.boxW = Number(document.getElementById('size-box-w').value);
-      state.sizes.boxH = Number(document.getElementById('size-box-h').value);
-      state.sizes.heartSz = Number(document.getElementById('size-heart-sz').value);
-      state.sizes.orbitR = Number(document.getElementById('size-orbit-r').value);
+    window.updateBadgeItem = async function (idx, field, val) {
+      if (!state.badges[idx]) state.badges[idx] = { id: "b" + idx, label: "", img: "" };
+      state.badges[idx][field] = val.trim();
+      renderBadges();
+      await persistState();
+    };
 
-      document.getElementById('val-box-w').textContent = `${state.sizes.boxW}px`;
-      document.getElementById('val-box-h').textContent = `${state.sizes.boxH}px`;
-      document.getElementById('val-heart-sz').textContent = `${state.sizes.heartSz}px`;
-      document.getElementById('val-orbit-r').textContent = `${state.sizes.orbitR}px`;
-
+    window.updateSizeSetting = async function (key, val) {
+      state.sizes[key] = Number(val);
+      const map = {
+        diaryWidth: "val-diary-w",
+        diaryHeight: "val-diary-h",
+        heartSize: "val-heart-sz",
+        orbitRadius: "val-orbit-r",
+        orbitFontSize: "val-orbit-fs",
+        topCharSize: "val-top-char",
+        badgeSize: "val-badge-sz"
+      };
+      if (map[key]) document.getElementById(map[key]).textContent = val;
       applyThemeAndSizes();
-      renderCarouselNames();
-    }
+      await persistState();
+    };
 
-    function updateLiveColors() {
-      state.colors.bg = document.getElementById('color-bg').value;
-      state.colors.text = document.getElementById('color-text').value;
-      state.colors.accent = document.getElementById('color-accent').value;
-      state.colors.particle = document.getElementById('color-particle').value;
+    window.updateColorSetting = async function (key, val) {
+      state.colors[key] = val;
       applyThemeAndSizes();
-    }
+      await persistState();
+    };
 
-    function handleImageUpload(event, key) {
-      const file = event.target.files?.[0];
+    window.updateTextSetting = async function (key, val) {
+      state[key] = val;
+      applyThemeAndSizes();
+      await persistState();
+    };
+
+    window.updateImageSetting = async function (key, val) {
+      state.images[key] = val.trim();
+      applyThemeAndSizes();
+      await persistState();
+    };
+
+    window.updateVideoBgSetting = async function () {
+      state.images.bgVideoUrl = document.getElementById("input-bg-video-url").value.trim();
+      state.images.bgVideoStart = Number(document.getElementById("input-bg-video-start").value || 0);
+      state.images.bgVideoEnd = Number(document.getElementById("input-bg-video-end").value || 0);
+      state.images.bgVideoBlur = Number(document.getElementById("input-bg-video-blur").value ?? 5);
+      renderBackgroundMedia();
+      await persistState();
+    };
+
+    window.updateFallingSlot = async function (idx, val) {
+      if (!state.images.fallingSlots) state.images.fallingSlots = ["♡", "✦", "♥"];
+      state.images.fallingSlots[idx] = val.trim();
+      await persistState();
+    };
+
+    window.handleImageUpload = function (e, key) {
+      const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = e => {
-        state.media[key] = e.target.result;
+      reader.onload = async () => {
+        state.images[key] = reader.result;
         applyThemeAndSizes();
-        renderCharacterMedia();
-        showToast('uploaded ♡');
+        await persistState();
+        showToast("image updated ♡");
       };
       reader.readAsDataURL(file);
-    }
+    };
 
-    function handleFallingSlotUpload(event, idx) {
-      const file = event.target.files?.[0];
+    window.handleFallingSlotUpload = function (e, idx) {
+      const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = e => {
-        state.media.fallingSlots[idx].img = e.target.result;
-        showToast('falling piece updated ♡');
+      reader.onload = async () => {
+        if (!state.images.fallingSlots) state.images.fallingSlots = ["♡", "✦", "♥"];
+        state.images.fallingSlots[idx] = reader.result;
+        await persistState();
+        showToast("falling piece updated ♡");
       };
       reader.readAsDataURL(file);
-    }
+    };
 
-    function clearBgVideo() {
-      state.media.bgVideoUrl = '';
-      document.getElementById('input-bg-video-url').value = '';
-      applyBackgroundVideo();
-      showToast('video removed ♡');
-    }
+    window.updateSongSetting = async function (val) {
+      state.songUrl = val.trim();
+      await persistState();
+      showToast("song updated ♡");
+    };
 
-    function saveAllEdits() {
-      state.diaryTitle = document.getElementById('input-diary-title').value;
-      state.diaryQuote = document.getElementById('input-diary-quote').value;
+    window.handleAudioUpload = function (e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async () => {
+        state.songUrl = reader.result;
+        await persistState();
+        showToast("audio loaded ♡");
+      };
+      reader.readAsDataURL(file);
+    };
 
-      state.secretBadge.sym = document.getElementById('input-secret-sym').value || '♡';
-      state.secretBadge.title = document.getElementById('input-secret-title').value;
-      state.secretBadge.body = document.getElementById('input-secret-body').value;
-
-      state.media.bgVideoUrl = document.getElementById('input-bg-video-url').value.trim();
-      state.media.bgVideoStart = Number(document.getElementById('input-bg-video-start').value) || 0;
-      state.media.bgVideoEnd = Number(document.getElementById('input-bg-video-end').value) || 0;
-      state.media.bgVideoBlur = Number(document.getElementById('input-bg-video-blur').value) || 0;
-
-      const bgUrl = document.getElementById('input-bg-img-url').value.trim();
-      if (bgUrl) state.media.bgImage = bgUrl;
-      const peekUrl = document.getElementById('input-peek-url').value.trim();
-      if (peekUrl) state.media.peekImg = peekUrl;
-      const heartUrl = document.getElementById('input-heart-url').value.trim();
-      if (heartUrl) state.media.heartImg = heartUrl;
-
-      state.media.wandSym = document.getElementById('input-wand-sym').value.trim() || '✦';
-      state.media.fallingSlots.forEach((s, i) => {
-        const val = document.getElementById(`input-fall-${i}`).value.trim();
-        if (val) s.sym = val;
-      });
-
-      state.song.title = document.getElementById('input-song-title').value.trim() || 'lullaby';
-      state.song.url = document.getElementById('input-song-url').value.trim();
-
-      const newPass = document.getElementById('input-new-passcode').value.trim();
-      if (newPass) {
-        if (newPass.length < 4) {
-          showToast('passcode must be at least 4 characters');
-          return;
-        }
-        state.passHash = hashPasscode(newPass);
-      }
-
-      renderAll();
-      setupMusicPlayer();
-      closeModal('customize-modal');
-      showToast('saved ♡ click copy code to update github');
-    }
-
-    function setupMusicPlayer() {
-      const audio = document.getElementById('bg-audio');
-      const ytHolder = document.getElementById('yt-music-holder');
-      ytHolder.innerHTML = '';
-      audio.pause();
-
-      const url = state.song.url;
-      if (!url) return;
-
-      const ytId = extractYouTubeId(url);
-      if (ytId) {
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&loop=1&playlist=${ytId}`;
-        iframe.allow = 'autoplay';
-        ytHolder.appendChild(iframe);
-      } else {
-        audio.src = url;
-        audio.play().catch(() => {});
-      }
-    }
-
-    function toggleAudioPlay() {
-      const audio = document.getElementById('bg-audio');
-      if (!state.song.url) {
-        showToast('add a song in edit mode ♡');
+    window.changeOwnerPasscode = async function () {
+      const next = document.getElementById("input-new-passcode").value;
+      if (!next || next.length < 2) {
+        showToast("enter a longer passcode");
         return;
       }
-      if (audio.paused && audio.src) {
-        audio.play().catch(() => {});
-      } else if (audio.src) {
-        audio.pause();
-      } else {
-        setupMusicPlayer();
+      state.passcodeHash = await hashString(next);
+      document.getElementById("input-new-passcode").value = "";
+      await persistState();
+      showToast("passcode updated ♡");
+    };
+
+    window.saveFirebaseConfig = async function () {
+      const raw = document.getElementById("input-firebase-config").value.trim();
+      if (!raw) return;
+      try {
+        const cleaned = raw
+          .replace(/^[^{]*/, "")
+          .replace(/[^}]*$/, "")
+          .replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":')
+          .replace(/'/g, '"');
+        const cfg = JSON.parse(cleaned);
+        state.firebaseConfig = cfg;
+        await persistState();
+        initFirebaseConnection(cfg);
+        showToast("firebase connected ♡");
+      } catch (e) {
+        showToast("invalid firebaseConfig format");
       }
+    };
+
+    function initFirebaseConnection(cfg) {
+      try {
+        fbApp = initializeApp(cfg);
+        fbAuth = getAuth(fbApp);
+        fbDb = getFirestore(fbApp);
+        const statusEl = document.getElementById("firebase-status-badge");
+        if (statusEl) statusEl.textContent = "connected ♡";
+
+        signInAnonymously(fbAuth).catch(() => {});
+
+        onAuthStateChanged(fbAuth, async (user) => {
+          if (user && !user.isAnonymous) {
+            if (!state.ownerUid) {
+              state.ownerUid = user.uid;
+              isOwnerUnlocked = true;
+              await persistState();
+              updateOwnerUI();
+              showToast("owner account claimed ♡");
+            } else if (user.uid === state.ownerUid) {
+              isOwnerUnlocked = true;
+              updateOwnerUI();
+            } else {
+              isOwnerUnlocked = false;
+              updateOwnerUI();
+              await fbAuth.signOut();
+              await signInAnonymously(fbAuth);
+              showToast("access denied — not the owner account");
+            }
+          }
+        });
+
+        if (fbUnsubState) fbUnsubState();
+        fbUnsubState = onSnapshot(doc(fbDb, "diary_sanctuary", "main_state"), (snap) => {
+          if (snap.exists() && !isOwnerUnlocked) {
+            const remote = snap.data();
+            state = mergeDeep(state, remote);
+            applyThemeAndSizes();
+            renderDiaryNote(false);
+          }
+        }, () => {});
+
+        if (fbUnsubNames) fbUnsubNames();
+        fbUnsubNames = onSnapshot(collection(fbDb, "diary_visitor_names"), (snap) => {
+          const remoteNames = [];
+          snap.forEach((d) => {
+            const data = d.data();
+            if (data && data.name) remoteNames.push({ id: d.id, name: data.name });
+          });
+          if (remoteNames.length) {
+            state.visitorNames = remoteNames;
+            renderCarouselNames();
+          }
+        }, () => {});
+      } catch (e) {}
     }
 
-    function copyShareableCode() {
-      const clone = document.documentElement.cloneNode(true);
-      const bakedEl = clone.querySelector('#baked-state-data');
-      if (bakedEl) {
-        bakedEl.textContent = JSON.stringify(state).replace(/</g, '\\u003c');
-      }
-      const toolbar = clone.querySelector('#owner-toolbar');
-      if (toolbar) {
-        toolbar.classList.add('hidden');
-        toolbar.classList.remove('flex');
-      }
-      const shackle = clone.querySelector('#owner-lock-shackle');
-      if (shackle) {
-        shackle.setAttribute('d', 'M8 11V7a4 4 0 0 1 8 0v4');
-      }
-      ['owner-login-modal', 'visitor-name-modal', 'secret-modal', 'customize-modal', 'toast-box'].forEach(id => {
-        const m = clone.querySelector('#' + id);
-        if (m) {
-          m.classList.add('hidden');
-          m.classList.remove('flex');
+    window.signInWithFirebaseEmail = async function () {
+      if (!fbAuth) return;
+      const email = document.getElementById("fb-email-input").value.trim();
+      const pass = document.getElementById("fb-pass-input").value;
+      try {
+        const cred = await signInWithEmailAndPassword(fbAuth, email, pass);
+        if (state.ownerUid && cred.user.uid !== state.ownerUid) {
+          await fbAuth.signOut();
+          await signInAnonymously(fbAuth);
+          showToast("not the owner account");
+          return;
         }
-      });
-      const falling = clone.querySelector('#falling-layer');
-      if (falling) falling.innerHTML = '';
-      const trail = clone.querySelector('#trail-layer');
-      if (trail) trail.innerHTML = '';
+        if (!state.ownerUid) state.ownerUid = cred.user.uid;
+        isOwnerUnlocked = true;
+        await persistState();
+        updateOwnerUI();
+        closeModal("lock-modal");
+        showToast("signed in ♡");
+      } catch (e) {
+        showToast("sign in failed");
+      }
+    };
 
-      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-      const ta = document.createElement('textarea');
-      ta.value = html;
+    window.signInWithFirebaseGoogle = async function () {
+      if (!fbAuth) return;
+      try {
+        const cred = await signInWithPopup(fbAuth, new GoogleAuthProvider());
+        if (state.ownerUid && cred.user.uid !== state.ownerUid) {
+          await fbAuth.signOut();
+          await signInAnonymously(fbAuth);
+          showToast("not the owner account");
+          return;
+        }
+        if (!state.ownerUid) state.ownerUid = cred.user.uid;
+        isOwnerUnlocked = true;
+        await persistState();
+        updateOwnerUI();
+        closeModal("lock-modal");
+        showToast("signed in with google ♡");
+      } catch (e) {
+        showToast("google sign in failed");
+      }
+    };
+
+    window.copyBakedCode = function () {
+      const bakedState = structuredClone(state);
+      const cloneDoc = document.documentElement.cloneNode(true);
+      const toolbar = cloneDoc.querySelector("#owner-toolbar");
+      const noteBar = cloneDoc.querySelector("#owner-inline-note-bar");
+      const lockIcon = cloneDoc.querySelector("#owner-lock-icon");
+      if (toolbar) toolbar.classList.add("hidden");
+      if (noteBar) noteBar.classList.add("hidden");
+      if (lockIcon) lockIcon.textContent = "♡";
+
+      const bakedScript = cloneDoc.querySelector("#baked-state-data");
+      if (bakedScript) {
+        bakedScript.textContent = JSON.stringify(bakedState);
+      }
+
+      const fullHtml = "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
+      const ta = document.createElement("textarea");
+      ta.value = fullHtml;
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       ta.remove();
-      showToast('customized html copied — paste into github index.html ♡');
+      showToast("copied full html with edits ♡");
+    };
+
+    window.resetLayoutPositions = async function () {
+      state.positions = {
+        "widget-diary": { x: 0, y: 0 },
+        "widget-heart": { x: 0, y: 0 }
+      };
+      applyPositions();
+      await persistState();
+      showToast("positions reset ♡");
+    };
+
+    function initDragging() {
+      let activeId = null;
+      let startX = 0;
+      let startY = 0;
+      let origX = 0;
+      let origY = 0;
+
+      document.querySelectorAll(".drag-handle").forEach(handle => {
+        handle.addEventListener("pointerdown", (e) => {
+          e.preventDefault();
+          activeId = handle.getAttribute("data-drag-target");
+          const cur = state.positions?.[activeId] || { x: 0, y: 0 };
+          startX = e.clientX;
+          startY = e.clientY;
+          origX = cur.x;
+          origY = cur.y;
+          handle.setPointerCapture(e.pointerId);
+        });
+
+        handle.addEventListener("pointermove", (e) => {
+          if (!activeId) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          if (!state.positions) state.positions = {};
+          state.positions[activeId] = { x: origX + dx, y: origY + dy };
+          applyPositions();
+        });
+
+        handle.addEventListener("pointerup", async () => {
+          if (!activeId) return;
+          activeId = null;
+          await persistState();
+        });
+      });
     }
 
-    function renderAll() {
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadInitialState();
       applyThemeAndSizes();
-      applyBackgroundVideo();
-      renderCharacterMedia();
-      renderDiaryContent();
-      renderBadgesAroundDiary();
-      renderCarouselNames();
-    }
-
-    document.addEventListener('pointerdown', e => {
-      if (!audioStarted && state.song.url) {
-        audioStarted = true;
-        setupMusicPlayer();
-      }
-      if (Math.random() < 0.35) {
-        spawnBurstAt(e.clientX, e.clientY);
-      }
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      renderAll();
-      initDragWidgets();
+      renderDiaryNote(false);
+      startNoteAutoCycle();
       startCerealPour();
+      initDragging();
+      if (state.firebaseConfig) {
+        initFirebaseConnection(state.firebaseConfig);
+      }
     });
   </script>
 </body>
