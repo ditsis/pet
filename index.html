@@ -354,13 +354,13 @@
   <div id="owner-login-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/20 backdrop-blur-xs p-4">
     <div class="bg-white/95 rounded-3xl p-6 w-full max-w-sm shadow-xl border border-white">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-bold">owner access ♡</h3>
+        <h3 id="owner-modal-heading" class="text-sm font-bold">owner access ♡</h3>
         <button type="button" onclick="closeModal('owner-login-modal')" class="text-sm opacity-60 hover:opacity-100">✕</button>
       </div>
-      <p class="text-xs opacity-75 mb-4">enter your owner passcode to unlock editing.</p>
-      <input id="owner-pass-input" type="password" placeholder="passcode..." class="w-full px-4 py-2.5 rounded-2xl bg-pink-50/70 text-xs outline-none mb-3">
+      <p id="owner-modal-desc" class="text-xs opacity-75 mb-4">enter your owner passcode to unlock editing.</p>
+      <input id="owner-pass-input" type="password" placeholder="passcode..." onkeydown="if(event.key==='Enter')submitOwnerPasscode()" class="w-full px-4 py-2.5 rounded-2xl bg-pink-50/70 text-xs outline-none mb-3">
       <p id="owner-login-error" class="hidden text-xs text-rose-500 mb-2"></p>
-      <button type="button" onclick="submitOwnerPasscode()" class="w-full py-2.5 rounded-2xl text-xs font-bold text-white shadow-sm transition" style="background: var(--accent-color);">unlock ♡</button>
+      <button id="owner-submit-btn" type="button" onclick="submitOwnerPasscode()" class="w-full py-2.5 rounded-2xl text-xs font-bold text-white shadow-sm transition" style="background: var(--accent-color);">unlock ♡</button>
     </div>
   </div>
 
@@ -396,6 +396,7 @@
           <button type="button" onclick="switchEditTab('badges')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">badges</button>
           <button type="button" onclick="switchEditTab('images')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">images</button>
           <button type="button" onclick="switchEditTab('song')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">song</button>
+          <button type="button" onclick="switchEditTab('security')" class="edit-tab-btn px-2.5 py-1 rounded-full bg-pink-50">security</button>
         </div>
         <button type="button" onclick="closeModal('customize-modal')" class="text-sm opacity-60 hover:opacity-100 ml-2">✕</button>
       </div>
@@ -560,6 +561,17 @@
             <input id="input-song-url" type="text" placeholder="https://..." class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
           </div>
         </div>
+
+        <div id="tab-security" class="edit-tab-pane hidden space-y-3">
+          <div>
+            <label class="block mb-1 opacity-75">change owner passcode</label>
+            <input id="input-new-passcode" type="password" placeholder="new passcode (leave blank to keep current)..." class="w-full px-3 py-2 rounded-xl bg-pink-50/70 outline-none">
+          </div>
+          <div class="p-3 rounded-2xl bg-pink-50/50 space-y-2">
+            <p class="font-bold">how github pages saving works ♡</p>
+            <p class="opacity-75 leading-relaxed">github pages hosts static files, so after you customize your page, click <b>copy code</b> in your bottom bar and paste it into your github <code>index.html</code> to bake all your notes, images, and passcode permanently into your live site.</p>
+          </div>
+        </div>
       </div>
 
       <div class="pt-3 border-t border-pink-100 flex justify-end gap-2">
@@ -572,9 +584,10 @@
   <audio id="bg-audio" loop></audio>
   <div id="yt-music-holder" class="hidden"></div>
 
+  <script id="baked-state-data" type="application/json">null</script>
   <script>
     const defaultState = {
-      passcode: 'bunny',
+      passHash: '',
       diaryTitle: '♡ my diary:',
       diaryQuote: '"taking things one gentle step at a time today ♡"',
       notes: [
@@ -631,7 +644,40 @@
       positions: {}
     };
 
-    let state = JSON.parse(JSON.stringify(defaultState));
+    function hashPasscode(str) {
+      let h1 = 0xdeadbeef ^ str.length;
+      let h2 = 0x41c6ce57 ^ str.length;
+      for (let i = 0; i < str.length; i++) {
+        const ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+      }
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+      return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+    }
+
+    function loadInitialState() {
+      const base = JSON.parse(JSON.stringify(defaultState));
+      try {
+        const bakedEl = document.getElementById('baked-state-data');
+        if (bakedEl && bakedEl.textContent && bakedEl.textContent.trim() !== 'null') {
+          const parsed = JSON.parse(bakedEl.textContent);
+          return {
+            ...base,
+            ...parsed,
+            colors: { ...base.colors, ...(parsed.colors || {}) },
+            sizes: { ...base.sizes, ...(parsed.sizes || {}) },
+            media: { ...base.media, ...(parsed.media || {}) },
+            song: { ...base.song, ...(parsed.song || {}) },
+            secretBadge: { ...base.secretBadge, ...(parsed.secretBadge || {}) }
+          };
+        }
+      } catch (e) {}
+      return base;
+    }
+
+    let state = loadInitialState();
     let isOwnerUnlocked = false;
     let currentNoteIndex = 0;
     let audioStarted = false;
@@ -1072,13 +1118,42 @@
       } else {
         document.getElementById('owner-login-error').classList.add('hidden');
         document.getElementById('owner-pass-input').value = '';
+        const heading = document.getElementById('owner-modal-heading');
+        const desc = document.getElementById('owner-modal-desc');
+        const btn = document.getElementById('owner-submit-btn');
+        if (!state.passHash) {
+          heading.textContent = 'create owner passcode ♡';
+          desc.textContent = 'no passcode is set yet. choose a private passcode so only you can unlock editing.';
+          btn.textContent = 'set passcode & unlock ♡';
+        } else {
+          heading.textContent = 'owner access ♡';
+          desc.textContent = 'enter your private owner passcode to unlock editing.';
+          btn.textContent = 'unlock ♡';
+        }
         openModal('owner-login-modal');
       }
     }
 
     function submitOwnerPasscode() {
       const val = document.getElementById('owner-pass-input').value.trim();
-      if (!val || val === state.passcode) {
+      const err = document.getElementById('owner-login-error');
+      if (!val || val.length < 4) {
+        err.textContent = 'please enter at least 4 characters';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (!state.passHash) {
+        state.passHash = hashPasscode(val);
+        isOwnerUnlocked = true;
+        document.getElementById('owner-lock-shackle').setAttribute('d', 'M8 11V7a4 4 0 0 1 7.6-1.7');
+        const bar = document.getElementById('owner-toolbar');
+        bar.classList.remove('hidden');
+        bar.classList.add('flex');
+        closeModal('owner-login-modal');
+        showToast('passcode set & unlocked ♡ remember to copy code for github');
+        return;
+      }
+      if (hashPasscode(val) === state.passHash) {
         isOwnerUnlocked = true;
         document.getElementById('owner-lock-shackle').setAttribute('d', 'M8 11V7a4 4 0 0 1 7.6-1.7');
         const bar = document.getElementById('owner-toolbar');
@@ -1087,8 +1162,7 @@
         closeModal('owner-login-modal');
         showToast('unlocked ♡');
       } else {
-        const err = document.getElementById('owner-login-error');
-        err.textContent = 'wrong passcode (default: bunny)';
+        err.textContent = 'incorrect passcode';
         err.classList.remove('hidden');
       }
     }
@@ -1143,6 +1217,7 @@
 
       document.getElementById('input-song-title').value = state.song.title;
       document.getElementById('input-song-url').value = state.song.url;
+      document.getElementById('input-new-passcode').value = '';
 
       renderNotesEditorList();
       renderBadgesEditorList();
@@ -1304,10 +1379,19 @@
       state.song.title = document.getElementById('input-song-title').value.trim() || 'lullaby';
       state.song.url = document.getElementById('input-song-url').value.trim();
 
+      const newPass = document.getElementById('input-new-passcode').value.trim();
+      if (newPass) {
+        if (newPass.length < 4) {
+          showToast('passcode must be at least 4 characters');
+          return;
+        }
+        state.passHash = hashPasscode(newPass);
+      }
+
       renderAll();
       setupMusicPlayer();
       closeModal('customize-modal');
-      showToast('saved ♡');
+      showToast('saved ♡ click copy code to update github');
     }
 
     function setupMusicPlayer() {
@@ -1347,14 +1431,40 @@
     }
 
     function copyShareableCode() {
-      const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const clone = document.documentElement.cloneNode(true);
+      const bakedEl = clone.querySelector('#baked-state-data');
+      if (bakedEl) {
+        bakedEl.textContent = JSON.stringify(state).replace(/</g, '\\u003c');
+      }
+      const toolbar = clone.querySelector('#owner-toolbar');
+      if (toolbar) {
+        toolbar.classList.add('hidden');
+        toolbar.classList.remove('flex');
+      }
+      const shackle = clone.querySelector('#owner-lock-shackle');
+      if (shackle) {
+        shackle.setAttribute('d', 'M8 11V7a4 4 0 0 1 8 0v4');
+      }
+      ['owner-login-modal', 'visitor-name-modal', 'secret-modal', 'customize-modal', 'toast-box'].forEach(id => {
+        const m = clone.querySelector('#' + id);
+        if (m) {
+          m.classList.add('hidden');
+          m.classList.remove('flex');
+        }
+      });
+      const falling = clone.querySelector('#falling-layer');
+      if (falling) falling.innerHTML = '';
+      const trail = clone.querySelector('#trail-layer');
+      if (trail) trail.innerHTML = '';
+
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
       const ta = document.createElement('textarea');
       ta.value = html;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand('copy');
       ta.remove();
-      showToast('html copied ♡');
+      showToast('customized html copied — paste into github index.html ♡');
     }
 
     function renderAll() {
