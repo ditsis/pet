@@ -1,0 +1,3417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♡ my little sanctuary ♡</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-blush: #f9f1f2;
+            --card-white: #ffffff;
+            --border-soft: #ece6e6;
+            --pill-grey: #dcd7d8;
+            --text-main: #6b5e62;
+            --text-muted: #9e8f94;
+            --accent-pink: #f4b8c8;
+            --accent-pink-dark: #e08ea4;
+            --bubble-bg: #fff7f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        input, textarea {
+            user-select: text;
+        }
+
+        body {
+            background-color: var(--bg-blush);
+            color: var(--text-main);
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.35s ease, color 0.35s ease;
+        }
+
+        body.cursor-paw, body.cursor-paw button, body.cursor-paw a {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23ff9eb5' stroke='%236b5e62' stroke-width='1' d='M4 2h2v2H4zm6 0h2v2h-2zM2 5h2v2H2zm10 0h2v2h-2zM5 6h6v2h1v4H4V8h1z'/></svg>") 8 8, auto;
+        }
+
+        body.cursor-heart, body.cursor-heart button, body.cursor-heart a {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23ff85a2' stroke='%23ffffff' stroke-width='1' d='M3 2h3v1h1v1h2V3h1V2h3v1h1v4h-1v2h-2v2H9v2H7v-2H5V9H3V7H2V3h1z'/></svg>") 8 8, auto;
+        }
+
+        body.cursor-sparkle, body.cursor-sparkle button, body.cursor-sparkle a {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23d8b4fe' stroke='%236b5e62' stroke-width='0.8' d='M7 1h2v4h1v1h4v2h-4v1H9v4H7V9H6V8H2V6h4V5h1z'/></svg>") 8 8, auto;
+        }
+
+        body.cursor-bunny, body.cursor-bunny button, body.cursor-bunny a {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 16 16'><path fill='%23ffffff' stroke='%236b5e62' stroke-width='1' d='M4 1h2v5H4zm6 0h2v5h-2zM3 6h10v7H3z'/><rect x='5' y='8' width='1.5' height='1.5' fill='%236b5e62'/><rect x='9.5' y='8' width='1.5' height='1.5' fill='%236b5e62'/></svg>") 8 8, auto;
+        }
+
+        .sanctuary-card {
+            background-color: var(--card-white);
+            border: none;
+            border-radius: 22px;
+            box-shadow: 0 8px 28px rgba(180, 155, 162, 0.08);
+            transition: box-shadow 0.3s ease, background-color 0.35s ease;
+        }
+
+        @keyframes jellySquish {
+            0% { transform: scale(1, 1); }
+            30% { transform: scale(1.03, 0.96); }
+            55% { transform: scale(0.985, 1.02); }
+            75% { transform: scale(1.01, 0.99); }
+            100% { transform: scale(1, 1); }
+        }
+
+        .sanctuary-card:hover {
+            animation: jellySquish 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 12px 34px rgba(224, 142, 164, 0.16);
+        }
+
+        .draggable-window {
+            position: absolute;
+            z-index: 20;
+        }
+
+        .draggable-window.active-drag {
+            z-index: 40;
+            box-shadow: 0 18px 42px rgba(180, 155, 162, 0.22);
+        }
+
+        .owner-only, .owner-only-flex {
+            display: none !important;
+        }
+
+        body.is-owner:not(.visitor-preview) .owner-only {
+            display: inline-flex !important;
+        }
+
+        body.is-owner:not(.visitor-preview) .owner-only-flex {
+            display: flex !important;
+        }
+
+        .charm-stamp {
+            position: relative;
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(6px);
+            color: var(--text-main);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+            border-radius: 9999px;
+            padding: 6px 11px;
+            box-shadow: 0 4px 14px rgba(180, 155, 162, 0.16);
+            animation: badgeBlurFade 3.8s ease-in-out infinite;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, filter 0.25s ease;
+        }
+
+        @keyframes badgeBlurFade {
+            0%, 100% { opacity: 1; filter: blur(0px); transform: scale(1); }
+            50% { opacity: 0.42; filter: blur(2.2px); transform: scale(0.95); }
+        }
+
+        .charm-stamp.secret-charm-special {
+            animation: secretCharmGlow 2.4s ease-in-out infinite;
+            border-color: var(--accent-pink);
+        }
+
+        @keyframes secretCharmGlow {
+            0%, 100% { transform: scale(1) rotate(-4deg); box-shadow: 0 0 8px rgba(224, 142, 164, 0.35), 0 4px 14px rgba(180, 155, 162, 0.18); filter: blur(0px); opacity: 1; }
+            50% { transform: scale(1.13) rotate(5deg); box-shadow: 0 0 18px var(--accent-pink), 0 0 6px #ffffff; filter: blur(0px); opacity: 1; }
+        }
+
+        .charm-stamp:hover {
+            animation-play-state: paused;
+            filter: blur(0px) !important;
+            opacity: 1 !important;
+            transform: scale(1.2) translateY(-3px) !important;
+            box-shadow: 0 8px 20px rgba(224, 142, 164, 0.28);
+            z-index: 45;
+        }
+
+        @keyframes interestBlurTurn {
+            0% { opacity: 0; filter: blur(10px); transform: scale(0.95); }
+            22% { opacity: 1; filter: blur(0px); transform: scale(1); }
+            78% { opacity: 1; filter: blur(0px); transform: scale(1); }
+            100% { opacity: 0; filter: blur(10px); transform: scale(1.05); }
+        }
+
+        .interest-turn-badge {
+            display: inline-block;
+            animation: interestBlurTurn 2.8s ease-in-out forwards;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.95), 0 0 6px var(--accent-pink);
+        }
+
+        .love-bubble-item {
+            background: radial-gradient(circle at 28% 22%, #ffffff 0%, var(--bubble-bg) 68%, rgba(255, 255, 255, 0.85) 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.96);
+            border-radius: 9999px;
+            padding: 12px 18px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(212, 175, 186, 0.18), inset 0 3px 8px rgba(255, 255, 255, 0.95);
+        }
+
+        .badge-tooltip {
+            position: absolute;
+            bottom: 128%;
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: var(--card-white);
+            color: var(--text-main);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            z-index: 50;
+        }
+
+        .charm-stamp:hover .badge-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .thought-bubble {
+            position: absolute;
+            width: 108px;
+            height: 108px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 30% 25%, #ffffff 0%, var(--bubble-bg) 62%, rgba(255, 255, 255, 0.92) 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.96);
+            padding: 12px;
+            font-size: 10px;
+            line-height: 1.2;
+            text-align: center;
+            color: var(--text-main);
+            box-shadow: 0 6px 18px rgba(212, 175, 186, 0.26), inset 0 4px 10px rgba(255, 255, 255, 0.98), inset -3px -4px 8px rgba(224, 142, 164, 0.14);
+            pointer-events: auto;
+            cursor: grab;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: gentleFloat 4.5s ease-in-out infinite;
+            z-index: 25;
+        }
+
+        .thought-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 22px;
+            width: 9px;
+            height: 9px;
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, var(--bubble-bg) 80%);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(212, 175, 186, 0.22);
+        }
+
+        .thought-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 15px;
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, var(--bubble-bg) 80%);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+        }
+
+        .thought-bubble:hover {
+            transform: scale(1.06);
+            box-shadow: 0 8px 22px rgba(212, 175, 186, 0.3), inset 0 2px 6px rgba(255, 255, 255, 0.95);
+            z-index: 35;
+        }
+
+        .thought-bubble:active {
+            cursor: grabbing;
+            animation: none;
+        }
+
+        @keyframes treeShake {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-4deg) scale(1.03); }
+            40% { transform: rotate(4deg) scale(0.98); }
+            60% { transform: rotate(-3deg) scale(1.02); }
+            80% { transform: rotate(2deg) scale(0.99); }
+        }
+
+        .tree-animating {
+            animation: treeShake 0.45s ease-in-out;
+        }
+
+        @keyframes fruitDrop {
+            0% { opacity: 1; transform: translateY(0) scale(0.85) rotate(0deg); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(115px) scale(1.05) rotate(35deg); }
+        }
+
+        .falling-tree-fruit {
+            position: absolute;
+            pointer-events: none;
+            z-index: 30;
+            animation: fruitDrop 1.25s cubic-bezier(0.32, 0, 0.67, 0.85) forwards;
+        }
+
+        @keyframes wandFloat {
+            0%, 100% { transform: translateY(0) rotate(-6deg); }
+            50% { transform: translateY(-6px) rotate(6deg); }
+        }
+
+        .magic-wand-btn {
+            animation: wandFloat 3.6s ease-in-out infinite;
+            filter: drop-shadow(0 5px 12px rgba(224, 142, 164, 0.32));
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes orbitSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes orbitCounterSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        @keyframes nameBob {
+            0%, 100% { transform: translate(-50%, -50%) translateY(-4px); }
+            50% { transform: translate(-50%, -50%) translateY(4px); }
+        }
+
+        .heart-orbit-ring {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            animation: orbitSpin 30s linear infinite;
+        }
+
+        .heart-orbit-spoke {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+        }
+
+        .heart-orbit-counter {
+            animation: orbitCounterSpin 30s linear infinite;
+        }
+
+        .heart-floating-name {
+            display: inline-block;
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+            opacity: 0.82;
+            color: var(--orbit-text-color, var(--text-muted));
+            text-shadow: 0 0 8px var(--accent-pink-dark), 0 0 2px #ffffff;
+            animation: nameBob 3.6s ease-in-out infinite;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 13px;
+            animation: trailFade 0.85s forwards ease-out;
+        }
+
+        @keyframes trailFade {
+            0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(-50%, -18px) scale(0.4) rotate(25deg); }
+        }
+
+        .falling-particle {
+            position: fixed;
+            top: -30px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+            animation: fallDown linear forwards;
+        }
+
+        @keyframes fallDown {
+            to {
+                transform: translateY(108vh) rotate(360deg);
+            }
+        }
+
+        .cute-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        @media (max-width: 900px) {
+            .workspace-stage {
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+                padding-top: 60px;
+                padding-bottom: 110px;
+                height: auto !important;
+            }
+            .draggable-window {
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                width: 92% !important;
+                max-width: 380px !important;
+            }
+            #center-orbit-heart-stage {
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                transform: none !important;
+                margin-top: 12px;
+            }
+        }
+
+        body.sanctuary-booting #workspace,
+        body.sanctuary-booting .charm-cluster {
+            opacity: 0;
+        }
+        #workspace, .charm-cluster {
+            transition: opacity 0.25s ease;
+        }
+    </style>
+</head>
+<body class="cursor-paw sanctuary-booting">
+    <div id="particles-layer"></div>
+    <audio id="daily-audio" loop crossorigin="anonymous"></audio>
+    <main id="workspace" class="workspace-stage relative w-full min-h-screen overflow-hidden">
+        <section id="box-love" class="draggable-window sanctuary-card flex flex-col" style="left: calc(50% - 505px); top: 155px; width: 310px; height: 360px;">
+            <div class="draggable-handle px-4 pt-3.5 pb-1.5 flex items-center justify-between rounded-t-[22px]">
+                <div class="flex items-center gap-1.5">
+                    <img id="love-box-icon-img" src="" alt="" class="hidden w-4 h-4 object-contain pointer-events-none">
+                    <span id="love-box-icon-glyph" class="text-xs" style="color: var(--accent-pink-dark);">♡</span>
+                    <h2 id="love-box-title" class="text-xs font-bold tracking-wide">love notes</h2>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="openAddLoveNote()" class="owner-only text-[11px] px-2.5 py-0.5 rounded-full font-semibold transition" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">+ note</button>
+                    <span class="text-[11px] opacity-35" title="Drag box">⋮⋮</span>
+                </div>
+            </div>
+
+            <div id="love-notes-list" class="p-3.5 pt-2 space-y-2.5 flex-1 overflow-y-auto cute-scroll"></div>
+
+            <div class="px-3.5 pb-3.5 pt-1">
+                <div class="p-2.5 rounded-2xl text-center" style="background-color: var(--bubble-bg);">
+                    <p id="love-bottom-quote" class="text-[11px] italic leading-relaxed opacity-85">"every little thing about you is worthy of gentle love ♡"</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="box-center" class="draggable-window flex flex-col items-center" style="left: calc(50% - 160px); top: 235px; width: 320px;">
+            <div class="flex items-center justify-center gap-2 mb-3 pt-1 z-30">
+                <div id="badges-pill-container" class="flex items-center flex-wrap justify-center gap-2 select-none"></div>
+                <button onclick="openEditModal('badges')" class="owner-only w-6 h-6 rounded-full sanctuary-card items-center justify-center text-[11px] shadow-sm hover:scale-105 transition" style="color: var(--accent-pink-dark);" title="Edit Charms & Cursors">
+                    ✎
+                </button>
+            </div>
+
+            <div class="relative z-10 -mb-2 group flex flex-col items-center">
+                <div id="top-sprite-container" class="flex items-end justify-center transition-transform duration-300">
+                    <img id="custom-top-sprite" src="" alt="Top Character" style="height: 68px;" class="hidden object-contain drop-shadow-sm pointer-events-none">
+                    <button id="top-sprite-placeholder" onclick="openEditModal('images')" class="owner-only-flex flex-col items-center justify-center px-3 py-1.5 mb-2 rounded-2xl text-[11px] bg-white/80 hover:bg-white transition shadow-sm" style="color: var(--text-muted);">
+                        <span>+ top char png</span>
+                    </button>
+                </div>
+
+                <button onclick="openEditModal('images')" class="owner-only opacity-0 group-hover:opacity-100 transition-opacity absolute -top-6 bg-white/95 text-[10px] px-2.5 py-0.5 rounded-full shadow-sm whitespace-nowrap" style="color: var(--text-main);">
+                    ✎ change top png
+                </button>
+            </div>
+
+            <div id="center-card-inner" class="sanctuary-card w-full pt-5 pb-5 px-6 text-center relative">
+                <img id="bunny-ear-left" src="" alt="Left Bunny Ear" style="height: 54px;" class="hidden absolute -top-8 -left-3 object-contain pointer-events-none z-20 drop-shadow-sm">
+                <img id="bunny-ear-right" src="" alt="Right Bunny Ear" style="height: 54px;" class="hidden absolute -top-8 -right-3 object-contain pointer-events-none z-20 drop-shadow-sm">
+
+                <button id="center-music-btn" onclick="toggleAudio()" class="absolute top-2.5 left-3 w-7 h-7 rounded-full flex items-center justify-center hover:scale-110 transition bg-transparent" style="color: var(--accent-pink-dark);" title="Play / Pause Muffled Song">
+                    <img id="music-custom-img" src="" alt="Music" class="hidden w-6 h-6 object-contain pointer-events-none">
+                    <span id="play-icon" class="text-xs font-bold">♫</span>
+                </button>
+                <div class="draggable-handle absolute top-2.5 right-3.5 text-xs opacity-35 hover:opacity-80" title="Drag center box">⋮⋮</div>
+                <h1 id="center-title" class="text-[13px] font-semibold mb-3 tracking-wide">things i love:</h1>
+
+                <div id="interests-turn-stage" class="h-7 flex items-center justify-center mb-1"></div>
+
+                <div id="interests-container" class="owner-only-flex flex-wrap justify-center gap-1.5 mt-2 mb-1"></div>
+
+                <div class="owner-only-flex items-center justify-center gap-1 mt-2">
+                    <input id="new-interest-input" type="text" placeholder="add interest..." class="text-xs rounded-full px-3 py-1 w-40 text-center focus:outline-none" style="background-color: var(--bubble-bg);" onkeydown="if(event.key==='Enter') addInterest()">
+                    <button onclick="addInterest()" class="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center transition" style="background-color: var(--accent-pink); color: #fff;" title="Add Interest">+</button>
+                </div>
+
+                <div class="mt-3 pt-1">
+                    <p id="daily-status-text" class="text-[11px] opacity-75 italic">"taking things one gentle step at a time today ♡"</p>
+                </div>
+            </div>
+        </section>
+        <section id="box-mental" class="draggable-window sanctuary-card flex flex-col" style="left: calc(50% + 195px); top: 155px; width: 310px; height: 360px;">
+            <div class="draggable-handle px-4 pt-3.5 pb-1.5 flex items-center justify-between rounded-t-[22px]">
+                <div class="flex items-center gap-1.5">
+                    <img id="mental-box-icon-img" src="" alt="" class="hidden w-4 h-4 object-contain pointer-events-none">
+                    <span id="mental-box-icon-glyph" class="text-xs" style="color: var(--accent-pink-dark);">✿</span>
+                    <h2 id="mental-box-title" class="text-xs font-bold tracking-wide">mental health</h2>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button id="tree-mode-toggle-btn" onclick="toggleTreeMode()" class="owner-only text-[10px] px-2 py-0.5 rounded-full font-semibold transition" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);" title="Switch Sad Chop / Happy Fruit Tree">
+                        😢 sad
+                    </button>
+                    <button onclick="openEditModal('images')" class="owner-only text-[10px] px-2 py-0.5 rounded-full font-medium transition" style="background-color: var(--bubble-bg); color: var(--text-main);" title="Upload Tree Frames">
+                        tree ✎
+                    </button>
+                    <button onclick="openAddFeelingModal()" class="owner-only text-[10px] px-2 py-0.5 rounded-full font-semibold transition" style="background-color: var(--accent-pink); color: #fff;" title="Add Feeling Bubble">
+                        + bubble
+                    </button>
+                    <span class="text-[11px] opacity-35 ml-0.5" title="Drag box">⋮⋮</span>
+                </div>
+            </div>
+
+            <div id="mental-stage" class="relative flex-1 w-full overflow-hidden rounded-b-[22px]">
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-24 h-3.5 rounded-full opacity-40 blur-[2px]" style="background-color: var(--pill-grey);"></div>
+
+                <div id="standing-char-wrapper" onclick="interactWithTree()" class="absolute inset-x-3 top-2 bottom-4 z-10 flex items-end justify-center cursor-pointer select-none">
+                    <div id="tree-frame-stage" class="relative w-full h-full flex items-end justify-center pointer-events-none">
+                        <img id="tree-img-a" src="" alt="Mood Tree" class="hidden max-h-full max-w-full w-auto h-auto object-contain drop-shadow-sm transition-opacity duration-300" style="opacity: 1;">
+                        <img id="tree-img-b" src="" alt="Mood Tree" class="hidden absolute bottom-0 max-h-full max-w-full w-auto h-auto object-contain drop-shadow-sm transition-opacity duration-300" style="opacity: 0;">
+                    </div>
+
+                    <div id="standing-char-placeholder" onclick="event.stopPropagation(); openEditModal('images')" class="owner-only-flex pointer-events-auto flex-col items-center justify-center w-36 h-44 rounded-3xl cursor-pointer p-3 text-center transition hover:scale-[1.02]" style="background-color: var(--bubble-bg); color: var(--text-muted);">
+                        <span class="text-xl mb-1">🌳</span>
+                        <span id="tree-placeholder-label" class="text-[11px] font-semibold">upload 3 tree frames</span>
+                        <span class="text-[9px] opacity-75 mt-1">sad chop or happy fruit tree</span>
+                    </div>
+                </div>
+
+                <div id="tree-fruits-layer" class="absolute inset-0 pointer-events-none z-20"></div>
+                <div id="feeling-bubbles-layer" class="absolute inset-0 z-20 pointer-events-none"></div>
+            </div>
+        </section>
+
+        <aside id="center-orbit-heart-stage" class="draggable-window flex flex-col items-center select-none" style="left: calc(50% - 102px); top: 475px; width: 205px;">
+            <div id="orbit-arena" class="relative flex items-center justify-center" style="width: 195px; height: 195px;">
+                <div id="heart-orbit-ring" class="heart-orbit-ring"></div>
+
+                <button id="big-spam-heart-btn" onclick="spamBigHeart()" class="group relative z-10 w-24 h-24 flex flex-col items-center justify-center active:scale-75 transition-transform duration-150 select-none bg-transparent border-0 focus:outline-none" title="Spam click my heart! ♡">
+                    <img id="big-heart-custom-img" src="" alt="Big Heart" class="hidden w-16 h-16 object-contain drop-shadow-sm transition-transform duration-150 group-hover:scale-110 pointer-events-none">
+                    <span id="big-heart-glyph" class="text-6xl leading-none drop-shadow-sm transition-transform duration-150 group-hover:scale-110" style="color: var(--accent-pink-dark);">♥</span>
+                    <span id="jar-total-hearts" class="text-[15px] font-bold mt-0.5 opacity-85" style="font-family: 'VT323', monospace; color: var(--orbit-text-color, var(--text-muted));">0</span>
+                </button>
+            </div>
+
+            <button onclick="openVisitorNamePrompt()" class="-mt-3 z-20 text-[13px] opacity-75 hover:opacity-100 transition tracking-wide bg-transparent border-0" style="font-family: 'VT323', monospace; color: var(--orbit-text-color, var(--text-muted)); text-shadow: 0 0 6px var(--accent-pink);">
+                + <span id="visitor-tag-btn">add ur name</span>
+            </button>
+        </aside>
+
+        <button id="yumekawaii-wand-btn" onclick="waveMagicWand()" class="magic-wand-btn fixed bottom-16 left-5 z-30 w-11 h-11 rounded-full flex items-center justify-center bg-transparent border-0 hover:scale-110 transition" title="wave yumekawaii magic wand ✨">
+            <img id="wand-custom-img" src="" alt="Magic Wand" class="hidden w-10 h-10 object-contain pointer-events-none">
+            <span id="wand-default-glyph" class="text-2xl">🪄</span>
+        </button>
+
+    </main>
+
+    <div class="fixed bottom-4 left-4 z-40 flex items-center gap-2">
+        <button id="owner-lock-btn" onclick="handleLockClick()" class="w-8 h-8 rounded-full text-white flex items-center justify-center shadow-sm transition hover:scale-105 overflow-hidden" style="background-color: var(--pill-grey);" title="Owner Access">
+            <img id="lock-custom-img" src="" alt="Lock" class="hidden w-5 h-5 object-contain pointer-events-none">
+            <span id="lock-icon" class="text-xs">🔒</span>
+        </button>
+
+        <div id="owner-toolbar" class="owner-only-flex flex-wrap items-center gap-1 px-3 py-1 rounded-full sanctuary-card shadow-sm">
+            <button onclick="openEditModal('sizes')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">📐 sizes</button>
+            <button onclick="openEditModal('colors')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">🎨 colors</button>
+            <button onclick="openEditModal('badges')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">🐾 badges/cursor</button>
+            <button onclick="openEditModal('images')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">🐰 chars</button>
+            <button onclick="openEditModal('music')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">♫ song</button>
+            <button onclick="openEditModal('general')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">✿ text/secret</button>
+            <button onclick="copyFullSiteCode()" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">📋 copy code</button>
+            <button id="preview-toggle-btn" onclick="toggleVisitorPreview()" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">👁 preview</button>
+        </div>
+
+        <button id="exit-preview-btn" onclick="toggleVisitorPreview()" class="hidden px-3 py-1 rounded-full text-xs font-semibold shadow-sm bg-white" style="color: var(--accent-pink-dark);">
+            ✕ exit visitor view
+        </button>
+    </div>
+
+    <div class="fixed bottom-4 right-4 z-40 flex items-center gap-2">
+        <button id="heart-counter-btn" onclick="handleBottomHeartClick()" class="active:scale-95 text-white px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-semibold shadow-sm transition-all duration-200" style="background-color: var(--pill-grey);" title="♥">
+            <span id="heart-icon">♥</span>
+            <span id="heart-count">0</span>
+        </button>
+    </div>
+
+    <div id="bunny-clue-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-xs p-5 text-center relative">
+            <button onclick="closeModal('bunny-clue-modal')" class="absolute top-3 right-3.5 text-xs opacity-60 hover:opacity-100">✕</button>
+            <div class="text-4xl mb-2 animate-bounce">🐰</div>
+            <p class="text-[11px] opacity-75 mb-1">psst... a little bunny whispers a secret:</p>
+            <div class="px-3 py-2 rounded-2xl text-xs font-bold tracking-wide" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
+                password: "<span id="bunny-clue-password-text">princess</span>"
+            </div>
+        </div>
+    </div>
+
+    <div id="secret-password-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-xs p-5 text-center relative">
+            <button onclick="closeModal('secret-password-modal')" class="absolute top-3 right-3.5 text-xs opacity-60 hover:opacity-100">✕</button>
+            <div class="text-2xl mb-1.5">🔒</div>
+            <h3 class="text-sm font-bold mb-1">secret note</h3>
+            <p class="text-[11px] opacity-75 mb-3">enter the secret password to read my vulnerable note...</p>
+            <input id="secret-pass-input" type="password" placeholder="enter password..." class="w-full text-xs text-center rounded-xl px-3 py-2 focus:outline-none mb-2" style="background-color: var(--bubble-bg);" onkeydown="if(event.key==='Enter') verifySecretPassword()">
+            <p id="secret-pass-error" class="text-[11px] text-rose-500 hidden mb-2">wrong password... maybe ask the bottom heart? 🐰</p>
+            <button onclick="verifySecretPassword()" class="w-full py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">unlock ♡</button>
+        </div>
+    </div>
+
+    <div id="secret-note-modal" class="fixed inset-0 bg-black/25 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-sm p-6 text-center relative">
+            <button onclick="closeSecretNoteModal()" class="absolute top-3.5 right-4 text-xs opacity-60 hover:opacity-100">✕</button>
+            <h3 id="secret-note-heading" class="text-xs font-bold uppercase tracking-widest mb-3" style="color: var(--accent-pink-dark);">my vulnerable note ♡</h3>
+
+            <div class="flex items-center justify-center my-3 min-h-[120px]">
+                <img id="secret-note-center-img" src="" alt="Secret Note" class="hidden max-h-44 max-w-full object-contain rounded-2xl drop-shadow-sm">
+                <div id="secret-note-img-fallback" class="text-3xl opacity-50">🐇</div>
+            </div>
+
+            <div class="min-h-[64px] flex items-center justify-center px-3">
+                <p id="secret-fading-text" class="text-xs leading-relaxed transition-opacity duration-700" style="opacity: 1;"></p>
+            </div>
+
+            <div class="flex items-center justify-center gap-1.5 mt-2">
+                <span id="secret-dot-0" class="w-1.5 h-1.5 rounded-full transition-all" style="background-color: var(--accent-pink-dark);"></span>
+                <span id="secret-dot-1" class="w-1.5 h-1.5 rounded-full opacity-35 transition-all" style="background-color: var(--accent-pink-dark);"></span>
+                <span id="secret-dot-2" class="w-1.5 h-1.5 rounded-full opacity-35 transition-all" style="background-color: var(--accent-pink-dark);"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="visitor-name-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-xs p-5">
+            <h3 class="text-sm font-bold mb-2">♡ float your name around the heart</h3>
+            <p class="text-[11px] opacity-75 mb-3">add your name so it floats & glows around the heart (holds up to 10 names)!</p>
+            <input id="visitor-nickname-input" type="text" maxlength="14" placeholder="e.g. bunny, meow, angel..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none mb-3" style="background-color: var(--bubble-bg);">
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal('visitor-name-modal')" class="px-3 py-1 rounded-full text-xs opacity-70">cancel</button>
+                <button onclick="saveVisitorNickname()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">float name ♡</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-sm p-5">
+            <div class="flex items-center justify-between pb-2.5">
+                <h3 class="text-sm font-bold">🔒 owner sanctuary access</h3>
+                <button onclick="closeModal('auth-modal')" class="text-sm opacity-60 hover:opacity-100 px-1.5">✕</button>
+            </div>
+
+            <div id="auth-signed-out-view" class="space-y-3 mt-2">
+                <p id="auth-status-desc" class="text-xs leading-relaxed opacity-85">
+                    sign in to unlock owner mode so only you can edit, resize boxes, change colors, and post daily notes.
+                </p>
+
+                <div class="space-y-2">
+                    <input id="owner-email-input" type="email" placeholder="owner email..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none" style="background-color: var(--bubble-bg);">
+                    <input id="owner-pass-input" type="password" placeholder="password (min 6 chars)..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none" style="background-color: var(--bubble-bg);">
+                </div>
+
+                <div class="flex flex-col gap-2 pt-1">
+                    <button onclick="ownerEmailLogin()" class="w-full py-2 rounded-full text-white text-xs font-bold shadow-sm transition" style="background-color: var(--accent-pink-dark);">
+                        sign in / claim owner lock ♡
+                    </button>
+                    <button onclick="ownerGoogleLogin()" class="w-full py-2 rounded-full text-xs font-semibold hover:bg-black/5 transition" style="background-color: var(--bubble-bg);">
+                        continue with google
+                    </button>
+                </div>
+                <p id="auth-error-msg" class="text-[11px] text-rose-500 hidden"></p>
+            </div>
+
+            <div id="auth-signed-in-view" class="hidden space-y-3 mt-2">
+                <div class="p-3 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                    <p class="font-bold">✨ unlocked as sanctuary owner</p>
+                    <p id="owner-uid-display" class="text-[10px] opacity-70 break-all mt-1"></p>
+                </div>
+                <button onclick="ownerSignOut()" class="w-full py-2 rounded-full text-xs font-semibold hover:bg-black/5 transition" style="background-color: var(--bubble-bg);">
+                    lock sanctuary & sign out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customize-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-lg p-5 max-h-[88vh] overflow-y-auto cute-scroll">
+            <div class="flex items-center justify-between pb-2">
+                <h3 class="text-sm font-bold">♡ customize your sanctuary</h3>
+                <button onclick="closeModal('customize-modal')" class="opacity-60 hover:opacity-100 text-sm px-2">✕</button>
+            </div>
+
+            <div class="flex flex-wrap gap-1 my-2.5 p-1 rounded-xl" style="background-color: var(--bg-blush);">
+                <button onclick="switchModalTab('sizes')" id="tab-btn-sizes" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg bg-white shadow-sm">📐 sizes</button>
+                <button onclick="switchModalTab('colors')" id="tab-btn-colors" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">🎨 hex colors</button>
+                <button onclick="switchModalTab('badges')" id="tab-btn-badges" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">🐾 badges/cursor</button>
+                <button onclick="switchModalTab('images')" id="tab-btn-images" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">🐰 chars</button>
+                <button onclick="switchModalTab('music')" id="tab-btn-music" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">♫ music</button>
+                <button onclick="switchModalTab('general')" id="tab-btn-general" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">✿ text/secret</button>
+            </div>
+
+            <div id="tab-sizes" class="space-y-3">
+                <p class="text-[11px] opacity-75">both side boxes resize & move symmetrically together so everything stays balanced!</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>both side boxes width</span><span id="val-side-w">310px</span></div>
+                        <input id="size-side-w" type="range" min="240" max="430" value="310" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>both side boxes height</span><span id="val-side-h">340px</span></div>
+                        <input id="size-side-h" type="range" min="230" max="520" value="340" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>side boxes vertical align</span><span id="val-side-top">155px</span></div>
+                        <input id="size-side-top" type="range" min="80" max="260" value="155" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>center box width</span><span id="val-center-w">320px</span></div>
+                        <input id="size-center-w" type="range" min="220" max="460" value="320" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>top char sprite height</span><span id="val-top-h">68px</span></div>
+                        <input id="size-top-h" type="range" min="35" max="150" value="68" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>bunny ears height</span><span id="val-ear-h">54px</span></div>
+                        <input id="size-ear-h" type="range" min="28" max="110" value="54" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>tree scale</span><span id="val-stand-h">100%</span></div>
+                        <input id="size-stand-h" type="range" min="50" max="115" value="100" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>center orbit ring size</span><span id="val-jar-w">215px</span></div>
+                        <input id="size-jar-w" type="range" min="165" max="290" value="215" oninput="previewSizesLive()" class="w-full">
+                    </div>
+                </div>
+
+                <div class="pt-2 flex justify-between items-center">
+                    <button onclick="resetAllSizes()" class="text-xs px-3 py-1.5 rounded-full hover:bg-black/5" style="background-color: var(--bubble-bg);">reset default sizes</button>
+                    <button onclick="saveAllSizes()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm" style="background-color: var(--accent-pink-dark);">save sizes ♡</button>
+                </div>
+            </div>
+
+            <div id="tab-colors" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-[11px] font-bold mb-1.5 opacity-80">quick pastel presets</label>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="applyColorPreset('cottoncandy')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fff2f8] text-[#8c6d82] font-semibold">🍬 cotton candy</button>
+                        <button onclick="applyColorPreset('blush')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fbf4f5] text-[#555152]">🌸 blush milk</button>
+                        <button onclick="applyColorPreset('matcha')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f3f7f2] text-[#566655]">🍵 strawberry matcha</button>
+                        <button onclick="applyColorPreset('lavender')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f5f2fa] text-[#5e566e]">🔮 lavender dream</button>
+                        <button onclick="applyColorPreset('sky')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f1f6fa] text-[#536370]">☁️ sky cloud</button>
+                        <button onclick="applyColorPreset('peach')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fbf4ef] text-[#6e5b52]">🍑 peach cream</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>background</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-bg" type="text" maxlength="7" oninput="syncHexToPicker('bg')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-bg" type="color" oninput="syncPickerToHex('bg')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>box cards</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-card" type="text" maxlength="7" oninput="syncHexToPicker('card')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-card" type="color" oninput="syncPickerToHex('card')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>bottom pills</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-pill" type="text" maxlength="7" oninput="syncHexToPicker('pill')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-pill" type="color" oninput="syncPickerToHex('pill')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>accent & hearts</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-accent" type="text" maxlength="7" oninput="syncHexToPicker('accent')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-accent" type="color" oninput="syncPickerToHex('accent')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>feeling bubbles</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-bubble" type="text" maxlength="7" oninput="syncHexToPicker('bubble')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-bubble" type="color" oninput="syncPickerToHex('bubble')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>text color</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-text" type="text" maxlength="7" oninput="syncHexToPicker('text')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-text" type="color" oninput="syncPickerToHex('text')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>center heart</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-bigheart" type="text" maxlength="7" oninput="syncHexToPicker('bigheart')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-bigheart" type="color" oninput="syncPickerToHex('bigheart')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
+                        <span>falling symbols</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-particle" type="text" maxlength="7" oninput="syncHexToPicker('particle')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-particle" type="color" oninput="syncPickerToHex('particle')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-xl text-xs sm:col-span-2" style="background-color: var(--bubble-bg);">
+                        <span>orbiting heart names text</span>
+                        <div class="flex items-center gap-1.5">
+                            <input id="hex-orbit" type="text" maxlength="7" oninput="syncHexToPicker('orbit')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
+                            <input id="color-orbit" type="color" oninput="syncPickerToHex('orbit')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex justify-end">
+                    <button onclick="saveThemeColors()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm transition" style="background-color: var(--accent-pink-dark);">save hex colors ♡</button>
+                </div>
+            </div>
+
+            <div id="tab-badges" class="space-y-3 hidden">
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold">floating charms above middle box</span>
+                        <button onclick="addBadgeSlot()" class="text-[11px] px-2.5 py-0.5 rounded-full text-white font-semibold" style="background-color: var(--accent-pink-dark);">+ charm</button>
+                    </div>
+                    <div id="badges-editor-list" class="space-y-1.5 max-h-44 overflow-y-auto cute-scroll"></div>
+                </div>
+
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold">custom cursors (normal & click)</span>
+                        <button onclick="clearCustomCursor()" class="text-[11px] underline opacity-70 hover:opacity-100">reset</button>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="selectPresetCursor(0)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">🐾 paw</button>
+                        <button onclick="selectPresetCursor(1)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">♥ heart</button>
+                        <button onclick="selectPresetCursor(2)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">✨ sparkle</button>
+                        <button onclick="selectPresetCursor(3)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">🐰 bunny</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <span class="block text-[10px] font-semibold">normal cursor (png/gif)</span>
+                            <input type="file" accept="image/*" onchange="handleCursorUpload(event, 'normal')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                        </div>
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <span class="block text-[10px] font-semibold">clicking cursor (png/gif)</span>
+                            <input type="file" accept="image/*" onchange="handleCursorUpload(event, 'click')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button onclick="saveBadgesSettings()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm" style="background-color: var(--accent-pink-dark);">save badges & cursors ♡</button>
+                </div>
+            </div>
+
+            <div id="tab-images" class="space-y-3 hidden">
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">1. top peeking character & 2 corner bunny ears</span>
+                        <button onclick="clearCharacterImage('top')" class="text-[11px] underline opacity-70 hover:opacity-100">clear top</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'top')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
+                    <input id="input-top-url" type="text" placeholder="or paste top sprite PNG/GIF URL..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <div class="flex justify-between text-[10px] font-semibold"><span>left bunny ear</span><button onclick="clearCharacterImage('earLeft')" class="underline opacity-70">clear</button></div>
+                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'earLeft')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                            <input id="input-ear-left-url" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <div class="flex justify-between text-[10px] font-semibold"><span>right bunny ear</span><button onclick="clearCharacterImage('earRight')" class="underline opacity-70">clear</button></div>
+                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'earRight')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                            <input id="input-ear-right-url" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">2. mental health interactive tree (3 frames each)</span>
+                        <div class="flex gap-1">
+                            <button id="modal-tree-sad-btn" onclick="setTreeMode('sad')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white">😢 sad chop</button>
+                            <button id="modal-tree-happy-btn" onclick="setTreeMode('happy')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white opacity-65">🌸 happy fruit</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
+                            <span class="block text-[9px] font-semibold">sad frame 1</span>
+                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'sad', 0)" class="w-full text-[9px]">
+                            <input id="input-sad-tree-0" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
+                            <span class="block text-[9px] font-semibold">sad frame 2</span>
+                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'sad', 1)" class="w-full text-[9px]">
+                            <input id="input-sad-tree-1" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
+                            <span class="block text-[9px] font-semibold">sad frame 3</span>
+                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'sad', 2)" class="w-full text-[9px]">
+                            <input id="input-sad-tree-2" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
+                            <span class="block text-[9px] font-semibold">happy frame 1</span>
+                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'happy', 0)" class="w-full text-[9px]">
+                            <input id="input-happy-tree-0" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
+                            <span class="block text-[9px] font-semibold">happy frame 2</span>
+                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'happy', 1)" class="w-full text-[9px]">
+                            <input id="input-happy-tree-1" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
+                            <span class="block text-[9px] font-semibold">happy frame 3</span>
+                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'happy', 2)" class="w-full text-[9px]">
+                            <input id="input-happy-tree-2" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <span class="block text-[10px] font-semibold">axe cursor png (sad mode)</span>
+                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'axe')" class="w-full text-[10px]">
+                            <input id="input-axe-url" type="text" placeholder="or axe URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <span class="block text-[10px] font-semibold">falling fruit png (happy mode)</span>
+                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'fruit')" class="w-full text-[10px]">
+                            <input id="input-fruit-url" type="text" placeholder="or fruit URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">3. falling background images (up to 3 pngs/gifs)</span>
+                        <button onclick="clearAllFallingImages()" class="text-[11px] underline opacity-70 hover:opacity-100">use symbols</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <span class="block text-[10px] font-semibold">image #1</span>
+                            <input type="file" accept="image/*" onchange="handleFallingSlotUpload(event, 0)" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                            <input id="input-fall-url-0" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <span class="block text-[10px] font-semibold">image #2</span>
+                            <input type="file" accept="image/*" onchange="handleFallingSlotUpload(event, 1)" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                            <input id="input-fall-url-1" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <span class="block text-[10px] font-semibold">image #3</span>
+                            <input type="file" accept="image/*" onchange="handleFallingSlotUpload(event, 2)" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                            <input id="input-fall-url-2" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 pt-1">
+                        <span class="text-[11px] opacity-75">falling size (px):</span>
+                        <input id="input-particle-size" type="number" min="10" max="64" value="22" class="w-16 text-xs rounded-lg px-2 py-1 bg-white text-center">
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">4. center orbiting heart icon (png/gif or symbol)</span>
+                        <button onclick="clearCharacterImage('bigheart')" class="text-[11px] underline opacity-70 hover:opacity-100">use symbol</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'bigheart')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
+                    <div class="flex gap-1.5">
+                        <input id="input-bigheart-url" type="text" placeholder="or paste heart PNG/GIF URL..." class="flex-1 text-xs rounded-lg px-2.5 py-1.5 bg-white">
+                        <input id="input-bigheart-symbol" type="text" maxlength="4" placeholder="♥" class="w-14 text-xs text-center rounded-lg px-2 py-1.5 bg-white font-bold" title="Heart Symbol">
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">5. owner lock & yumekawaii magic wand icons</span>
+                        <button onclick="clearCharacterImage('lock')" class="text-[11px] underline opacity-70 hover:opacity-100">reset lock</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'lock')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
+                    <input id="input-lock-url" type="text" placeholder="or paste custom key/lock PNG/GIF URL..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
+                    <div class="flex items-center gap-1.5 pt-1">
+                        <span class="text-[10px] font-semibold shrink-0">magic wand look:</span>
+                        <input id="input-wand-symbol" type="text" maxlength="4" placeholder="🪄" class="w-10 text-xs text-center rounded px-1 py-0.5 bg-white font-bold" title="Wand Symbol/Emoji">
+                        <input type="file" accept="image/*" onchange="handleImageUpload(event, 'wand')" class="w-28 text-[10px] file:mr-1 file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                        <input id="input-wand-url" type="text" placeholder="or URL..." class="flex-1 text-[10px] rounded px-2 py-0.5 bg-white">
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button onclick="saveImageUrlsAndSizes()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm" style="background-color: var(--accent-pink-dark);">save all images & gifs ♡</button>
+                </div>
+            </div>
+
+            <div id="tab-music" class="space-y-3 hidden">
+                <p class="text-[11px] opacity-75">your daily song plays softly muffled in the background when visitors click the icon in the corner of your middle box!</p>
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">custom music icon inside middle box (png/gif)</span>
+                        <button onclick="clearCharacterImage('music')" class="text-[11px] underline opacity-70 hover:opacity-100">use ♫</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'music')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
+                    <input id="input-music-url-img" type="text" placeholder="or paste music PNG/GIF URL..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">song title</label>
+                    <input id="input-track-title" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);" placeholder="soft muffled lullaby">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">mp3 filename or direct audio url</label>
+                    <input id="input-track-url" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);" placeholder="e.g. daily-song.mp3 or https://...">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">or test a local audio file right now</label>
+                    <input id="input-track-file" type="file" accept="audio/*" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold" style="background-color: var(--bubble-bg);">
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="saveMusicSettings()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm" style="background-color: var(--accent-pink-dark);">save daily song ♫</button>
+                </div>
+            </div>
+
+            <div id="tab-general" class="space-y-3 hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-semibold">left box title & icon</label>
+                        <div class="flex gap-1">
+                            <input id="input-love-icon" type="text" maxlength="4" placeholder="♡" class="w-11 text-xs text-center rounded-xl py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                            <input id="input-love-title" type="text" class="flex-1 text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <label class="text-[10px] px-2 py-0.5 rounded-full cursor-pointer font-semibold" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
+                                + icon png/gif
+                                <input type="file" accept="image/*" onchange="handleBoxIconUpload(event, 'love')" class="hidden">
+                            </label>
+                            <button type="button" onclick="clearBoxIcon('love')" class="text-[10px] underline opacity-65">use symbol</button>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-[11px] font-semibold">right box title & icon</label>
+                        <div class="flex gap-1">
+                            <input id="input-mental-icon" type="text" maxlength="4" placeholder="✿" class="w-11 text-xs text-center rounded-xl py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                            <input id="input-mental-title" type="text" class="flex-1 text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <label class="text-[10px] px-2 py-0.5 rounded-full cursor-pointer font-semibold" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
+                                + icon png/gif
+                                <input type="file" accept="image/*" onchange="handleBoxIconUpload(event, 'mental')" class="hidden">
+                            </label>
+                            <button type="button" onclick="clearBoxIcon('mental')" class="text-[10px] underline opacity-65">use symbol</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">bottom quote / message under love notes</label>
+                    <input id="input-love-quote" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">center box header</label>
+                    <input id="input-center-title" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">daily gentle affirmation / status</label>
+                    <input id="input-daily-status" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">orbiting heart names (comma-separated, up to 10)</label>
+                    <input id="input-orbit-names" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold mb-1">browser tab title</label>
+                    <input id="input-page-title" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                </div>
+
+                <div class="p-3 rounded-xl space-y-2 mt-2" style="background-color: var(--bubble-bg);">
+                    <span class="block text-xs font-bold">🐰 secret vulnerable note box (unlocked by password)</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-semibold mb-1">secret password</label>
+                            <input id="input-secret-pass" type="text" class="w-full text-xs rounded-lg px-2.5 py-1 bg-white" placeholder="princess">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold mb-1">note box title</label>
+                            <input id="input-secret-title" type="text" class="w-full text-xs rounded-lg px-2.5 py-1 bg-white" placeholder="my vulnerable note ♡">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-semibold">center image inside secret box (png/gif)</span>
+                            <button onclick="clearCharacterImage('secret')" class="text-[10px] underline opacity-70">remove</button>
+                        </div>
+                        <input type="file" accept="image/*" onchange="handleImageUpload(event, 'secret')" class="w-full text-[11px] file:mr-2 file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white mb-1">
+                        <input id="input-secret-img-url" type="text" class="w-full text-xs rounded-lg px-2.5 py-1 bg-white" placeholder="or paste center image URL...">
+                    </div>
+                    <div class="space-y-1.5">
+                        <span class="block text-[10px] font-semibold">3 fading texts underneath the image:</span>
+                        <input id="input-secret-text-0" type="text" class="w-full text-xs rounded-lg px-2.5 py-1 bg-white" placeholder="fading thought #1...">
+                        <input id="input-secret-text-1" type="text" class="w-full text-xs rounded-lg px-2.5 py-1 bg-white" placeholder="fading thought #2...">
+                        <input id="input-secret-text-2" type="text" class="w-full text-xs rounded-lg px-2.5 py-1 bg-white" placeholder="fading thought #3...">
+                    </div>
+                </div>
+
+                <div class="pt-2 flex flex-wrap items-center justify-between gap-2">
+                    <button onclick="resetLayoutPositions()" class="text-xs px-3 py-1.5 rounded-full hover:bg-black/5" style="background-color: var(--bubble-bg);">reset box positions</button>
+                    <button onclick="saveGeneralSettings()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold shadow-sm" style="background-color: var(--accent-pink-dark);">save all text & secret ♡</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="love-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-sm p-5">
+            <h3 class="text-sm font-bold mb-3">♡ write a love note</h3>
+            <input id="love-note-date" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 mb-2 focus:outline-none" style="background-color: var(--bubble-bg);" placeholder="date or tag (e.g. nov 26 • self-love)">
+            <textarea id="love-note-text" rows="3" class="w-full text-xs rounded-xl p-3 focus:outline-none" style="background-color: var(--bubble-bg);" placeholder="write something sweet..."></textarea>
+            <div class="flex justify-end gap-2 mt-3">
+                <button onclick="closeModal('love-modal')" class="px-3 py-1.5 rounded-full text-xs opacity-70">cancel</button>
+                <button onclick="saveLoveNote()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">post note ♡</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="feeling-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
+        <div class="sanctuary-card w-full max-w-sm p-5">
+            <div class="flex justify-between items-center mb-3">
+                <h3 id="feeling-modal-title" class="text-sm font-bold">✿ how is she feeling right now?</h3>
+                <button id="delete-feeling-btn" onclick="deleteCurrentFeeling()" class="hidden text-xs text-rose-500 hover:underline">delete</button>
+            </div>
+            <div class="flex gap-1.5 mb-2.5 flex-wrap">
+                <button type="button" onclick="selectMoodTag('soft', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#fdf0f3] text-[#d47a92]">🌸 soft</button>
+                <button type="button" onclick="selectMoodTag('anxious', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#f3f0fa] text-[#8e74b5]">🌧️ overwhelmed</button>
+                <button type="button" onclick="selectMoodTag('healing', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#eff8f3] text-[#6ba386]">🌱 healing</button>
+                <button type="button" onclick="selectMoodTag('sleepy', this)" class="mood-chip px-2.5 py-1 rounded-full text-[11px] bg-[#fcf7eb] text-[#b59457]">🌙 sleepy</button>
+            </div>
+            <textarea id="feeling-note-text" rows="3" class="w-full text-xs rounded-xl p-3 focus:outline-none" style="background-color: var(--bubble-bg);" placeholder="pop up a thought around her..."></textarea>
+            <div class="flex justify-end gap-2 mt-3">
+                <button onclick="closeModal('feeling-modal')" class="px-3 py-1.5 rounded-full text-xs opacity-70">cancel</button>
+                <button onclick="saveFeelingBubble()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">pop up bubble ✿</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-msg" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 sanctuary-card px-4 py-1.5 rounded-full text-xs shadow-md opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import {
+            getAuth,
+            signInAnonymously,
+            signInWithCustomToken,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            onSnapshot,
+            increment
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'meowmeow-sanctuary';
+        const firebaseConfig = typeof __firebase_config !== 'undefined'
+            ? JSON.parse(__firebase_config)
+            : {
+                apiKey: "AIzaSyDL26DDvtw9oA-7LB6awvEeqAZwrmORhQE",
+                authDomain: "meowmeow-6ec62.firebaseapp.com",
+                projectId: "meowmeow-6ec62",
+                storageBucket: "meowmeow-6ec62.firebasestorage.app",
+                messagingSenderId: "972387391744",
+                appId: "1:972387391744:web:351994f02fe9d89c2efbe5",
+                measurementId: "G-V4E7LLW94X"
+            };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const diaryDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sanctuary', 'main');
+        const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sanctuary_stats', 'counters');
+
+        const defaultTheme = {
+            bg: '#fbf4f5',
+            card: '#ffffff',
+            border: '#e8e5e6',
+            pill: '#dcdadb',
+            accent: '#e08ea4',
+            bubble: '#fdf9fa',
+            text: '#555152',
+            bigHeartColor: '#e08ea4',
+            particleColor: '#e08ea4',
+            orbitTextColor: '#8c6d82'
+        };
+
+        const defaultSizes = {
+            sideW: 310,
+            sideH: 360,
+            sideTop: 155,
+            centerW: 320,
+            topH: 68,
+            earH: 54,
+            standH: 100,
+            jarW: 195
+        };
+
+        const defaultBadges = [
+            { id: 'b1', symbol: 'miffy', img: '', bg: '#fff7f9', color: '#6b5e62', label: 'all feelings', action: 'filter' },
+            { id: 'b2', symbol: '✦', img: '', bg: '#f6f2fc', color: '#6b5e62', label: 'toggle sparkles', action: 'sparkles' },
+            { id: 'b3', symbol: '♥', img: '', bg: '#fff1f5', color: '#e08ea4', label: 'love burst', action: 'burst' },
+            { id: 'b4', symbol: '🔒', img: '', bg: '#fdf6f8', color: '#e08ea4', label: 'psst... ♥ the page for a bunny secret 🐰', action: 'secret' }
+        ];
+
+        const defaultState = {
+            ownerUid: null,
+            cursorIndex: 0,
+            customCursorImg: '',
+            customCursorClickImg: '',
+            particlesEnabled: true,
+            pageTitle: '♡ my little sanctuary ♡',
+            loveBoxTitle: 'love notes',
+            loveBoxIcon: '♡',
+            loveBoxIconImg: '',
+            loveBottomQuote: '"every little thing about you is worthy of gentle love ♡"',
+            mentalBoxTitle: 'mental health',
+            mentalBoxIcon: '✿',
+            mentalBoxIconImg: '',
+            centerTitle: 'things i love:',
+            dailyStatus: '"taking things one gentle step at a time today ♡"',
+            bigHeartSymbol: '♥',
+            bigHeartImg: '',
+            lockIconImg: '',
+            musicIconImg: '',
+            fallingParticleImgs: ['', '', ''],
+            fallingParticleSize: 22,
+            secretPassword: 'princess',
+            secretNoteTitle: 'my vulnerable note ♡',
+            secretNoteImg: '',
+            secretNoteTexts: [
+                'sometimes i act stronger than i really feel inside...',
+                'thank you for visiting my little safe space gently ♡',
+                'even on quiet heavy days, i am still trying my best.'
+            ],
+            interests: ['gaming', 'cozy tea', 'plushies', 'rainy days', 'pastel art'],
+            trackTitle: 'soft muffled lullaby',
+            trackUrl: '',
+            topSpriteImg: '',
+            earLeftImg: '',
+            earRightImg: '',
+            wandIconImg: '',
+            wandSymbol: '🪄',
+            treeMode: 'sad',
+            sadTreeFrames: ['', '', ''],
+            happyTreeFrames: ['', '', ''],
+            axeCursorImg: '',
+            fruitImg: '',
+            standingCharImg: '',
+            sizes: { ...defaultSizes },
+            badges: JSON.parse(JSON.stringify(defaultBadges)),
+            theme: { ...defaultTheme },
+            loveNotes: [
+                { id: 1, date: 'today ♡', text: 'you are doing so much better than you think. be gentle with your heart.' },
+                { id: 2, date: 'reminder ✿', text: 'drink a glass of water, unclench your jaw, and take a deep breath.' }
+            ],
+            feelings: [
+                { id: 101, mood: 'soft', text: 'feeling cozy & safe in my little room ♡', x: 12, y: 18 },
+                { id: 102, mood: 'healing', text: 'proud of myself for resting today 🌱', x: 185, y: 34 },
+                { id: 103, mood: 'sleepy', text: 'a little tired, listening to my daily song 🌙', x: 14, y: 215 },
+                { id: 104, mood: 'anxious', text: 'overthinking a bit, breathing slowly 🌧️', x: 182, y: 225 }
+            ],
+            positions: {}
+        };
+
+        const CACHE_KEY = `meow_sanctuary_cache_${appId}`;
+        const STATS_CACHE_KEY = `meow_sanctuary_stats_${appId}`;
+
+        function hydrateState(raw) {
+            const data = raw || {};
+            const legacyFall = data.fallingParticleImg ? [data.fallingParticleImg, '', ''] : ['', '', ''];
+            const legacySad = data.standingCharImg ? [data.standingCharImg, '', ''] : ['', '', ''];
+            return {
+                ...defaultState,
+                ...data,
+                theme: { ...defaultTheme, ...(data.theme || {}) },
+                sizes: { ...defaultSizes, ...(data.sizes || {}) },
+                fallingParticleImgs: Array.isArray(data.fallingParticleImgs) ? data.fallingParticleImgs : legacyFall,
+                sadTreeFrames: Array.isArray(data.sadTreeFrames) ? data.sadTreeFrames : legacySad,
+                happyTreeFrames: Array.isArray(data.happyTreeFrames) ? data.happyTreeFrames : ['', '', ''],
+                secretNoteTexts: Array.isArray(data.secretNoteTexts) ? data.secretNoteTexts : defaultState.secretNoteTexts,
+                badges: Array.isArray(data.badges) && data.badges.length ? data.badges : JSON.parse(JSON.stringify(defaultBadges))
+            };
+        }
+
+        let cachedRaw = null;
+        try {
+            const rawStr = localStorage.getItem(CACHE_KEY);
+            if (rawStr) cachedRaw = JSON.parse(rawStr);
+        } catch (e) {}
+
+        let appState = hydrateState(cachedRaw);
+        let statsState = {
+            hearts: 0,
+            jarHearts: 0,
+            orbitNames: ['bunny ♡', 'angel ✦', 'meow']
+        };
+        try {
+            const cachedStatsStr = localStorage.getItem(STATS_CACHE_KEY);
+            if (cachedStatsStr) statsState = { ...statsState, ...JSON.parse(cachedStatsStr) };
+        } catch (e) {}
+
+        if (cachedRaw) {
+            renderAll();
+            document.body.classList.remove('sanctuary-booting');
+        }
+
+        let currentUser = null;
+        let isOwner = false;
+        let isVisitorPreview = false;
+        let activeMoodFilter = 'all';
+        let editingFeelingId = null;
+        let selectedFeelingMood = 'soft';
+        let visitorName = localStorage.getItem('meow_visitor_name') || '';
+        let interestTurnIndex = 0;
+        let interestTurnTimer = null;
+        let secretFadeTimer = null;
+        let secretTextIdx = 0;
+        let isMousePressed = false;
+        let currentTreeFrame = 0;
+        let activeTreeBuffer = 'a';
+        let autoMusicAttempted = false;
+        let lastOrbitSignature = '';
+
+        async function initSanctuary() {
+            const bootFallback = setTimeout(() => {
+                document.body.classList.remove('sanctuary-booting');
+            }, 1800);
+
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else if (!auth.currentUser) {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {}
+
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                evaluateOwnerStatus();
+                updateAuthModalUI();
+            });
+
+            onSnapshot(diaryDocRef, (snap) => {
+                clearTimeout(bootFallback);
+                if (snap.exists()) {
+                    appState = hydrateState(snap.data());
+                    try {
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(appState));
+                    } catch (e) {}
+                }
+                evaluateOwnerStatus();
+                renderAll();
+                document.body.classList.remove('sanctuary-booting');
+            }, () => {
+                clearTimeout(bootFallback);
+                renderAll();
+                document.body.classList.remove('sanctuary-booting');
+            });
+
+            onSnapshot(statsDocRef, (snap) => {
+                if (snap.exists()) {
+                    statsState = { ...statsState, ...snap.data() };
+                    try {
+                        localStorage.setItem(STATS_CACHE_KEY, JSON.stringify(statsState));
+                    } catch (e) {}
+                }
+                renderStatsAndOrbit();
+            }, () => {});
+        }
+
+        function evaluateOwnerStatus() {
+            if (currentUser && !currentUser.isAnonymous && appState.ownerUid && currentUser.uid === appState.ownerUid) {
+                isOwner = true;
+            } else {
+                isOwner = false;
+            }
+            document.body.classList.toggle('is-owner', isOwner);
+            document.body.classList.toggle('visitor-preview', isVisitorPreview);
+            const lockGlyph = document.getElementById('lock-icon');
+            if (lockGlyph) lockGlyph.textContent = isOwner ? '🔓' : '🔒';
+        }
+
+        async function saveDiaryToCloud(toastText = '') {
+            if (!isOwner || !currentUser) {
+                showToast('owner lock required to save changes 🔒');
+                return;
+            }
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify(appState));
+            } catch (e) {}
+            try {
+                await setDoc(diaryDocRef, appState, { merge: true });
+                if (toastText) showToast(toastText);
+            } catch (err) {
+                showToast('could not save: try smaller image files');
+            }
+        }
+
+        window.handleLockClick = function() {
+            updateAuthModalUI();
+            openModal('auth-modal');
+        };
+
+        function updateAuthModalUI() {
+            const signedOutView = document.getElementById('auth-signed-out-view');
+            const signedInView = document.getElementById('auth-signed-in-view');
+            const desc = document.getElementById('auth-status-desc');
+
+            if (isOwner && currentUser) {
+                signedOutView.classList.add('hidden');
+                signedInView.classList.remove('hidden');
+                document.getElementById('owner-uid-display').textContent = `signed in as: ${currentUser.email || currentUser.uid}`;
+            } else {
+                signedOutView.classList.remove('hidden');
+                signedInView.classList.add('hidden');
+                if (!appState.ownerUid) {
+                    desc.textContent = 'no owner claimed yet! sign in with your email or google to claim permanent owner lock over this sanctuary.';
+                } else {
+                    desc.textContent = 'this sanctuary is locked. only the owner account can unlock editing.';
+                }
+            }
+        }
+
+        async function claimOrVerifyOwner(user) {
+            if (!user || user.isAnonymous) return;
+            const snap = await getDoc(diaryDocRef);
+            const existingOwner = snap.exists() ? snap.data().ownerUid : null;
+
+            if (!existingOwner) {
+                appState.ownerUid = user.uid;
+                await setDoc(diaryDocRef, appState, { merge: true });
+                isOwner = true;
+                evaluateOwnerStatus();
+                closeModal('auth-modal');
+                showToast('sanctuary claimed & unlocked! 🔓♡');
+            } else if (existingOwner === user.uid) {
+                isOwner = true;
+                evaluateOwnerStatus();
+                closeModal('auth-modal');
+                showToast('welcome back, owner! 🔓♡');
+            } else {
+                await signInAnonymously(auth);
+                const errEl = document.getElementById('auth-error-msg');
+                errEl.textContent = 'sorry! this sanctuary belongs to another owner account.';
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        window.ownerEmailLogin = async function() {
+            const email = document.getElementById('owner-email-input').value.trim();
+            const pass = document.getElementById('owner-pass-input').value;
+            const errEl = document.getElementById('auth-error-msg');
+            errEl.classList.add('hidden');
+
+            if (!email || pass.length < 6) {
+                errEl.textContent = 'please enter a valid email and 6+ character password.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                await claimOrVerifyOwner(cred.user);
+            } catch (err) {
+                if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+                    if (!appState.ownerUid) {
+                        try {
+                            const newCred = await createUserWithEmailAndPassword(auth, email, pass);
+                            await claimOrVerifyOwner(newCred.user);
+                            return;
+                        } catch (createErr) {
+                            errEl.textContent = createErr.message;
+                            errEl.classList.remove('hidden');
+                            return;
+                        }
+                    }
+                }
+                errEl.textContent = 'incorrect owner email or password.';
+                errEl.classList.remove('hidden');
+            }
+        };
+
+        window.ownerGoogleLogin = async function() {
+            const errEl = document.getElementById('auth-error-msg');
+            errEl.classList.add('hidden');
+            try {
+                const provider = new GoogleAuthProvider();
+                const cred = await signInWithPopup(auth, provider);
+                await claimOrVerifyOwner(cred.user);
+            } catch (err) {
+                errEl.textContent = err.message;
+                errEl.classList.remove('hidden');
+            }
+        };
+
+        window.ownerSignOut = async function() {
+            isVisitorPreview = false;
+            await signOut(auth);
+            await signInAnonymously(auth);
+            closeModal('auth-modal');
+            showToast('sanctuary locked 🔒');
+        };
+
+        window.toggleVisitorPreview = function() {
+            if (!isOwner) return;
+            isVisitorPreview = !isVisitorPreview;
+            document.body.classList.toggle('visitor-preview', isVisitorPreview);
+            document.getElementById('exit-preview-btn').classList.toggle('hidden', !isVisitorPreview);
+            showToast(isVisitorPreview ? 'previewing as visitor 👁' : 'back to owner mode 🔓');
+        };
+
+        function renderAll() {
+            applyThemeToDOM(appState.theme || defaultTheme);
+            applySizesToDOM(appState.sizes || defaultSizes);
+            applyCursorToDOM();
+            renderTopBadges();
+
+            document.title = appState.pageTitle || '♡ my little sanctuary ♡';
+            document.getElementById('love-box-title').textContent = appState.loveBoxTitle || 'love notes';
+            document.getElementById('mental-box-title').textContent = appState.mentalBoxTitle || 'mental health';
+            const quoteEl = document.getElementById('love-bottom-quote');
+            if (quoteEl) quoteEl.textContent = appState.loveBottomQuote || '"every little thing about you is worthy of gentle love ♡"';
+
+            const loveIconImg = document.getElementById('love-box-icon-img');
+            const loveIconGlyph = document.getElementById('love-box-icon-glyph');
+            if (loveIconImg && loveIconGlyph) {
+                if (appState.loveBoxIconImg) {
+                    loveIconImg.src = appState.loveBoxIconImg;
+                    loveIconImg.classList.remove('hidden');
+                    loveIconGlyph.classList.add('hidden');
+                } else {
+                    loveIconImg.classList.add('hidden');
+                    loveIconGlyph.classList.remove('hidden');
+                    loveIconGlyph.textContent = appState.loveBoxIcon || '♡';
+                }
+            }
+
+            const mentalIconImg = document.getElementById('mental-box-icon-img');
+            const mentalIconGlyph = document.getElementById('mental-box-icon-glyph');
+            if (mentalIconImg && mentalIconGlyph) {
+                if (appState.mentalBoxIconImg) {
+                    mentalIconImg.src = appState.mentalBoxIconImg;
+                    mentalIconImg.classList.remove('hidden');
+                    mentalIconGlyph.classList.add('hidden');
+                } else {
+                    mentalIconImg.classList.add('hidden');
+                    mentalIconGlyph.classList.remove('hidden');
+                    mentalIconGlyph.textContent = appState.mentalBoxIcon || '✿';
+                }
+            }
+
+            document.getElementById('center-title').textContent = appState.centerTitle;
+            document.getElementById('daily-status-text').textContent = appState.dailyStatus;
+            renderInterests();
+            startInterestsTurnAnimation();
+            renderStatsAndOrbit();
+            updateCharacterDisplay();
+
+            const audioEl = document.getElementById('daily-audio');
+            if (appState.trackUrl && audioEl.getAttribute('data-url') !== appState.trackUrl) {
+                audioEl.src = appState.trackUrl;
+                audioEl.setAttribute('data-url', appState.trackUrl);
+            }
+
+            renderLoveNotes();
+            renderFeelingBubbles();
+
+            if (window.innerWidth > 900 && appState.positions) {
+                Object.keys(appState.positions).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && appState.positions[id]) {
+                        el.style.left = appState.positions[id].left;
+                        el.style.top = appState.positions[id].top;
+                    }
+                });
+            }
+        }
+
+        function applySizesToDOM(s) {
+            const loveBox = document.getElementById('box-love');
+            const centerBox = document.getElementById('box-center');
+            const mentalBox = document.getElementById('box-mental');
+            const orbitStage = document.getElementById('center-orbit-heart-stage');
+            const orbitArena = document.getElementById('orbit-arena');
+            const topSprite = document.getElementById('custom-top-sprite');
+            const earLeft = document.getElementById('bunny-ear-left');
+            const earRight = document.getElementById('bunny-ear-right');
+            const treeStage = document.getElementById('tree-frame-stage');
+
+            const sideW = s.sideW || 310;
+            const sideH = s.sideH || 340;
+            const sideTop = s.sideTop || 155;
+
+            if (loveBox) {
+                loveBox.style.width = `${sideW}px`;
+                loveBox.style.height = `${sideH}px`;
+                if (window.innerWidth > 900) {
+                    loveBox.style.left = `calc(50% - ${sideW + 195}px)`;
+                    loveBox.style.top = `${sideTop}px`;
+                }
+            }
+            if (mentalBox) {
+                mentalBox.style.width = `${sideW}px`;
+                mentalBox.style.height = `${sideH}px`;
+                if (window.innerWidth > 900) {
+                    mentalBox.style.left = `calc(50% + 195px)`;
+                    mentalBox.style.top = `${sideTop}px`;
+                }
+            }
+            if (centerBox) centerBox.style.width = `${s.centerW || 320}px`;
+            const ringSz = s.jarW || 195;
+            if (orbitStage) orbitStage.style.width = `${ringSz + 10}px`;
+            if (orbitArena) {
+                orbitArena.style.width = `${ringSz}px`;
+                orbitArena.style.height = `${ringSz}px`;
+            }
+            if (topSprite) topSprite.style.height = `${s.topH || 68}px`;
+            const earH = s.earH || 54;
+            if (earLeft) earLeft.style.height = `${earH}px`;
+            if (earRight) earRight.style.height = `${earH}px`;
+            if (treeStage) {
+                const pct = s.standH || 100;
+                treeStage.style.transform = `scale(${pct / 100})`;
+                treeStage.style.transformOrigin = 'bottom center';
+            }
+        }
+
+        window.previewSizesLive = function() {
+            const live = {
+                sideW: Number(document.getElementById('size-side-w').value),
+                sideH: Number(document.getElementById('size-side-h').value),
+                sideTop: Number(document.getElementById('size-side-top').value),
+                centerW: Number(document.getElementById('size-center-w').value),
+                topH: Number(document.getElementById('size-top-h').value),
+                earH: Number(document.getElementById('size-ear-h').value),
+                standH: Number(document.getElementById('size-stand-h').value),
+                jarW: Number(document.getElementById('size-jar-w').value)
+            };
+
+            document.getElementById('val-side-w').textContent = `${live.sideW}px`;
+            document.getElementById('val-side-h').textContent = `${live.sideH}px`;
+            document.getElementById('val-side-top').textContent = `${live.sideTop}px`;
+            document.getElementById('val-center-w').textContent = `${live.centerW}px`;
+            document.getElementById('val-top-h').textContent = `${live.topH}px`;
+            document.getElementById('val-ear-h').textContent = `${live.earH}px`;
+            document.getElementById('val-stand-h').textContent = `${live.standH}%`;
+            document.getElementById('val-jar-w').textContent = `${live.jarW}px`;
+
+            applySizesToDOM(live);
+            renderStatsAndOrbit();
+        };
+
+        window.saveAllSizes = async function() {
+            if (!isOwner) return;
+            appState.sizes = {
+                sideW: Number(document.getElementById('size-side-w').value),
+                sideH: Number(document.getElementById('size-side-h').value),
+                sideTop: Number(document.getElementById('size-side-top').value),
+                centerW: Number(document.getElementById('size-center-w').value),
+                topH: Number(document.getElementById('size-top-h').value),
+                earH: Number(document.getElementById('size-ear-h').value),
+                standH: Number(document.getElementById('size-stand-h').value),
+                jarW: Number(document.getElementById('size-jar-w').value)
+            };
+            delete appState.positions['box-love'];
+            delete appState.positions['box-mental'];
+            applySizesToDOM(appState.sizes);
+            renderStatsAndOrbit();
+            await saveDiaryToCloud('linked side sizes saved ♡');
+            closeModal('customize-modal');
+        };
+
+        window.resetAllSizes = async function() {
+            if (!isOwner) return;
+            appState.sizes = { ...defaultSizes };
+            delete appState.positions['box-love'];
+            delete appState.positions['box-mental'];
+            syncSizeSlidersFromState();
+            applySizesToDOM(appState.sizes);
+            renderStatsAndOrbit();
+            await saveDiaryToCloud('default sizes restored ♡');
+        };
+
+        function syncSizeSlidersFromState() {
+            const s = appState.sizes || defaultSizes;
+            document.getElementById('size-side-w').value = s.sideW || 310;
+            document.getElementById('size-side-h').value = s.sideH || 360;
+            document.getElementById('size-side-top').value = s.sideTop || 155;
+            document.getElementById('size-center-w').value = s.centerW || 320;
+            document.getElementById('size-top-h').value = s.topH || 68;
+            document.getElementById('size-ear-h').value = s.earH || 54;
+            document.getElementById('size-stand-h').value = Math.min(115, Math.max(50, s.standH || 100));
+            document.getElementById('size-jar-w').value = Math.min(280, Math.max(155, s.jarW || 195));
+            previewSizesLive();
+        }
+
+        function applyThemeToDOM(t) {
+            const root = document.documentElement.style;
+            root.setProperty('--bg-blush', t.bg || defaultTheme.bg);
+            root.setProperty('--card-white', t.card || defaultTheme.card);
+            root.setProperty('--border-soft', t.border || defaultTheme.border);
+            root.setProperty('--pill-grey', t.pill || defaultTheme.pill);
+            root.setProperty('--accent-pink', t.accent || defaultTheme.accent);
+            root.setProperty('--accent-pink-dark', t.accent || defaultTheme.accent);
+            root.setProperty('--bubble-bg', t.bubble || defaultTheme.bubble);
+            root.setProperty('--text-main', t.text || defaultTheme.text);
+            root.setProperty('--orbit-text-color', t.orbitTextColor || t.text || defaultTheme.orbitTextColor);
+
+            const bigHeartEl = document.getElementById('big-heart-glyph');
+            if (bigHeartEl) {
+                bigHeartEl.style.color = t.bigHeartColor || t.accent || defaultTheme.accent;
+            }
+        }
+
+        function setColorFieldPair(key, hexVal) {
+            const clean = /^#[0-9A-Fa-f]{6}$/.test(hexVal) ? hexVal : '#ffffff';
+            const picker = document.getElementById(`color-${key}`);
+            const hexBox = document.getElementById(`hex-${key}`);
+            if (picker) picker.value = clean;
+            if (hexBox) hexBox.value = clean.toUpperCase();
+        }
+
+        window.syncPickerToHex = function(key) {
+            const val = document.getElementById(`color-${key}`).value;
+            document.getElementById(`hex-${key}`).value = val.toUpperCase();
+            previewThemeColors();
+        };
+
+        window.syncHexToPicker = function(key) {
+            let raw = document.getElementById(`hex-${key}`).value.trim();
+            if (!raw.startsWith('#')) raw = '#' + raw;
+            if (/^#[0-9A-Fa-f]{6}$/.test(raw)) {
+                document.getElementById(`color-${key}`).value = raw;
+                previewThemeColors();
+            }
+        };
+
+        const colorPresets = {
+            cottoncandy: { bg: '#fff2f8', card: '#ffffff', border: '#f5dceb', pill: '#f2d5e8', accent: '#ff8fd1', bubble: '#fdf4fc', text: '#8c6d82', bigHeartColor: '#ff99d6', particleColor: '#ffb8e2', orbitTextColor: '#b56e9c' },
+            blush: { bg: '#fbf4f5', card: '#ffffff', border: '#e8e5e6', pill: '#dcdadb', accent: '#e08ea4', bubble: '#fdf9fa', text: '#555152', bigHeartColor: '#e08ea4', particleColor: '#e08ea4', orbitTextColor: '#8c6d75' },
+            matcha: { bg: '#f3f7f2', card: '#ffffff', border: '#dce6da', pill: '#c8d6c5', accent: '#8ab586', bubble: '#f6faf5', text: '#566655', bigHeartColor: '#e08ea4', particleColor: '#8ab586', orbitTextColor: '#6d8a6b' },
+            lavender: { bg: '#f5f2fa', card: '#ffffff', border: '#e2dcf0', pill: '#d4cce6', accent: '#a892d6', bubble: '#f8f5fc', text: '#5e566e', bigHeartColor: '#a892d6', particleColor: '#a892d6', orbitTextColor: '#846eb0' },
+            sky: { bg: '#f1f6fa', card: '#ffffff', border: '#dae5f0', pill: '#c7d7e6', accent: '#84aed6', bubble: '#f5f9fc', text: '#536370', bigHeartColor: '#84aed6', particleColor: '#84aed6', orbitTextColor: '#688eb3' },
+            peach: { bg: '#fbf4ef', card: '#ffffff', border: '#eddcd2', pill: '#e3cfc3', accent: '#e09b79', bubble: '#fdf8f5', text: '#6e5b52', bigHeartColor: '#e09b79', particleColor: '#e09b79', orbitTextColor: '#a67258' }
+        };
+
+        window.applyColorPreset = function(name) {
+            const p = colorPresets[name];
+            if (!p) return;
+            setColorFieldPair('bg', p.bg);
+            setColorFieldPair('card', p.card);
+            setColorFieldPair('pill', p.pill);
+            setColorFieldPair('accent', p.accent);
+            setColorFieldPair('bubble', p.bubble);
+            setColorFieldPair('text', p.text);
+            setColorFieldPair('bigheart', p.bigHeartColor);
+            setColorFieldPair('particle', p.particleColor);
+            setColorFieldPair('orbit', p.orbitTextColor);
+            applyThemeToDOM(p);
+        };
+
+        window.previewThemeColors = function() {
+            const custom = {
+                bg: document.getElementById('color-bg').value,
+                card: document.getElementById('color-card').value,
+                border: appState.theme.border || '#e8e5e6',
+                pill: document.getElementById('color-pill').value,
+                accent: document.getElementById('color-accent').value,
+                bubble: document.getElementById('color-bubble').value,
+                text: document.getElementById('color-text').value,
+                bigHeartColor: document.getElementById('color-bigheart').value,
+                particleColor: document.getElementById('color-particle').value,
+                orbitTextColor: document.getElementById('color-orbit').value
+            };
+            applyThemeToDOM(custom);
+        };
+
+        window.saveThemeColors = async function() {
+            appState.theme = {
+                bg: document.getElementById('color-bg').value,
+                card: document.getElementById('color-card').value,
+                border: appState.theme.border || '#e8e5e6',
+                pill: document.getElementById('color-pill').value,
+                accent: document.getElementById('color-accent').value,
+                bubble: document.getElementById('color-bubble').value,
+                text: document.getElementById('color-text').value,
+                bigHeartColor: document.getElementById('color-bigheart').value,
+                particleColor: document.getElementById('color-particle').value,
+                orbitTextColor: document.getElementById('color-orbit').value
+            };
+            await saveDiaryToCloud('hex colors saved for everyone 🎨♡');
+            closeModal('customize-modal');
+        };
+
+        function applyCursorToDOM() {
+            const cursors = ['cursor-paw', 'cursor-heart', 'cursor-sparkle', 'cursor-bunny'];
+            cursors.forEach(c => document.body.classList.remove(c));
+
+            const activeImg = (isMousePressed && appState.customCursorClickImg)
+                ? appState.customCursorClickImg
+                : appState.customCursorImg;
+
+            let dynamicStyle = document.getElementById('dynamic-custom-cursor-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-custom-cursor-style';
+                document.head.appendChild(dynamicStyle);
+            }
+
+            let rules = '';
+            if (activeImg) {
+                rules += `body, body * { cursor: url("${activeImg}") 12 12, auto !important; }\n`;
+            } else {
+                document.body.classList.add(cursors[(appState.cursorIndex || 0) % cursors.length]);
+            }
+
+            if ((appState.treeMode || 'sad') === 'sad') {
+                const axeUrl = appState.axeCursorImg || `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'><path fill='%23d4a373' d='M13 10l7 7-2 2-7-7z'/><path fill='%23ff85a2' stroke='%236b5e62' stroke-width='1.2' d='M6 4c4 0 7 2 8 6l-4 4c-4-1-6-4-6-8z'/></svg>`;
+                rules += `#standing-char-wrapper, #standing-char-wrapper * { cursor: url("${axeUrl}") 6 6, pointer !important; }`;
+            }
+            dynamicStyle.textContent = rules;
+        }
+
+        window.addEventListener('mousedown', () => {
+            isMousePressed = true;
+            if (appState.customCursorClickImg) applyCursorToDOM();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isMousePressed) return;
+            isMousePressed = false;
+            if (appState.customCursorClickImg || appState.customCursorImg) applyCursorToDOM();
+        });
+
+        window.selectPresetCursor = function(idx) {
+            appState.customCursorImg = '';
+            appState.customCursorClickImg = '';
+            appState.cursorIndex = idx;
+            applyCursorToDOM();
+            if (isOwner) saveDiaryToCloud('cursor updated ♡');
+        };
+
+        window.clearCustomCursor = function() {
+            appState.customCursorImg = '';
+            appState.customCursorClickImg = '';
+            applyCursorToDOM();
+            if (isOwner) saveDiaryToCloud('switched back to preset cursor');
+        };
+
+        window.handleCursorUpload = function(event, mode = 'normal') {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const saveCursorData = (dataUrl) => {
+                    if (mode === 'click') appState.customCursorClickImg = dataUrl;
+                    else appState.customCursorImg = dataUrl;
+                    applyCursorToDOM();
+                    saveDiaryToCloud(`${mode} cursor saved! ♡`);
+                };
+                if (file.type === 'image/gif') {
+                    saveCursorData(e.target.result);
+                    return;
+                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 32;
+                    canvas.height = 32;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 32, 32);
+                    saveCursorData(canvas.toDataURL('image/png'));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function renderTopBadges() {
+            const container = document.getElementById('badges-pill-container');
+            container.innerHTML = '';
+            (appState.badges || defaultBadges).forEach((b, idx) => {
+                const btn = document.createElement('button');
+                const isSecret = b.action === 'secret';
+                btn.className = `charm-stamp focus:outline-none flex items-center justify-center ${isSecret ? 'secret-charm-special' : ''}`;
+                btn.style.animationDelay = `${(idx * 0.55).toFixed(2)}s`;
+                if (b.color) btn.style.color = b.color;
+                btn.onclick = () => triggerBadgeAction(b);
+
+                const defaultLabel = isSecret ? 'psst... ♥ the page for a bunny secret 🐰' : (b.label || 'charm');
+
+                if (b.img) {
+                    btn.innerHTML = `
+                        <img src="${b.img}" alt="${escapeHtml(defaultLabel)}" class="w-6 h-6 object-contain">
+                        <span class="badge-tooltip">${escapeHtml(defaultLabel)}</span>
+                    `;
+                } else {
+                    btn.innerHTML = `
+                        <span class="text-sm font-bold tracking-tight">${escapeHtml(b.symbol || '♡')}</span>
+                        <span class="badge-tooltip">${escapeHtml(defaultLabel)}</span>
+                    `;
+                }
+                container.appendChild(btn);
+            });
+        }
+
+        function triggerBadgeAction(b) {
+            if (b.action === 'secret') openSecretPasswordPrompt();
+            else if (b.action === 'filter') filterMood('all');
+            else if (b.action === 'sparkles') toggleParticles();
+            else if (b.action === 'cursor') cycleCursor();
+            else triggerHeartBurst();
+        }
+
+        function renderBadgesEditorList() {
+            const list = document.getElementById('badges-editor-list');
+            list.innerHTML = '';
+            (appState.badges || []).forEach((b, idx) => {
+                const row = document.createElement('div');
+                row.className = 'flex flex-wrap items-center gap-1.5 bg-white p-2 rounded-xl text-xs';
+                row.innerHTML = `
+                    <input type="text" maxlength="10" value="${escapeHtml(b.symbol || '')}" onchange="updateBadgeField(${idx}, 'symbol', this.value)" class="w-14 text-center rounded-lg py-1 font-bold" style="background-color: var(--bubble-bg);" title="Word or Symbol">
+                    <input type="color" value="${b.bg || '#ffffff'}" onchange="updateBadgeField(${idx}, 'bg', this.value)" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent shrink-0" title="Badge Color">
+                    <input type="text" value="${escapeHtml(b.label || '')}" onchange="updateBadgeField(${idx}, 'label', this.value)" class="flex-1 rounded-lg px-2 py-1 min-w-[85px]" style="background-color: var(--bubble-bg);" placeholder="hover label...">
+                    <select onchange="updateBadgeField(${idx}, 'action', this.value)" class="rounded-lg px-1.5 py-1 text-[10px] font-semibold" style="background-color: var(--bubble-bg);">
+                        <option value="secret" ${b.action === 'secret' ? 'selected' : ''}>secret 🔒</option>
+                        <option value="burst" ${b.action === 'burst' ? 'selected' : ''}>hearts ♥</option>
+                        <option value="sparkles" ${b.action === 'sparkles' ? 'selected' : ''}>sparkles ✦</option>
+                        <option value="filter" ${b.action === 'filter' ? 'selected' : ''}>all moods ✿</option>
+                    </select>
+                    <label class="px-2 py-1 rounded-lg cursor-pointer text-[10px] font-semibold shrink-0" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
+                        ${b.img ? '✓ img' : '+ img'}
+                        <input type="file" accept="image/*" onchange="handleBadgeImgUpload(event, ${idx})" class="hidden">
+                    </label>
+                    ${b.img ? `<button onclick="clearBadgeImg(${idx})" class="text-[10px] opacity-60 hover:opacity-100">↺</button>` : ''}
+                    <button onclick="removeBadgeSlot(${idx})" class="text-xs opacity-50 hover:opacity-100 px-1">✕</button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        window.updateBadgeField = function(idx, key, val) {
+            if (!appState.badges[idx]) return;
+            appState.badges[idx][key] = val;
+            renderTopBadges();
+        };
+
+        window.handleBadgeImgUpload = function(event, idx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type === 'image/gif') {
+                    appState.badges[idx].img = e.target.result;
+                    renderTopBadges();
+                    renderBadgesEditorList();
+                    return;
+                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 64;
+                    canvas.height = 64;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 64, 64);
+                    appState.badges[idx].img = canvas.toDataURL('image/png');
+                    renderTopBadges();
+                    renderBadgesEditorList();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearBadgeImg = function(idx) {
+            if (!appState.badges[idx]) return;
+            appState.badges[idx].img = '';
+            renderTopBadges();
+            renderBadgesEditorList();
+        };
+
+        window.addBadgeSlot = function() {
+            appState.badges.push({
+                id: 'b' + Date.now(),
+                symbol: '♡',
+                img: '',
+                bg: '#fff7f9',
+                color: '#6b5e62',
+                label: 'new badge',
+                action: 'burst'
+            });
+            renderTopBadges();
+            renderBadgesEditorList();
+        };
+
+        window.removeBadgeSlot = function(idx) {
+            appState.badges.splice(idx, 1);
+            renderTopBadges();
+            renderBadgesEditorList();
+        };
+
+        window.saveBadgesSettings = async function() {
+            if (!isOwner) return;
+            renderTopBadges();
+            await saveDiaryToCloud('badges & cursors saved ♡');
+            closeModal('customize-modal');
+        };
+
+        function applyUploadedMediaDataUrl(targetType, dataUrl) {
+            if (targetType === 'top') {
+                appState.topSpriteImg = dataUrl;
+                document.getElementById('input-top-url').value = '';
+            } else if (targetType === 'earLeft') {
+                appState.earLeftImg = dataUrl;
+                document.getElementById('input-ear-left-url').value = '';
+            } else if (targetType === 'earRight') {
+                appState.earRightImg = dataUrl;
+                document.getElementById('input-ear-right-url').value = '';
+            } else if (targetType === 'axe') {
+                appState.axeCursorImg = dataUrl;
+                document.getElementById('input-axe-url').value = '';
+                applyCursorToDOM();
+            } else if (targetType === 'fruit') {
+                appState.fruitImg = dataUrl;
+                document.getElementById('input-fruit-url').value = '';
+            } else if (targetType === 'wand') {
+                appState.wandIconImg = dataUrl;
+                document.getElementById('input-wand-url').value = '';
+            } else if (targetType === 'bigheart') {
+                appState.bigHeartImg = dataUrl;
+                document.getElementById('input-bigheart-url').value = '';
+            } else if (targetType === 'lock') {
+                appState.lockIconImg = dataUrl;
+                document.getElementById('input-lock-url').value = '';
+            } else if (targetType === 'music') {
+                appState.musicIconImg = dataUrl;
+                document.getElementById('input-music-url-img').value = '';
+            } else if (targetType === 'secret') {
+                appState.secretNoteImg = dataUrl;
+                document.getElementById('input-secret-img-url').value = '';
+            }
+            updateCharacterDisplay();
+            saveDiaryToCloud('image / gif saved for everyone ♡');
+        }
+
+        window.handleTreeFrameUpload = function(event, mode, frameIdx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const saveFrame = (dataUrl) => {
+                    if (mode === 'sad') {
+                        if (!Array.isArray(appState.sadTreeFrames)) appState.sadTreeFrames = ['', '', ''];
+                        appState.sadTreeFrames[frameIdx] = dataUrl;
+                    } else {
+                        if (!Array.isArray(appState.happyTreeFrames)) appState.happyTreeFrames = ['', '', ''];
+                        appState.happyTreeFrames[frameIdx] = dataUrl;
+                    }
+                    appState.treeMode = mode;
+                    currentTreeFrame = frameIdx;
+                    updateCharacterDisplay();
+                    saveDiaryToCloud(`${mode} tree frame #${frameIdx + 1} saved ♡`);
+                };
+                if (file.type === 'image/gif') {
+                    saveFrame(e.target.result);
+                    return;
+                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 540;
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    saveFrame(canvas.toDataURL('image/png'));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.setTreeMode = async function(mode) {
+            appState.treeMode = mode;
+            currentTreeFrame = 0;
+            applyCursorToDOM();
+            updateCharacterDisplay();
+            if (isOwner) await saveDiaryToCloud(`tree mode: ${mode === 'sad' ? '😢 sad chop' : '🌸 happy fruit'}`);
+        };
+
+        window.toggleTreeMode = function() {
+            const next = (appState.treeMode || 'sad') === 'sad' ? 'happy' : 'sad';
+            setTreeMode(next);
+        };
+
+        window.interactWithTree = function() {
+            const mode = appState.treeMode || 'sad';
+            const frames = (mode === 'sad' ? appState.sadTreeFrames : appState.happyTreeFrames) || [];
+            const validFrames = frames.filter(u => u && u.trim());
+            const wrapper = document.getElementById('standing-char-wrapper');
+
+            if (wrapper) {
+                wrapper.classList.remove('tree-animating');
+                void wrapper.offsetWidth;
+                wrapper.classList.add('tree-animating');
+            }
+
+            if (validFrames.length > 1) {
+                currentTreeFrame = (currentTreeFrame + 1) % validFrames.length;
+                crossfadeTreeTo(validFrames[currentTreeFrame]);
+            }
+
+            if (mode === 'sad') {
+                const layer = document.getElementById('tree-fruits-layer');
+                if (layer) {
+                    const tears = ['💧', '🍂', '💔', '😢'];
+                    for (let i = 0; i < 4; i++) {
+                        const t = document.createElement('span');
+                        t.textContent = tears[Math.floor(Math.random() * tears.length)];
+                        t.className = 'falling-tree-fruit text-sm';
+                        t.style.left = `${30 + Math.random() * 40}%`;
+                        t.style.top = `${25 + Math.random() * 25}%`;
+                        layer.appendChild(t);
+                        setTimeout(() => t.remove(), 1250);
+                    }
+                }
+            } else {
+                const layer = document.getElementById('tree-fruits-layer');
+                if (layer) {
+                    for (let i = 0; i < 4; i++) {
+                        const f = appState.fruitImg ? document.createElement('img') : document.createElement('span');
+                        f.className = 'falling-tree-fruit';
+                        f.style.left = `${22 + Math.random() * 54}%`;
+                        f.style.top = `${18 + Math.random() * 30}%`;
+                        if (appState.fruitImg) {
+                            f.src = appState.fruitImg;
+                            f.style.width = '22px';
+                            f.style.height = '22px';
+                            f.style.objectFit = 'contain';
+                        } else {
+                            f.textContent = ['🍎', '🍓', '🍑', '🍒'][Math.floor(Math.random() * 4)];
+                            f.style.fontSize = '16px';
+                        }
+                        layer.appendChild(f);
+                        setTimeout(() => f.remove(), 1250);
+                    }
+                }
+            }
+        };
+
+        function crossfadeTreeTo(srcUrl) {
+            const imgA = document.getElementById('tree-img-a');
+            const imgB = document.getElementById('tree-img-b');
+            if (!imgA || !imgB || !srcUrl) return;
+            const incoming = activeTreeBuffer === 'a' ? imgB : imgA;
+            const outgoing = activeTreeBuffer === 'a' ? imgA : imgB;
+            incoming.src = srcUrl;
+            incoming.classList.remove('hidden');
+            outgoing.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                incoming.style.opacity = '1';
+                outgoing.style.opacity = '0';
+            });
+            activeTreeBuffer = activeTreeBuffer === 'a' ? 'b' : 'a';
+        }
+
+        window.handleFallingSlotUpload = function(event, slotIdx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const saveSlot = (url) => {
+                    if (!Array.isArray(appState.fallingParticleImgs)) appState.fallingParticleImgs = ['', '', ''];
+                    appState.fallingParticleImgs[slotIdx] = url;
+                    const inp = document.getElementById(`input-fall-url-${slotIdx}`);
+                    if (inp) inp.value = '';
+                    saveDiaryToCloud(`falling image #${slotIdx + 1} saved ♡`);
+                };
+                if (file.type === 'image/gif') {
+                    if (file.size > 600000) {
+                        showToast('gif is large—paste a github url for big gifs!');
+                        return;
+                    }
+                    saveSlot(e.target.result);
+                    return;
+                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 96;
+                    canvas.height = 96;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 96, 96);
+                    saveSlot(canvas.toDataURL('image/png'));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearAllFallingImages = async function() {
+            appState.fallingParticleImgs = ['', '', ''];
+            [0, 1, 2].forEach(i => {
+                const el = document.getElementById(`input-fall-url-${i}`);
+                if (el) el.value = '';
+            });
+            await saveDiaryToCloud('switched back to falling symbols');
+        };
+
+        window.handleImageUpload = function(event, targetType) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type === 'image/gif') {
+                    if (file.size > 750000) {
+                        showToast('gif is large—for big gifs, upload to github & paste its URL!');
+                        return;
+                    }
+                    applyUploadedMediaDataUrl(targetType, e.target.result);
+                    return;
+                }
+
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = targetType === 'standing' ? 680 : (targetType === 'top' || targetType === 'secret' ? 300 : 120);
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    applyUploadedMediaDataUrl(targetType, canvas.toDataURL('image/png'));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.saveImageUrlsAndSizes = async function() {
+            const topUrl = document.getElementById('input-top-url').value.trim();
+            const earLUrl = document.getElementById('input-ear-left-url').value.trim();
+            const earRUrl = document.getElementById('input-ear-right-url').value.trim();
+            const axeUrl = document.getElementById('input-axe-url').value.trim();
+            const fruitUrl = document.getElementById('input-fruit-url').value.trim();
+            const wandUrl = document.getElementById('input-wand-url').value.trim();
+            const wandSym = document.getElementById('input-wand-symbol').value.trim();
+            const particleSize = Number(document.getElementById('input-particle-size').value) || 22;
+            const bigHeartUrl = document.getElementById('input-bigheart-url').value.trim();
+            const bigHeartSym = document.getElementById('input-bigheart-symbol').value.trim();
+            const lockUrl = document.getElementById('input-lock-url').value.trim();
+
+            if (!Array.isArray(appState.fallingParticleImgs)) appState.fallingParticleImgs = ['', '', ''];
+            if (!Array.isArray(appState.sadTreeFrames)) appState.sadTreeFrames = ['', '', ''];
+            if (!Array.isArray(appState.happyTreeFrames)) appState.happyTreeFrames = ['', '', ''];
+
+            [0, 1, 2].forEach(i => {
+                const u = document.getElementById(`input-fall-url-${i}`).value.trim();
+                if (u) appState.fallingParticleImgs[i] = u;
+                const su = document.getElementById(`input-sad-tree-${i}`).value.trim();
+                if (su) appState.sadTreeFrames[i] = su;
+                const hu = document.getElementById(`input-happy-tree-${i}`).value.trim();
+                if (hu) appState.happyTreeFrames[i] = hu;
+            });
+
+            if (topUrl) appState.topSpriteImg = topUrl;
+            if (earLUrl) appState.earLeftImg = earLUrl;
+            if (earRUrl) appState.earRightImg = earRUrl;
+            if (axeUrl) appState.axeCursorImg = axeUrl;
+            if (fruitUrl) appState.fruitImg = fruitUrl;
+            if (wandUrl) appState.wandIconImg = wandUrl;
+            if (wandSym) appState.wandSymbol = wandSym;
+            appState.fallingParticleSize = Math.max(10, Math.min(64, particleSize));
+            if (bigHeartUrl) appState.bigHeartImg = bigHeartUrl;
+            if (bigHeartSym) appState.bigHeartSymbol = bigHeartSym;
+            if (lockUrl) appState.lockIconImg = lockUrl;
+
+            applyCursorToDOM();
+            updateCharacterDisplay();
+            await saveDiaryToCloud('images & gifs updated ♡');
+            closeModal('customize-modal');
+        };
+
+        window.clearCharacterImage = async function(targetType) {
+            if (targetType === 'top') {
+                appState.topSpriteImg = '';
+                document.getElementById('input-top-url').value = '';
+            } else if (targetType === 'earLeft') {
+                appState.earLeftImg = '';
+                document.getElementById('input-ear-left-url').value = '';
+            } else if (targetType === 'earRight') {
+                appState.earRightImg = '';
+                document.getElementById('input-ear-right-url').value = '';
+            } else if (targetType === 'wand') {
+                appState.wandIconImg = '';
+                document.getElementById('input-wand-url').value = '';
+            } else if (targetType === 'bigheart') {
+                appState.bigHeartImg = '';
+                document.getElementById('input-bigheart-url').value = '';
+            } else if (targetType === 'lock') {
+                appState.lockIconImg = '';
+                document.getElementById('input-lock-url').value = '';
+            } else if (targetType === 'music') {
+                appState.musicIconImg = '';
+                document.getElementById('input-music-url-img').value = '';
+            } else if (targetType === 'secret') {
+                appState.secretNoteImg = '';
+                document.getElementById('input-secret-img-url').value = '';
+            }
+            updateCharacterDisplay();
+            await saveDiaryToCloud('reset to default');
+        };
+
+        function updateCharacterDisplay() {
+            const s = appState.sizes || defaultSizes;
+            const topImg = document.getElementById('custom-top-sprite');
+            const topPlaceholder = document.getElementById('top-sprite-placeholder');
+            if (appState.topSpriteImg) {
+                topImg.src = appState.topSpriteImg;
+                topImg.style.height = `${s.topH || 68}px`;
+                topImg.classList.remove('hidden');
+                topPlaceholder.classList.remove('owner-only-flex');
+                topPlaceholder.classList.add('hidden');
+            } else {
+                topImg.classList.add('hidden');
+                topPlaceholder.classList.remove('hidden');
+                topPlaceholder.classList.add('owner-only-flex');
+            }
+
+            const earL = document.getElementById('bunny-ear-left');
+            const earR = document.getElementById('bunny-ear-right');
+            if (earL) {
+                earL.style.height = `${s.earH || 54}px`;
+                if (appState.earLeftImg) { earL.src = appState.earLeftImg; earL.classList.remove('hidden'); }
+                else earL.classList.add('hidden');
+            }
+            if (earR) {
+                earR.style.height = `${s.earH || 54}px`;
+                if (appState.earRightImg) { earR.src = appState.earRightImg; earR.classList.remove('hidden'); }
+                else earR.classList.add('hidden');
+            }
+
+            const mode = appState.treeMode || 'sad';
+            const modeBtn = document.getElementById('tree-mode-toggle-btn');
+            if (modeBtn) modeBtn.textContent = mode === 'sad' ? '😢 sad' : '🌸 happy';
+
+            const sadModalBtn = document.getElementById('modal-tree-sad-btn');
+            const happyModalBtn = document.getElementById('modal-tree-happy-btn');
+            if (sadModalBtn && happyModalBtn) {
+                sadModalBtn.classList.toggle('opacity-65', mode !== 'sad');
+                happyModalBtn.classList.toggle('opacity-65', mode !== 'happy');
+            }
+
+            const frames = (mode === 'sad' ? appState.sadTreeFrames : appState.happyTreeFrames) || [];
+            const validFrames = frames.filter(u => u && u.trim());
+            const imgA = document.getElementById('tree-img-a');
+            const imgB = document.getElementById('tree-img-b');
+            const treePlaceholder = document.getElementById('standing-char-placeholder');
+
+            if (validFrames.length > 0 && imgA && imgB) {
+                const frameSrc = validFrames[currentTreeFrame % validFrames.length];
+                imgA.src = frameSrc;
+                imgA.style.opacity = '1';
+                imgA.classList.remove('hidden');
+                imgB.style.opacity = '0';
+                activeTreeBuffer = 'a';
+                treePlaceholder.classList.remove('owner-only-flex');
+                treePlaceholder.classList.add('hidden');
+            } else if (treePlaceholder && imgA && imgB) {
+                imgA.classList.add('hidden');
+                imgB.classList.add('hidden');
+                treePlaceholder.classList.remove('hidden');
+                treePlaceholder.classList.add('owner-only-flex');
+            }
+
+            const wandImg = document.getElementById('wand-custom-img');
+            const wandGlyph = document.getElementById('wand-default-glyph');
+            if (wandImg && wandGlyph) {
+                if (appState.wandIconImg) {
+                    wandImg.src = appState.wandIconImg;
+                    wandImg.classList.remove('hidden');
+                    wandGlyph.classList.add('hidden');
+                } else {
+                    wandImg.classList.add('hidden');
+                    wandGlyph.classList.remove('hidden');
+                    wandGlyph.textContent = appState.wandSymbol || '🪄';
+                }
+            }
+
+            const musicImg = document.getElementById('music-custom-img');
+            const playIcon = document.getElementById('play-icon');
+            if (musicImg && playIcon) {
+                if (appState.musicIconImg) {
+                    musicImg.src = appState.musicIconImg;
+                    musicImg.classList.remove('hidden');
+                    playIcon.classList.add('hidden');
+                } else {
+                    musicImg.classList.add('hidden');
+                    playIcon.classList.remove('hidden');
+                }
+            }
+        }
+
+        function renderStatsAndOrbit() {
+            document.getElementById('heart-count').textContent = (statsState.hearts || 0).toLocaleString();
+            document.getElementById('jar-total-hearts').textContent = (statsState.jarHearts || 0).toLocaleString();
+
+            if (visitorName) {
+                document.getElementById('visitor-tag-btn').textContent = `${visitorName} ✎`;
+            }
+
+            const ringEl = document.getElementById('heart-orbit-ring');
+            if (!ringEl) return;
+
+            const names = Array.isArray(statsState.orbitNames) && statsState.orbitNames.length
+                ? statsState.orbitNames.slice(0, 10)
+                : ['bunny ♡', 'angel ✦', 'meow'];
+
+            const ringSz = (appState.sizes && appState.sizes.jarW) || 195;
+            const signature = `${ringSz}|${names.join('||')}`;
+            if (signature === lastOrbitSignature) return;
+            lastOrbitSignature = signature;
+
+            ringEl.innerHTML = '';
+            const radius = Math.round(ringSz * 0.25);
+
+            names.forEach((rawName, idx) => {
+                const angle = (360 / names.length) * idx;
+                const spoke = document.createElement('div');
+                spoke.className = 'heart-orbit-spoke';
+                spoke.style.transform = `rotate(${angle}deg) translate(${radius}px) rotate(${-angle}deg)`;
+
+                const counter = document.createElement('div');
+                counter.className = 'heart-orbit-counter';
+
+                const span = document.createElement('span');
+                span.className = 'heart-floating-name';
+                span.style.animationDelay = `${(idx * 0.45).toFixed(2)}s`;
+                span.textContent = rawName;
+
+                counter.appendChild(span);
+                spoke.appendChild(counter);
+                ringEl.appendChild(spoke);
+            });
+        }
+
+        function addNameToOrbitList(currentList, newName) {
+            const clean = newName.trim().slice(0, 14);
+            if (!clean) return currentList || [];
+            const filtered = (Array.isArray(currentList) ? currentList : []).filter(
+                n => n.toLowerCase() !== clean.toLowerCase()
+            );
+            filtered.push(clean);
+            return filtered.slice(-10);
+        }
+
+        window.openVisitorNamePrompt = function() {
+            document.getElementById('visitor-nickname-input').value = visitorName;
+            openModal('visitor-name-modal');
+        };
+
+        window.saveVisitorNickname = async function() {
+            const val = document.getElementById('visitor-nickname-input').value.trim();
+            if (val) {
+                visitorName = val.slice(0, 14);
+                localStorage.setItem('meow_visitor_name', visitorName);
+                document.getElementById('visitor-tag-btn').textContent = `${visitorName} ✎`;
+
+                statsState.orbitNames = addNameToOrbitList(statsState.orbitNames, visitorName);
+                renderStatsAndOrbit();
+                showToast(`floating "${visitorName}" around the heart ♡`);
+
+                try {
+                    const snap = await getDoc(statsDocRef);
+                    if (!snap.exists()) {
+                        await setDoc(statsDocRef, {
+                            hearts: 0,
+                            jarHearts: 0,
+                            orbitNames: statsState.orbitNames
+                        });
+                    } else {
+                        await updateDoc(statsDocRef, { orbitNames: statsState.orbitNames });
+                    }
+                } catch (e) {}
+            }
+            closeModal('visitor-name-modal');
+        };
+
+        window.spamBigHeart = async function() {
+            const btn = document.getElementById('big-spam-heart-btn');
+
+            const pop = document.createElement('span');
+            pop.textContent = ['♥', '♡', '💖', '✦'][Math.floor(Math.random() * 4)];
+            const rect = btn.getBoundingClientRect();
+            pop.style.position = 'fixed';
+            pop.style.left = `${rect.left + rect.width / 2 + (Math.random() - 0.5) * 28}px`;
+            pop.style.top = `${rect.top + 10}px`;
+            pop.style.color = 'var(--accent-pink-dark)';
+            pop.style.fontSize = '17px';
+            pop.style.pointerEvents = 'none';
+            pop.style.zIndex = '9999';
+            pop.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+            document.body.appendChild(pop);
+            requestAnimationFrame(() => {
+                pop.style.transform = `translate(${(Math.random() - 0.5) * 60}px, -65px) scale(1.3)`;
+                pop.style.opacity = '0';
+            });
+            setTimeout(() => pop.remove(), 820);
+
+            statsState.jarHearts = (statsState.jarHearts || 0) + 1;
+            if (visitorName) {
+                statsState.orbitNames = addNameToOrbitList(statsState.orbitNames, visitorName);
+            }
+            renderStatsAndOrbit();
+
+            try {
+                const snap = await getDoc(statsDocRef);
+                if (!snap.exists()) {
+                    await setDoc(statsDocRef, {
+                        hearts: 0,
+                        jarHearts: 1,
+                        orbitNames: statsState.orbitNames
+                    });
+                } else {
+                    const payload = { jarHearts: increment(1) };
+                    if (visitorName) payload.orbitNames = statsState.orbitNames;
+                    await updateDoc(statsDocRef, payload);
+                }
+            } catch (e) {}
+        };
+
+        window.handleBottomHeartClick = async function() {
+            await incrementHeartCounter();
+            document.getElementById('bunny-clue-password-text').textContent = appState.secretPassword || 'princess';
+            openModal('bunny-clue-modal');
+        };
+
+        window.openSecretPasswordPrompt = function() {
+            document.getElementById('secret-pass-input').value = '';
+            document.getElementById('secret-pass-error').classList.add('hidden');
+            openModal('secret-password-modal');
+        };
+
+        window.verifySecretPassword = function() {
+            const entered = document.getElementById('secret-pass-input').value.trim().toLowerCase();
+            const expected = (appState.secretPassword || 'princess').trim().toLowerCase();
+            if (entered === expected) {
+                closeModal('secret-password-modal');
+                openSecretNoteBox();
+            } else {
+                document.getElementById('secret-pass-error').classList.remove('hidden');
+            }
+        };
+
+        function openSecretNoteBox() {
+            document.getElementById('secret-note-heading').textContent = appState.secretNoteTitle || 'my vulnerable note ♡';
+            const imgEl = document.getElementById('secret-note-center-img');
+            const fallbackEl = document.getElementById('secret-note-img-fallback');
+
+            if (appState.secretNoteImg) {
+                imgEl.src = appState.secretNoteImg;
+                imgEl.classList.remove('hidden');
+                fallbackEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                fallbackEl.classList.remove('hidden');
+            }
+
+            const texts = (appState.secretNoteTexts || []).filter(t => t && t.trim());
+            const lines = texts.length ? texts : [
+                'sometimes i act stronger than i really feel inside...',
+                'thank you for visiting my little safe space gently ♡',
+                'even on quiet heavy days, i am still trying my best.'
+            ];
+
+            secretTextIdx = 0;
+            const textEl = document.getElementById('secret-fading-text');
+            textEl.style.opacity = '1';
+            textEl.textContent = lines[0];
+            updateSecretDots(0, lines.length);
+
+            clearInterval(secretFadeTimer);
+            secretFadeTimer = setInterval(() => {
+                textEl.style.opacity = '0';
+                setTimeout(() => {
+                    secretTextIdx = (secretTextIdx + 1) % lines.length;
+                    textEl.textContent = lines[secretTextIdx];
+                    textEl.style.opacity = '1';
+                    updateSecretDots(secretTextIdx, lines.length);
+                }, 650);
+            }, 3400);
+
+            openModal('secret-note-modal');
+        }
+
+        function updateSecretDots(activeIdx, total) {
+            [0, 1, 2].forEach(i => {
+                const dot = document.getElementById(`secret-dot-${i}`);
+                if (!dot) return;
+                dot.style.display = i < total ? 'inline-block' : 'none';
+                dot.style.opacity = i === activeIdx ? '1' : '0.3';
+                dot.style.transform = i === activeIdx ? 'scale(1.3)' : 'scale(1)';
+            });
+        }
+
+        window.closeSecretNoteModal = function() {
+            clearInterval(secretFadeTimer);
+            closeModal('secret-note-modal');
+        };
+
+        function startInterestsTurnAnimation() {
+            clearInterval(interestTurnTimer);
+            const stage = document.getElementById('interests-turn-stage');
+            if (!stage) return;
+
+            const items = appState.interests && appState.interests.length ? appState.interests : ['cozy days'];
+
+            const showTurn = () => {
+                const current = items[interestTurnIndex % items.length];
+                stage.innerHTML = '';
+                const pill = document.createElement('span');
+                pill.className = 'interest-turn-badge inline-block px-2 py-0.5 text-xs font-semibold tracking-wide';
+                pill.textContent = current;
+                stage.appendChild(pill);
+                interestTurnIndex = (interestTurnIndex + 1) % items.length;
+            };
+
+            showTurn();
+            if (items.length > 1) {
+                interestTurnTimer = setInterval(showTurn, 2600);
+            }
+        }
+
+        function renderInterests() {
+            const container = document.getElementById('interests-container');
+            if (!container) return;
+            container.innerHTML = '';
+            (appState.interests || []).forEach((item, idx) => {
+                const tag = document.createElement('span');
+                tag.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px]';
+                tag.style.backgroundColor = 'var(--bubble-bg)';
+                tag.innerHTML = `
+                    <span>${escapeHtml(item)}</span>
+                    <button onclick="removeInterest(${idx})" class="text-[10px] opacity-60 hover:opacity-100 ml-0.5" title="remove">×</button>
+                `;
+                container.appendChild(tag);
+            });
+        }
+
+        window.addInterest = async function() {
+            if (!isOwner) return;
+            const input = document.getElementById('new-interest-input');
+            const val = input.value.trim();
+            if (!val) return;
+            appState.interests.push(val);
+            input.value = '';
+            renderInterests();
+            startInterestsTurnAnimation();
+            await saveDiaryToCloud('interest added ♡');
+        };
+
+        window.removeInterest = async function(index) {
+            if (!isOwner) return;
+            appState.interests.splice(index, 1);
+            renderInterests();
+            startInterestsTurnAnimation();
+            await saveDiaryToCloud();
+        };
+
+        function renderLoveNotes() {
+            const list = document.getElementById('love-notes-list');
+            list.innerHTML = '';
+            (appState.loveNotes || []).forEach(note => {
+                const card = document.createElement('div');
+                card.className = 'love-bubble-item group relative transition';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider" style="color: var(--accent-pink-dark);">${escapeHtml(note.date)}</span>
+                        <button onclick="deleteLoveNote(${note.id})" class="owner-only text-[11px] opacity-50 hover:opacity-100 transition" title="Delete note">✕</button>
+                    </div>
+                    <p class="text-xs leading-relaxed">${escapeHtml(note.text)}</p>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        window.openAddLoveNote = function() {
+            if (!isOwner) return;
+            document.getElementById('love-note-date').value = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toLowerCase() + ' ♡';
+            document.getElementById('love-note-text').value = '';
+            openModal('love-modal');
+        };
+
+        window.saveLoveNote = async function() {
+            if (!isOwner) return;
+            const date = document.getElementById('love-note-date').value.trim() || 'note ♡';
+            const text = document.getElementById('love-note-text').value.trim();
+            if (!text) return;
+            appState.loveNotes.unshift({ id: Date.now(), date, text });
+            renderLoveNotes();
+            closeModal('love-modal');
+            await saveDiaryToCloud('love note posted ♡');
+        };
+
+        window.deleteLoveNote = async function(id) {
+            if (!isOwner) return;
+            appState.loveNotes = appState.loveNotes.filter(n => n.id !== id);
+            renderLoveNotes();
+            await saveDiaryToCloud();
+        };
+
+        function renderFeelingBubbles() {
+            const layer = document.getElementById('feeling-bubbles-layer');
+            layer.innerHTML = '';
+
+            (appState.feelings || []).forEach((f, idx) => {
+                if (activeMoodFilter !== 'all' && f.mood !== activeMoodFilter) return;
+
+                const bubble = document.createElement('div');
+                bubble.className = 'thought-bubble';
+                bubble.style.left = `${f.x}px`;
+                bubble.style.top = `${f.y}px`;
+                bubble.style.animationDelay = `${idx * 0.6}s`;
+                bubble.textContent = f.text;
+
+                makeBubbleOwnerDraggable(bubble, f);
+                layer.appendChild(bubble);
+            });
+        }
+
+        function makeBubbleOwnerDraggable(el, feelingObj) {
+            let isDragging = false;
+            let moved = false;
+            let startX, startY, origX, origY;
+
+            const onDown = (e) => {
+                e.stopPropagation();
+                isDragging = true;
+                moved = false;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                startX = clientX;
+                startY = clientY;
+                origX = feelingObj.x;
+                origY = feelingObj.y;
+            };
+
+            const onMove = (e) => {
+                if (!isDragging) return;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+
+                const stage = document.getElementById('mental-stage');
+                const maxX = stage.clientWidth - el.offsetWidth - 6;
+                const maxY = stage.clientHeight - el.offsetHeight - 6;
+
+                feelingObj.x = Math.max(6, Math.min(maxX, origX + dx));
+                feelingObj.y = Math.max(6, Math.min(maxY, origY + dy));
+                el.style.left = `${feelingObj.x}px`;
+                el.style.top = `${feelingObj.y}px`;
+            };
+
+            const onUp = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                if (moved) {
+                    if (isOwner && !isVisitorPreview) saveDiaryToCloud();
+                } else if (isOwner && !isVisitorPreview) {
+                    openEditFeelingModal(feelingObj);
+                }
+            };
+
+            el.addEventListener('mousedown', onDown);
+            el.addEventListener('touchstart', onDown, { passive: true });
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('touchmove', onMove, { passive: true });
+            window.addEventListener('mouseup', onUp);
+            window.addEventListener('touchend', onUp);
+        }
+
+        window.openAddFeelingModal = function() {
+            if (!isOwner) return;
+            editingFeelingId = null;
+            document.getElementById('feeling-modal-title').textContent = '✿ pop up a new feeling bubble';
+            document.getElementById('delete-feeling-btn').classList.add('hidden');
+            document.getElementById('feeling-note-text').value = '';
+            selectedFeelingMood = 'soft';
+            openModal('feeling-modal');
+        };
+
+        function openEditFeelingModal(feelingObj) {
+            if (!isOwner) return;
+            editingFeelingId = feelingObj.id;
+            document.getElementById('feeling-modal-title').textContent = '✿ edit feeling bubble';
+            document.getElementById('delete-feeling-btn').classList.remove('hidden');
+            document.getElementById('feeling-note-text').value = feelingObj.text;
+            selectedFeelingMood = feelingObj.mood || 'soft';
+            openModal('feeling-modal');
+        }
+
+        window.selectMoodTag = function(mood, btnEl) {
+            selectedFeelingMood = mood;
+            document.querySelectorAll('.mood-chip').forEach(btn => btn.classList.remove('ring-2', 'ring-[#d47a92]'));
+            if (btnEl) btnEl.classList.add('ring-2', 'ring-[#d47a92]');
+        };
+
+        window.saveFeelingBubble = async function() {
+            if (!isOwner) return;
+            const text = document.getElementById('feeling-note-text').value.trim();
+            if (!text) return;
+
+            if (editingFeelingId) {
+                const target = appState.feelings.find(f => f.id === editingFeelingId);
+                if (target) {
+                    target.text = text;
+                    target.mood = selectedFeelingMood;
+                }
+            } else {
+                const sideLeft = Math.random() > 0.5;
+                const x = sideLeft ? Math.floor(10 + Math.random() * 35) : Math.floor(175 + Math.random() * 25);
+                const y = Math.floor(18 + Math.random() * 195);
+                appState.feelings.push({ id: Date.now(), mood: selectedFeelingMood, text, x, y });
+            }
+            renderFeelingBubbles();
+            closeModal('feeling-modal');
+            await saveDiaryToCloud('feeling bubble saved ✿');
+        };
+
+        window.deleteCurrentFeeling = async function() {
+            if (!isOwner || !editingFeelingId) return;
+            appState.feelings = appState.feelings.filter(f => f.id !== editingFeelingId);
+            renderFeelingBubbles();
+            closeModal('feeling-modal');
+            await saveDiaryToCloud('feeling bubble removed');
+        };
+
+        window.filterMood = function(mood) {
+            activeMoodFilter = activeMoodFilter === mood ? 'all' : mood;
+            renderFeelingBubbles();
+            showToast(activeMoodFilter === 'all' ? 'showing all feelings ♡' : `mood: ${activeMoodFilter}`);
+        };
+
+        function initOwnerDraggables() {
+            const windows = document.querySelectorAll('.draggable-window');
+            windows.forEach(win => {
+                const handle = win.querySelector('.draggable-handle') || win;
+
+                let isDragging = false;
+                let startX, startY, initialLeft, initialTop;
+
+                const startDrag = (e) => {
+                    if (window.innerWidth <= 900) return;
+                    if (e.target.closest('button') || e.target.closest('input')) return;
+                    isDragging = true;
+                    win.classList.add('active-drag');
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    startX = clientX;
+                    startY = clientY;
+                    initialLeft = win.offsetLeft;
+                    initialTop = win.offsetTop;
+                };
+
+                const onDrag = (e) => {
+                    if (!isDragging) return;
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    const newLeft = Math.max(8, Math.min(window.innerWidth - win.offsetWidth - 8, initialLeft + (clientX - startX)));
+                    const newTop = Math.max(20, Math.min(window.innerHeight - 80, initialTop + (clientY - startY)));
+                    win.style.left = `${newLeft}px`;
+                    win.style.top = `${newTop}px`;
+                };
+
+                const stopDrag = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    win.classList.remove('active-drag');
+                    if (isOwner && !isVisitorPreview) {
+                        appState.positions[win.id] = { left: win.style.left, top: win.style.top };
+                        saveDiaryToCloud();
+                    }
+                };
+
+                handle.addEventListener('mousedown', startDrag);
+                handle.addEventListener('touchstart', startDrag, { passive: true });
+                window.addEventListener('mousemove', onDrag);
+                window.addEventListener('touchmove', onDrag, { passive: true });
+                window.addEventListener('mouseup', stopDrag);
+                window.addEventListener('touchend', stopDrag);
+            });
+        }
+
+        window.resetLayoutPositions = async function() {
+            if (!isOwner) return;
+            appState.positions = {};
+            document.getElementById('box-love').style.left = 'calc(50% - 505px)';
+            document.getElementById('box-love').style.top = '155px';
+            document.getElementById('box-center').style.left = 'calc(50% - 160px)';
+            document.getElementById('box-center').style.top = '235px';
+            document.getElementById('box-mental').style.left = 'calc(50% + 195px)';
+            document.getElementById('box-mental').style.top = '155px';
+            document.getElementById('center-orbit-heart-stage').style.left = 'calc(50% - 102px)';
+            document.getElementById('center-orbit-heart-stage').style.top = '475px';
+            await saveDiaryToCloud('box layout reset ♡');
+        };
+
+        let isPlaying = false;
+        let synthInterval = null;
+        let audioCtx = null;
+        let muffleConnected = false;
+
+        function ensureMuffledAudioGraph(audioEl) {
+            if (muffleConnected) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!audioCtx) audioCtx = new AudioContext();
+                const source = audioCtx.createMediaElementSource(audioEl);
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 540;
+                filter.Q.value = 1.2;
+                source.connect(filter);
+                filter.connect(audioCtx.destination);
+                muffleConnected = true;
+            } catch (e) {}
+        }
+
+        window.toggleAudio = function() {
+            const audioEl = document.getElementById('daily-audio');
+            const icon = document.getElementById('play-icon');
+
+            if (isPlaying) {
+                isPlaying = false;
+                audioEl.pause();
+                stopMusicBoxSynth();
+                icon.textContent = '♫';
+                showToast('background song paused');
+            } else {
+                isPlaying = true;
+                icon.textContent = '❚❚';
+                showToast(`playing: ${appState.trackTitle || 'muffled song'}`);
+
+                if (audioEl.src && audioEl.src !== window.location.href) {
+                    ensureMuffledAudioGraph(audioEl);
+                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                    audioEl.play().catch(() => startMusicBoxSynth());
+                } else {
+                    startMusicBoxSynth();
+                }
+            }
+        };
+
+        function startMusicBoxSynth() {
+            if (synthInterval) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const muffleFilter = audioCtx.createBiquadFilter();
+            muffleFilter.type = 'lowpass';
+            muffleFilter.frequency.value = 480;
+            muffleFilter.connect(audioCtx.destination);
+
+            const notes = [523.25, 659.25, 783.99, 987.77, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46];
+            let step = 0;
+
+            const playNote = () => {
+                if (!isPlaying) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.15);
+                osc.connect(gain);
+                gain.connect(muffleFilter);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.2);
+                step++;
+            };
+
+            playNote();
+            synthInterval = setInterval(playNote, 680);
+        }
+
+        function stopMusicBoxSynth() {
+            if (synthInterval) {
+                clearInterval(synthInterval);
+                synthInterval = null;
+            }
+        }
+
+        function initAutoStartMusicOnFirstClick() {
+            const kickOff = () => {
+                if (autoMusicAttempted) return;
+                autoMusicAttempted = true;
+                if (!isPlaying) {
+                    toggleAudio();
+                }
+                window.removeEventListener('pointerdown', kickOff);
+            };
+            window.addEventListener('pointerdown', kickOff, { once: true });
+        }
+
+        window.waveMagicWand = function() {
+            const btn = document.getElementById('yumekawaii-wand-btn');
+            const charms = ['✨', '🎀', '🍼', '🦄', '🌙', '🍓', '☁️', '💖', '⭐'];
+            const whispers = [
+                'you are safe, loved, and protected ♡',
+                'magical starlight blessing just for you ✨',
+                'soft angel energy activated 🎀',
+                'take a cozy breath, little star 🌙',
+                'sending warm pastel hugs your way 🍓'
+            ];
+            const rect = btn ? btn.getBoundingClientRect() : { left: 40, top: window.innerHeight - 90 };
+            for (let i = 0; i < 12; i++) {
+                const el = document.createElement('span');
+                el.textContent = charms[Math.floor(Math.random() * charms.length)];
+                el.style.position = 'fixed';
+                el.style.left = `${rect.left + 16}px`;
+                el.style.top = `${rect.top + 16}px`;
+                el.style.fontSize = `${14 + Math.random() * 12}px`;
+                el.style.pointerEvents = 'none';
+                el.style.zIndex = '9999';
+                el.style.transition = 'all 1.15s cubic-bezier(0.16, 1, 0.3, 1)';
+                document.body.appendChild(el);
+                requestAnimationFrame(() => {
+                    el.style.transform = `translate(${30 + Math.random() * 190}px, ${-50 - Math.random() * 180}px) rotate(${(Math.random() - 0.5) * 140}deg)`;
+                    el.style.opacity = '0';
+                });
+                setTimeout(() => el.remove(), 1200);
+            }
+            showToast(whispers[Math.floor(Math.random() * whispers.length)]);
+        };
+
+        window.saveMusicSettings = async function() {
+            if (!isOwner) return;
+            appState.trackTitle = document.getElementById('input-track-title').value.trim() || 'soft muffled lullaby';
+            const urlVal = document.getElementById('input-track-url').value.trim();
+            const iconUrlVal = document.getElementById('input-music-url-img').value.trim();
+            const fileInput = document.getElementById('input-track-file');
+            const audioEl = document.getElementById('daily-audio');
+
+            if (iconUrlVal) appState.musicIconImg = iconUrlVal;
+
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                const localUrl = URL.createObjectURL(fileInput.files[0]);
+                audioEl.src = localUrl;
+                audioEl.setAttribute('data-url', localUrl);
+                if (isPlaying) {
+                    ensureMuffledAudioGraph(audioEl);
+                    audioEl.play().catch(() => {});
+                }
+            } else {
+                appState.trackUrl = urlVal;
+                audioEl.src = urlVal;
+                audioEl.setAttribute('data-url', urlVal);
+            }
+
+            updateCharacterDisplay();
+            closeModal('customize-modal');
+            await saveDiaryToCloud('daily song saved ♫');
+        };
+
+        window.handleBoxIconUpload = function(event, boxType) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const saveIcon = (url) => {
+                    if (boxType === 'love') appState.loveBoxIconImg = url;
+                    else appState.mentalBoxIconImg = url;
+                    renderAll();
+                    saveDiaryToCloud('box icon updated ♡');
+                };
+                if (file.type === 'image/gif') {
+                    saveIcon(e.target.result);
+                    return;
+                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 48;
+                    canvas.height = 48;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 48, 48);
+                    saveIcon(canvas.toDataURL('image/png'));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearBoxIcon = async function(boxType) {
+            if (boxType === 'love') appState.loveBoxIconImg = '';
+            else appState.mentalBoxIconImg = '';
+            renderAll();
+            await saveDiaryToCloud('reset box icon');
+        };
+
+        window.saveGeneralSettings = async function() {
+            if (!isOwner) return;
+            appState.loveBoxTitle = document.getElementById('input-love-title').value.trim() || 'love notes';
+            appState.loveBoxIcon = document.getElementById('input-love-icon').value.trim() || '♡';
+            appState.loveBottomQuote = document.getElementById('input-love-quote').value.trim() || '"every little thing about you is worthy of gentle love ♡"';
+            appState.mentalBoxTitle = document.getElementById('input-mental-title').value.trim() || 'mental health';
+            appState.mentalBoxIcon = document.getElementById('input-mental-icon').value.trim() || '✿';
+            appState.centerTitle = document.getElementById('input-center-title').value.trim() || 'things i love:';
+            appState.dailyStatus = document.getElementById('input-daily-status').value.trim() || '"taking things one gentle step at a time today ♡"';
+            appState.pageTitle = document.getElementById('input-page-title').value.trim() || '♡ my little sanctuary ♡';
+
+            appState.secretPassword = document.getElementById('input-secret-pass').value.trim() || 'princess';
+            appState.secretNoteTitle = document.getElementById('input-secret-title').value.trim() || 'my vulnerable note ♡';
+            const secImgUrl = document.getElementById('input-secret-img-url').value.trim();
+            if (secImgUrl) appState.secretNoteImg = secImgUrl;
+
+            appState.secretNoteTexts = [
+                document.getElementById('input-secret-text-0').value.trim(),
+                document.getElementById('input-secret-text-1').value.trim(),
+                document.getElementById('input-secret-text-2').value.trim()
+            ];
+
+            const rawOrbit = document.getElementById('input-orbit-names').value;
+            const parsedOrbit = rawOrbit
+                .split(',')
+                .map(s => s.trim().slice(0, 14))
+                .filter(Boolean)
+                .slice(0, 10);
+            if (parsedOrbit.length > 0) {
+                statsState.orbitNames = parsedOrbit;
+                try {
+                    await setDoc(statsDocRef, { orbitNames: parsedOrbit }, { merge: true });
+                } catch (e) {}
+            }
+
+            renderAll();
+            closeModal('customize-modal');
+            await saveDiaryToCloud('text & secret note saved ♡');
+        };
+
+        window.openEditModal = function(tabName = 'sizes') {
+            if (!isOwner) {
+                openModal('auth-modal');
+                return;
+            }
+
+            syncSizeSlidersFromState();
+
+            const t = appState.theme || defaultTheme;
+            setColorFieldPair('bg', t.bg || defaultTheme.bg);
+            setColorFieldPair('card', t.card || defaultTheme.card);
+            setColorFieldPair('pill', t.pill || defaultTheme.pill);
+            setColorFieldPair('accent', t.accent || defaultTheme.accent);
+            setColorFieldPair('bubble', t.bubble || defaultTheme.bubble);
+            setColorFieldPair('text', t.text || defaultTheme.text);
+            setColorFieldPair('bigheart', t.bigHeartColor || t.accent || defaultTheme.bigHeartColor);
+            setColorFieldPair('particle', t.particleColor || t.accent || defaultTheme.particleColor);
+            setColorFieldPair('orbit', t.orbitTextColor || t.text || defaultTheme.orbitTextColor);
+
+            renderBadgesEditorList();
+
+            document.getElementById('input-top-url').value = appState.topSpriteImg && !appState.topSpriteImg.startsWith('data:') ? appState.topSpriteImg : '';
+            document.getElementById('input-ear-left-url').value = appState.earLeftImg && !appState.earLeftImg.startsWith('data:') ? appState.earLeftImg : '';
+            document.getElementById('input-ear-right-url').value = appState.earRightImg && !appState.earRightImg.startsWith('data:') ? appState.earRightImg : '';
+            document.getElementById('input-axe-url').value = appState.axeCursorImg && !appState.axeCursorImg.startsWith('data:') ? appState.axeCursorImg : '';
+            document.getElementById('input-fruit-url').value = appState.fruitImg && !appState.fruitImg.startsWith('data:') ? appState.fruitImg : '';
+            document.getElementById('input-wand-url').value = appState.wandIconImg && !appState.wandIconImg.startsWith('data:') ? appState.wandIconImg : '';
+            document.getElementById('input-wand-symbol').value = appState.wandSymbol || '🪄';
+            const sadArr = appState.sadTreeFrames || ['', '', ''];
+            const happyArr = appState.happyTreeFrames || ['', '', ''];
+            [0, 1, 2].forEach(i => {
+                const sEl = document.getElementById(`input-sad-tree-${i}`);
+                if (sEl) sEl.value = sadArr[i] && !sadArr[i].startsWith('data:') ? sadArr[i] : '';
+                const hEl = document.getElementById(`input-happy-tree-${i}`);
+                if (hEl) hEl.value = happyArr[i] && !happyArr[i].startsWith('data:') ? happyArr[i] : '';
+            });
+            const fallArr = appState.fallingParticleImgs || ['', '', ''];
+            [0, 1, 2].forEach(i => {
+                const el = document.getElementById(`input-fall-url-${i}`);
+                if (el) el.value = fallArr[i] && !fallArr[i].startsWith('data:') ? fallArr[i] : '';
+            });
+            document.getElementById('input-particle-size').value = appState.fallingParticleSize || 22;
+            document.getElementById('input-bigheart-url').value = appState.bigHeartImg && !appState.bigHeartImg.startsWith('data:') ? appState.bigHeartImg : '';
+            document.getElementById('input-bigheart-symbol').value = appState.bigHeartSymbol || '♥';
+            document.getElementById('input-lock-url').value = appState.lockIconImg && !appState.lockIconImg.startsWith('data:') ? appState.lockIconImg : '';
+            document.getElementById('input-music-url-img').value = appState.musicIconImg && !appState.musicIconImg.startsWith('data:') ? appState.musicIconImg : '';
+
+            document.getElementById('input-track-title').value = appState.trackTitle || '';
+            document.getElementById('input-track-url').value = appState.trackUrl || '';
+
+            document.getElementById('input-love-title').value = appState.loveBoxTitle || 'love notes';
+            document.getElementById('input-love-icon').value = appState.loveBoxIcon || '♡';
+            document.getElementById('input-love-quote').value = appState.loveBottomQuote || '"every little thing about you is worthy of gentle love ♡"';
+            document.getElementById('input-mental-title').value = appState.mentalBoxTitle || 'mental health';
+            document.getElementById('input-mental-icon').value = appState.mentalBoxIcon || '✿';
+            document.getElementById('input-center-title').value = appState.centerTitle || 'things i love:';
+            document.getElementById('input-daily-status').value = appState.dailyStatus || '';
+            document.getElementById('input-orbit-names').value = (statsState.orbitNames || []).join(', ');
+            document.getElementById('input-page-title').value = appState.pageTitle || '♡ my little sanctuary ♡';
+
+            document.getElementById('input-secret-pass').value = appState.secretPassword || 'princess';
+            document.getElementById('input-secret-title').value = appState.secretNoteTitle || 'my vulnerable note ♡';
+            document.getElementById('input-secret-img-url').value = appState.secretNoteImg && !appState.secretNoteImg.startsWith('data:') ? appState.secretNoteImg : '';
+            const secTexts = appState.secretNoteTexts || ['', '', ''];
+            [0, 1, 2].forEach(i => {
+                const el = document.getElementById(`input-secret-text-${i}`);
+                if (el) el.value = secTexts[i] || '';
+            });
+
+            switchModalTab(tabName);
+            openModal('customize-modal');
+        };
+
+        window.switchModalTab = function(tabName) {
+            const tabs = ['sizes', 'colors', 'badges', 'images', 'music', 'general'];
+            tabs.forEach(t => {
+                const panel = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (panel) panel.classList.toggle('hidden', t !== tabName);
+                if (btn) {
+                    if (t === tabName) {
+                        btn.classList.add('bg-white', 'shadow-sm');
+                        btn.classList.remove('opacity-70');
+                    } else {
+                        btn.classList.remove('bg-white', 'shadow-sm');
+                        btn.classList.add('opacity-70');
+                    }
+                }
+            });
+        };
+
+        window.openModal = function(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        };
+
+        window.closeModal = function(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        };
+
+        window.cycleCursor = function() {
+            appState.customCursorImg = '';
+            appState.customCursorClickImg = '';
+            appState.cursorIndex = ((appState.cursorIndex || 0) + 1) % 4;
+            applyCursorToDOM();
+            const names = ['paw 🐾', 'heart ♥', 'sparkle ✨', 'bunny 🐰'];
+            showToast(`cursor: ${names[appState.cursorIndex]}`);
+            if (isOwner && !isVisitorPreview) saveDiaryToCloud();
+        };
+
+        window.toggleParticles = function() {
+            appState.particlesEnabled = !appState.particlesEnabled;
+            showToast(appState.particlesEnabled ? 'falling sparkles on ✨' : 'falling sparkles paused');
+            if (isOwner && !isVisitorPreview) saveDiaryToCloud();
+        };
+
+        window.triggerHeartBurst = function() {
+            const symbols = ['♥', '♡', '✿', '✦', '🌸'];
+            for (let i = 0; i < 14; i++) {
+                const el = document.createElement('span');
+                el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                el.style.position = 'fixed';
+                el.style.left = `${20 + Math.random() * 60}%`;
+                el.style.top = `${30 + Math.random() * 40}%`;
+                el.style.color = 'var(--accent-pink-dark)';
+                el.style.fontSize = `${14 + Math.random() * 14}px`;
+                el.style.pointerEvents = 'none';
+                el.style.zIndex = '9999';
+                el.style.transition = 'all 1.1s cubic-bezier(0.16, 1, 0.3, 1)';
+                document.body.appendChild(el);
+                requestAnimationFrame(() => {
+                    el.style.transform = `translate(${(Math.random() - 0.5) * 180}px, ${-80 - Math.random() * 140}px) rotate(${(Math.random() - 0.5) * 90}deg)`;
+                    el.style.opacity = '0';
+                });
+                setTimeout(() => el.remove(), 1150);
+            }
+        };
+
+        window.incrementHeartCounter = async function() {
+            const btn = document.getElementById('heart-counter-btn');
+            btn.style.backgroundColor = 'var(--accent-pink-dark)';
+            setTimeout(() => {
+                btn.style.backgroundColor = 'var(--pill-grey)';
+            }, 250);
+
+            statsState.hearts = (statsState.hearts || 0) + 1;
+            document.getElementById('heart-count').textContent = statsState.hearts.toLocaleString();
+
+            try {
+                const snap = await getDoc(statsDocRef);
+                if (!snap.exists()) {
+                    await setDoc(statsDocRef, {
+                        hearts: 1,
+                        jarHearts: 0,
+                        orbitNames: statsState.orbitNames || ['bunny ♡', 'angel ✦', 'meow']
+                    });
+                } else {
+                    await updateDoc(statsDocRef, { hearts: increment(1) });
+                }
+            } catch (e) {}
+        };
+
+        function initCursorTrailAndParticles() {
+            let lastTrailTime = 0;
+            const trailSymbols = ['♡', '✦', '·', '♥'];
+
+            window.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastTrailTime < 65) return;
+                lastTrailTime = now;
+
+                const dot = document.createElement('span');
+                dot.className = 'cursor-trail';
+                dot.textContent = trailSymbols[Math.floor(Math.random() * trailSymbols.length)];
+                dot.style.left = `${e.clientX}px`;
+                dot.style.top = `${e.clientY}px`;
+                dot.style.color = 'var(--accent-pink-dark)';
+                document.body.appendChild(dot);
+                setTimeout(() => dot.remove(), 860);
+            });
+
+            setInterval(() => {
+                if (!appState.particlesEnabled) return;
+                const layer = document.getElementById('particles-layer');
+                if (!layer) return;
+
+                const activeFallImgs = (appState.fallingParticleImgs || []).filter(u => u && u.trim());
+                const chosenImg = activeFallImgs.length
+                    ? activeFallImgs[Math.floor(Math.random() * activeFallImgs.length)]
+                    : '';
+
+                const p = document.createElement(chosenImg ? 'img' : 'span');
+                p.className = 'falling-particle';
+                p.style.left = `${Math.random() * 98}vw`;
+                const duration = 6 + Math.random() * 6;
+                p.style.animationDuration = `${duration}s`;
+
+                if (chosenImg) {
+                    p.src = chosenImg;
+                    const sz = appState.fallingParticleSize || 22;
+                    p.style.width = `${sz}px`;
+                    p.style.height = `${sz}px`;
+                    p.style.objectFit = 'contain';
+                } else {
+                    const symbols = ['♡', '✿', '✦', '·', '❄'];
+                    p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    p.style.fontSize = `${10 + Math.random() * 10}px`;
+                    p.style.color = (appState.theme && appState.theme.particleColor) || 'var(--accent-pink-dark)';
+                }
+
+                layer.appendChild(p);
+                setTimeout(() => p.remove(), duration * 1000);
+            }, 850);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-msg');
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.style.opacity = '1';
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2400);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        window.copyFullSiteCode = function() {
+            const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const temp = document.createElement('textarea');
+            temp.value = fullHtml;
+            temp.style.position = 'fixed';
+            temp.style.opacity = '0';
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                showToast('copied full index.html code! paste into github ♡');
+            } catch (e) {
+                showToast('press Cmd+A then Cmd+C in the code panel!');
+            }
+            temp.remove();
+        };
+
+        initOwnerDraggables();
+        initCursorTrailAndParticles();
+        initAutoStartMusicOnFirstClick();
+        initSanctuary();
+    </script>
+</body>
+</html>
