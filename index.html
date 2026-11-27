@@ -30,6 +30,9 @@
 
         body {
             background-color: var(--bg-blush);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: var(--text-main);
             font-family: 'Sniglet', cursive, sans-serif;
             margin: 0;
@@ -64,16 +67,16 @@
             transition: box-shadow 0.3s ease, background-color 0.35s ease, border-color 0.35s ease;
         }
 
-        @keyframes jellySquish {
-            0% { transform: scale(1, 1); }
-            30% { transform: scale(1.03, 0.96); }
-            55% { transform: scale(0.985, 1.02); }
-            75% { transform: scale(1.01, 0.99); }
-            100% { transform: scale(1, 1); }
+        @keyframes softBoxBounce {
+            0% { transform: translateY(0px) scale(1); }
+            35% { transform: translateY(-7px) scale(1.015); }
+            65% { transform: translateY(2px) scale(0.995); }
+            85% { transform: translateY(-2px) scale(1.005); }
+            100% { transform: translateY(0px) scale(1); }
         }
 
         .sanctuary-card:hover {
-            animation: jellySquish 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: softBoxBounce 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 12px 34px rgba(224, 142, 164, 0.16);
         }
 
@@ -107,55 +110,53 @@
             border-radius: 9999px;
             padding: 5px 11px;
             box-shadow: 0 3px 10px rgba(175, 145, 155, 0.09);
-            animation: badgeSoftDrift 4.4s ease-in-out infinite;
+            animation: badgeBlurBob 3.8s ease-in-out infinite;
             transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
         }
 
-        @keyframes badgeSoftDrift {
-            0%, 100% { opacity: 0.95; transform: translateY(0px) rotate(-1.5deg); }
-            50% { opacity: 0.55; transform: translateY(-3px) rotate(1.5deg); }
+        @keyframes badgeBlurBob {
+            0%, 100% { opacity: 0.96; filter: blur(0px); transform: translateY(-4px); }
+            50% { opacity: 0.4; filter: blur(2.2px); transform: translateY(5px); }
         }
 
         .charm-stamp.secret-charm-special {
-            animation: secretCharmPeek 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+            animation: secretDreamFloat 3.2s ease-in-out infinite;
             background: var(--bubble-bg);
-            border: 1.5px dashed var(--accent-pink);
+            border: 1.5px dashed var(--accent-pink-dark);
+            padding: 5px 11px;
+            box-shadow: 0 0 14px rgba(224, 142, 164, 0.28);
         }
 
-        @keyframes secretCharmPeek {
-            0%, 100% { transform: translateY(0px) rotate(-5deg) scale(1); }
-            35% { transform: translateY(-5px) rotate(6deg) scale(1.08); }
-            65% { transform: translateY(-2px) rotate(-3deg) scale(1.03); }
+        .charm-stamp.secret-charm-special .secret-charm-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes secretDreamFloat {
+            0%, 100% { transform: translateY(0px) scale(1); box-shadow: 0 0 10px rgba(224, 142, 164, 0.22); }
+            50% { transform: translateY(-3.5px) scale(1.06); box-shadow: 0 0 18px rgba(224, 142, 164, 0.45); }
         }
 
         .charm-stamp:hover {
             animation-play-state: paused;
             opacity: 1 !important;
+            filter: blur(0px) !important;
             transform: scale(1.16) translateY(-2px) !important;
             box-shadow: 0 6px 14px rgba(175, 145, 155, 0.16);
             z-index: 45;
         }
 
-        @keyframes interestBlurTurn {
-            0% { opacity: 0; filter: blur(10px); transform: scale(0.95); }
-            22% { opacity: 1; filter: blur(0px); transform: scale(1); }
-            78% { opacity: 1; filter: blur(0px); transform: scale(1); }
-            100% { opacity: 0; filter: blur(10px); transform: scale(1.05); }
+        @keyframes diaryNoteBlurTurn {
+            0% { opacity: 0; filter: blur(11px); transform: scale(0.96); }
+            18% { opacity: 1; filter: blur(0px); transform: scale(1); }
+            82% { opacity: 1; filter: blur(0px); transform: scale(1); }
+            100% { opacity: 0; filter: blur(11px); transform: scale(1.03); }
         }
 
-        .interest-turn-badge {
-            display: inline-block;
-            animation: interestBlurTurn 2.8s ease-in-out forwards;
-            text-shadow: 0 0 12px rgba(255, 255, 255, 0.95), 0 0 6px var(--accent-pink);
-        }
-
-        .love-bubble-item {
-            background: linear-gradient(145deg, #ffffff 0%, var(--bubble-bg) 100%);
-            border: 1.5px solid var(--border-soft);
-            border-radius: 22px;
-            padding: 12px 15px;
-            text-align: left;
-            box-shadow: 0 4px 12px rgba(212, 175, 186, 0.12), inset 0 2px 6px rgba(255, 255, 255, 0.9);
+        .diary-turn-note {
+            animation: diaryNoteBlurTurn 4.8s ease-in-out forwards;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.95);
         }
 
         .badge-tooltip {
@@ -181,104 +182,14 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        .thought-bubble {
-            position: absolute;
-            width: 86px;
-            height: 86px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 247, 250, 0.78) 68%, rgba(255, 255, 255, 0.85) 100%);
-            backdrop-filter: blur(2px);
-            border: 1.5px solid rgba(255, 255, 255, 0.92);
-            padding: 9px;
-            font-size: 9px;
-            line-height: 1.15;
-            text-align: center;
-            color: var(--text-main);
-            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.95);
-            box-shadow: 0 4px 14px rgba(212, 175, 186, 0.18), inset 0 3px 8px rgba(255, 255, 255, 0.95);
-            pointer-events: auto;
-            cursor: grab;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            animation: gentleFloat 4.5s ease-in-out infinite;
-            z-index: 25;
-        }
-
-        .thought-bubble::before {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 18px;
-            width: 7px;
-            height: 7px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.95);
-            border-radius: 50%;
-        }
-
-        .thought-bubble::after {
-            content: '';
-            position: absolute;
-            bottom: -9px;
-            left: 12px;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.95);
-            border-radius: 50%;
-        }
-
-        .thought-bubble:hover {
-            transform: scale(1.06);
-            box-shadow: 0 8px 22px rgba(212, 175, 186, 0.3), inset 0 2px 6px rgba(255, 255, 255, 0.95);
-            z-index: 35;
-        }
-
-        .thought-bubble:active {
-            cursor: grabbing;
-            animation: none;
-        }
-
-        @keyframes treeShake {
-            0%, 100% { transform: rotate(0deg) scale(1); }
-            20% { transform: rotate(-4deg) scale(1.03); }
-            40% { transform: rotate(4deg) scale(0.98); }
-            60% { transform: rotate(-3deg) scale(1.02); }
-            80% { transform: rotate(2deg) scale(0.99); }
-        }
-
-        .tree-animating {
-            animation: treeShake 0.45s ease-in-out;
-        }
-
-        @keyframes fruitDrop {
-            0% { opacity: 1; transform: translateY(0) scale(0.85) rotate(0deg); }
-            70% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(115px) scale(1.05) rotate(35deg); }
-        }
-
-        .falling-tree-fruit {
-            position: absolute;
-            pointer-events: none;
-            z-index: 30;
-            animation: fruitDrop 1.25s cubic-bezier(0.32, 0, 0.67, 0.85) forwards;
-        }
-
         @keyframes wandFloat {
-            0%, 100% { transform: translateY(0) rotate(-6deg); }
-            50% { transform: translateY(-6px) rotate(6deg); }
+            0%, 100% { transform: translateY(0) rotate(-8deg); }
+            50% { transform: translateY(-4px) rotate(8deg); }
         }
 
         .magic-wand-btn {
-            animation: wandFloat 3.6s ease-in-out infinite;
-            filter: drop-shadow(0 5px 12px rgba(224, 142, 164, 0.32));
-        }
-
-        @keyframes gentleFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
+            animation: wandFloat 3.4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 10px rgba(224, 142, 164, 0.35));
         }
 
         @keyframes heartBob {
@@ -290,23 +201,42 @@
             animation: heartBob 3.2s ease-in-out infinite;
         }
 
-        @keyframes ambientNameDrift {
-            0%, 100% { transform: translate(0px, 0px); opacity: 0.78; }
-            33% { transform: translate(7px, -6px); opacity: 0.95; }
-            66% { transform: translate(-6px, 5px); opacity: 0.72; }
+        @keyframes carouselSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .floating-ambient-name {
-            position: fixed;
-            font-family: 'VT323', monospace;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
+        @keyframes carouselCounterSpin {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .baby-carousel-ring {
+            position: absolute;
+            inset: 0;
             pointer-events: none;
-            z-index: 5;
+            animation: carouselSpin 22s linear infinite;
+        }
+
+        .baby-carousel-slot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+        }
+
+        .baby-carousel-label {
+            display: inline-block;
+            position: relative;
+            transform: translate(-50%, -50%);
+            font-family: 'Sniglet', cursive, sans-serif;
+            font-size: 11.5px;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
             color: var(--orbit-text-color, var(--text-muted));
-            text-shadow: 0 0 8px var(--accent-pink-dark), 0 0 3px #ffffff;
-            animation: ambientNameDrift 6s ease-in-out infinite;
+            text-shadow: 0 0 8px var(--accent-pink), 0 0 3px #ffffff;
+            animation: carouselCounterSpin 22s linear infinite;
         }
 
         .cursor-trail {
@@ -322,23 +252,49 @@
             100% { opacity: 0; transform: translate(-50%, -18px) scale(0.4) rotate(25deg); }
         }
 
-        .falling-particle {
+        .cereal-piece {
             position: fixed;
-            top: -30px;
+            top: 0;
+            left: 0;
             pointer-events: none;
-            z-index: 1;
-            opacity: 0.5;
-            animation: fallDown linear forwards;
+            z-index: 2;
+            will-change: transform, opacity;
         }
 
-        @keyframes fallDown {
-            to {
-                transform: translateY(108vh) rotate(360deg);
-            }
+        .edge-marquee-track {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 44px;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 3;
         }
 
-        .cute-scroll::-webkit-scrollbar {
-            width: 5px;
+        .edge-marquee-inner {
+            display: inline-flex;
+            align-items: center;
+            height: 100%;
+            white-space: nowrap;
+            will-change: transform;
+        }
+
+        @keyframes floatLeftToRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        @keyframes floatRightToLeft {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-ltr {
+            animation: floatLeftToRight 28s linear infinite;
+        }
+
+        .marquee-rtl {
+            animation: floatRightToLeft 28s linear infinite;
         }
 
         @media (max-width: 900px) {
@@ -346,8 +302,8 @@
                 display: flex !important;
                 flex-direction: column;
                 align-items: center;
-                gap: 24px;
-                padding-top: 60px;
+                gap: 28px;
+                padding-top: 55px;
                 padding-bottom: 110px;
                 height: auto !important;
             }
@@ -356,59 +312,35 @@
                 left: auto !important;
                 top: auto !important;
                 width: 92% !important;
-                max-width: 380px !important;
+                max-width: 390px !important;
             }
             #center-orbit-heart-stage {
                 position: relative !important;
                 left: auto !important;
                 top: auto !important;
                 transform: none !important;
-                margin-top: 8px;
+                margin-top: 4px;
             }
         }
     </style>
 </head>
 <body class="cursor-paw">
     <div id="particles-layer"></div>
-    <div id="floating-names-layer" class="fixed inset-0 pointer-events-none z-[5]"></div>
+    <div id="top-marquee-track" class="edge-marquee-track top-2 hidden">
+        <div id="top-marquee-inner" class="edge-marquee-inner marquee-ltr"></div>
+    </div>
+    <div id="bottom-marquee-track" class="edge-marquee-track bottom-14 hidden">
+        <div id="bottom-marquee-inner" class="edge-marquee-inner marquee-rtl"></div>
+    </div>
     <audio id="daily-audio" loop crossorigin="anonymous"></audio>
     <main id="workspace" class="workspace-stage relative w-full min-h-screen overflow-hidden">
-        <section id="box-love" class="draggable-window sanctuary-card flex flex-col" style="left: calc(50% - 505px); top: 155px; width: 310px; height: 360px;">
-            <div class="draggable-handle px-4 pt-3.5 pb-1.5 flex items-center justify-between rounded-t-[22px]">
-                <div class="flex items-center gap-1.5">
-                    <img id="love-box-icon-img" src="" alt="" class="hidden w-4 h-4 object-contain pointer-events-none">
-                    <span id="love-box-icon-glyph" class="text-xs" style="color: var(--accent-pink-dark);">♡</span>
-                    <h2 id="love-box-title" class="text-xs font-bold tracking-wide">love notes</h2>
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <button onclick="openAddLoveNote()" class="owner-only text-[11px] px-2.5 py-0.5 rounded-full font-semibold transition" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">+ note</button>
-                    <span class="text-[11px] opacity-35" title="Drag box">⋮⋮</span>
-                </div>
-            </div>
-
-            <div id="love-notes-list" class="p-3.5 pt-2 space-y-2.5 flex-1 overflow-y-auto cute-scroll"></div>
-
-            <div class="px-3.5 pb-3.5 pt-1">
-                <div class="p-2.5 rounded-2xl text-center" style="background-color: var(--bubble-bg);">
-                    <p id="love-bottom-quote" class="text-[11px] italic leading-relaxed opacity-85">"every little thing about you is worthy of gentle love ♡"</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="box-center" class="draggable-window flex flex-col items-center" style="left: calc(50% - 160px); top: 235px; width: 320px;">
-            <div class="flex items-center justify-center gap-2 mb-3 pt-1 z-30">
-                <div id="badges-pill-container" class="flex items-center flex-wrap justify-center gap-2 select-none"></div>
-                <button onclick="openEditModal('badges')" class="owner-only w-6 h-6 rounded-full sanctuary-card items-center justify-center text-[11px] shadow-sm hover:scale-105 transition" style="color: var(--accent-pink-dark);" title="Edit Charms & Cursors">
-                    ✎
-                </button>
-            </div>
-
+        <section id="box-center" class="draggable-window flex flex-col items-center" style="left: calc(50% - 470px); top: 165px; width: 460px;">
             <div class="relative z-10 -mb-2 group flex flex-col items-center">
                 <div id="top-sprite-container" class="flex items-end justify-center transition-transform duration-300">
-                    <img id="custom-top-sprite" src="" alt="Top Character" style="height: 68px;" class="hidden object-contain drop-shadow-sm pointer-events-none">
-                    <button id="top-sprite-placeholder" onclick="openEditModal('images')" class="owner-only-flex flex-col items-center justify-center px-3 py-1.5 mb-2 rounded-2xl text-[11px] bg-white/80 hover:bg-white transition shadow-sm" style="color: var(--text-muted);">
-                        <span>+ top char png</span>
-                    </button>
+                    <img id="custom-top-sprite" src="" alt="Top Character" style="height: 68px;" class="hidden w-auto object-contain drop-shadow-sm pointer-events-none">
+                    <div id="top-sprite-placeholder" onclick="openEditModal('images')" class="owner-only-flex h-12 px-4 rounded-2xl border border-dashed text-[10px] items-center justify-center opacity-60 hover:opacity-100 cursor-pointer mb-2" style="border-color: var(--accent-pink-dark); background-color: var(--bubble-bg);">
+                        + add top char png/gif
+                    </div>
                 </div>
 
                 <button onclick="openEditModal('images')" class="owner-only opacity-0 group-hover:opacity-100 transition-opacity absolute -top-6 bg-white/95 text-[10px] px-2.5 py-0.5 rounded-full shadow-sm whitespace-nowrap" style="color: var(--text-main);">
@@ -416,105 +348,83 @@
                 </button>
             </div>
 
-            <div id="center-card-inner" class="sanctuary-card w-full pt-5 pb-5 px-6 text-center relative">
-                <img id="bunny-ear-left" src="" alt="Left Bunny Ear" style="height: 54px;" class="hidden absolute -top-8 -left-3 object-contain pointer-events-none z-20 drop-shadow-sm">
-                <img id="bunny-ear-right" src="" alt="Right Bunny Ear" style="height: 54px;" class="hidden absolute -top-8 -right-3 object-contain pointer-events-none z-20 drop-shadow-sm">
+            <div class="relative w-full flex items-center justify-center">
+                <div id="badges-left-container" class="hidden sm:flex flex-col items-center justify-center gap-3.5 w-14 shrink-0 z-30 select-none"></div>
 
-                <button id="center-music-btn" onclick="toggleAudio()" class="absolute top-2.5 left-3 w-7 h-7 rounded-full flex items-center justify-center hover:scale-110 transition bg-transparent" style="color: var(--accent-pink-dark);" title="Play / Pause Muffled Song">
-                    <img id="music-custom-img" src="" alt="Music" class="hidden w-6 h-6 object-contain pointer-events-none">
-                    <span id="play-icon" class="text-xs font-bold">♫</span>
+                <div id="center-card-inner" class="sanctuary-card flex-1 min-h-[295px] flex flex-col justify-between pt-6 pb-6 px-6 text-center relative">
+                    <img id="bunny-ear-left" src="" alt="Left Bunny Ear" style="height: 54px;" class="hidden absolute -top-8 -left-3 object-contain pointer-events-none z-20 drop-shadow-sm">
+                    <img id="bunny-ear-right" src="" alt="Right Bunny Ear" style="height: 54px;" class="hidden absolute -top-8 -right-3 object-contain pointer-events-none z-20 drop-shadow-sm">
+
+                    <button id="yumekawaii-wand-btn" onclick="waveMagicWand()" class="magic-wand-btn absolute -top-3.5 -right-3.5 z-30 w-9 h-9 rounded-full flex items-center justify-center bg-transparent border-0 hover:scale-115 transition" title="wave wand">
+                        <img id="wand-custom-img" src="" alt="Magic Wand" class="hidden w-8 h-8 object-contain pointer-events-none">
+                        <span id="wand-default-glyph" class="text-xl" style="color: var(--accent-pink-dark);">✦</span>
+                    </button>
+
+                    <button id="center-music-btn" onclick="toggleAudio()" class="absolute top-3 left-3.5 w-7 h-7 rounded-full flex items-center justify-center hover:scale-110 transition bg-transparent" style="color: var(--accent-pink-dark);" title="Play / Pause Muffled Song">
+                        <img id="music-custom-img" src="" alt="Music" class="hidden w-6 h-6 object-contain pointer-events-none">
+                        <span id="play-icon" class="text-xs font-bold">♫</span>
+                    </button>
+                    <div class="draggable-handle absolute top-3 right-5 text-xs opacity-35 hover:opacity-80" title="Drag diary box">⋮⋮</div>
+
+                    <div class="flex items-center justify-center gap-1.5 mb-3">
+                        <img id="love-box-icon-img" src="" alt="" class="hidden w-4 h-4 object-contain pointer-events-none">
+                        <span id="love-box-icon-glyph" class="text-xs" style="color: var(--accent-pink-dark);">♡</span>
+                        <h1 id="center-title" class="text-[13px] font-semibold tracking-wide">my diary:</h1>
+                        <button onclick="openAddLoveNote()" class="owner-only text-[10px] px-2 py-0.5 rounded-full font-semibold ml-1 transition" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">+ note</button>
+                    </div>
+
+                    <div id="diary-turn-stage" class="my-auto flex flex-col items-center justify-center px-2 py-3"></div>
+
+                    <div id="diary-owner-list" class="owner-only-flex flex-col gap-1.5 max-h-28 overflow-y-auto cute-scroll mt-2 pt-2 border-t text-left" style="border-color: var(--border-soft);"></div>
+
+                    <div class="pt-1">
+                        <p id="daily-status-text" class="text-[11px] opacity-75 italic">"taking things one gentle step at a time today ♡"</p>
+                    </div>
+                </div>
+
+                <div id="badges-right-container" class="hidden sm:flex flex-col items-center justify-center gap-3.5 w-14 shrink-0 z-30 select-none"></div>
+            </div>
+
+            <div class="flex items-center justify-center gap-2 mt-3.5 z-30 w-full">
+                <div id="badges-bottom-secret-container" class="flex items-center justify-center gap-2 select-none"></div>
+                <button onclick="openEditModal('badges')" class="owner-only w-6 h-6 rounded-full sanctuary-card items-center justify-center text-[11px] shadow-sm hover:scale-105 transition" style="color: var(--accent-pink-dark);" title="Edit Charms & Cursors">
+                    ✎
                 </button>
-                <div class="draggable-handle absolute top-2.5 right-3.5 text-xs opacity-35 hover:opacity-80" title="Drag center box">⋮⋮</div>
-                <h1 id="center-title" class="text-[13px] font-semibold mb-3 tracking-wide">things i love:</h1>
-
-                <div id="interests-turn-stage" class="h-7 flex items-center justify-center mb-1"></div>
-
-                <div id="interests-container" class="owner-only-flex flex-wrap justify-center gap-1.5 mt-2 mb-1"></div>
-
-                <div class="owner-only-flex items-center justify-center gap-1 mt-2">
-                    <input id="new-interest-input" type="text" placeholder="add interest..." class="text-xs rounded-full px-3 py-1 w-40 text-center focus:outline-none" style="background-color: var(--bubble-bg);" onkeydown="if(event.key==='Enter') addInterest()">
-                    <button onclick="addInterest()" class="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center transition" style="background-color: var(--accent-pink); color: #fff;" title="Add Interest">+</button>
-                </div>
-
-                <div class="mt-3 pt-1">
-                    <p id="daily-status-text" class="text-[11px] opacity-75 italic">"taking things one gentle step at a time today ♡"</p>
-                </div>
             </div>
         </section>
-        <section id="box-mental" class="draggable-window sanctuary-card flex flex-col" style="left: calc(50% + 195px); top: 155px; width: 310px; height: 360px;">
-            <div class="draggable-handle px-4 pt-3.5 pb-1.5 flex items-center justify-between rounded-t-[22px]">
-                <div class="flex items-center gap-1.5">
-                    <img id="mental-box-icon-img" src="" alt="" class="hidden w-4 h-4 object-contain pointer-events-none">
-                    <span id="mental-box-icon-glyph" class="text-xs" style="color: var(--accent-pink-dark);">✿</span>
-                    <h2 id="mental-box-title" class="text-xs font-bold tracking-wide">mental health</h2>
-                </div>
-                <div class="flex items-center gap-1">
-                    <button id="tree-mode-toggle-btn" onclick="toggleTreeMode()" class="owner-only text-[10px] px-2 py-0.5 rounded-full font-semibold transition" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);" title="Switch Sad Chop / Happy Fruit Tree">
-                        😢 sad
-                    </button>
-                    <button onclick="openEditModal('images')" class="owner-only text-[10px] px-2 py-0.5 rounded-full font-medium transition" style="background-color: var(--bubble-bg); color: var(--text-main);" title="Upload Tree Frames">
-                        tree ✎
-                    </button>
-                    <button onclick="openAddFeelingModal()" class="owner-only text-[10px] px-2 py-0.5 rounded-full font-semibold transition" style="background-color: var(--accent-pink); color: #fff;" title="Add Feeling Bubble">
-                        + bubble
-                    </button>
-                    <span class="text-[11px] opacity-35 ml-0.5" title="Drag box">⋮⋮</span>
-                </div>
+
+        <aside id="center-orbit-heart-stage" class="draggable-window flex flex-col items-center select-none" style="left: calc(50% + 75px); top: 175px; width: 290px;">
+            <div id="heart-carousel-wrapper" class="relative flex items-center justify-center" style="width: 270px; height: 270px;">
+                <div id="heart-orbit-ring" class="baby-carousel-ring"></div>
+
+                <button id="big-spam-heart-btn" onclick="spamBigHeart()" class="bobbing-center-heart group relative z-10 w-24 h-24 flex flex-col items-center justify-center active:scale-75 transition-transform duration-150 select-none bg-transparent border-0 focus:outline-none" title="Tap my heart! ♡">
+                    <img id="big-heart-custom-img" src="" alt="Big Heart" class="hidden w-20 h-20 object-contain drop-shadow-sm transition-transform duration-150 group-hover:scale-110 pointer-events-none">
+                    <span id="big-heart-glyph" class="text-6xl leading-none drop-shadow-sm transition-transform duration-150 group-hover:scale-110" style="color: var(--accent-pink-dark);">♥</span>
+                </button>
             </div>
 
-            <div id="mental-stage" class="relative flex-1 w-full overflow-hidden rounded-b-[22px]">
-                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-24 h-3.5 rounded-full opacity-40 blur-[2px]" style="background-color: var(--pill-grey);"></div>
-
-                <div id="standing-char-wrapper" onclick="interactWithTree()" class="absolute inset-x-3 top-2 bottom-4 z-10 flex items-end justify-center cursor-pointer select-none">
-                    <div id="tree-frame-stage" class="relative w-full h-full flex items-end justify-center pointer-events-none">
-                        <img id="tree-img-a" src="" alt="Mood Tree" class="hidden max-h-full max-w-full w-auto h-auto object-contain drop-shadow-sm transition-opacity duration-300" style="opacity: 1;">
-                        <img id="tree-img-b" src="" alt="Mood Tree" class="hidden absolute bottom-0 max-h-full max-w-full w-auto h-auto object-contain drop-shadow-sm transition-opacity duration-300" style="opacity: 0;">
-                    </div>
-
-                    <div id="standing-char-placeholder" onclick="event.stopPropagation(); openEditModal('images')" class="owner-only-flex pointer-events-auto flex-col items-center justify-center w-36 h-44 rounded-3xl cursor-pointer p-3 text-center transition hover:scale-[1.02]" style="background-color: var(--bubble-bg); color: var(--text-muted);">
-                        <span class="text-xl mb-1">🌳</span>
-                        <span id="tree-placeholder-label" class="text-[11px] font-semibold">upload 3 tree frames</span>
-                        <span class="text-[9px] opacity-75 mt-1">sad chop or happy fruit tree</span>
-                    </div>
-                </div>
-
-                <div id="tree-fruits-layer" class="absolute inset-0 pointer-events-none z-20"></div>
-                <div id="feeling-bubbles-layer" class="absolute inset-0 z-20 pointer-events-none"></div>
-            </div>
-        </section>
-        <aside id="center-orbit-heart-stage" class="draggable-window flex flex-col items-center select-none" style="left: calc(50% - 80px); top: 475px; width: 160px;">
-            <button id="big-spam-heart-btn" onclick="spamBigHeart()" class="bobbing-center-heart group relative z-10 w-16 h-16 flex flex-col items-center justify-center active:scale-75 transition-transform duration-150 select-none bg-transparent border-0 focus:outline-none" title="Tap my heart! ♡">
-                <img id="big-heart-custom-img" src="" alt="Big Heart" class="hidden w-12 h-12 object-contain drop-shadow-sm transition-transform duration-150 group-hover:scale-110 pointer-events-none">
-                <span id="big-heart-glyph" class="text-4xl leading-none drop-shadow-sm transition-transform duration-150 group-hover:scale-110" style="color: var(--accent-pink-dark);">♥</span>
-            </button>
-
-            <button onclick="openVisitorNamePrompt()" class="mt-0.5 z-20 text-[13px] opacity-80 hover:opacity-100 transition tracking-wide bg-transparent border-0" style="font-family: 'VT323', monospace; color: var(--orbit-text-color, var(--text-muted)); text-shadow: 0 0 6px var(--accent-pink);">
+            <button onclick="openVisitorNamePrompt()" class="mt-1 z-20 text-xs opacity-85 hover:opacity-100 transition tracking-wide bg-transparent border-0 font-semibold" style="color: var(--orbit-text-color, var(--text-muted)); text-shadow: 0 0 6px var(--accent-pink);">
                 + <span id="visitor-tag-btn">add ur name</span>
             </button>
         </aside>
 
-        <button id="yumekawaii-wand-btn" onclick="waveMagicWand()" class="magic-wand-btn fixed bottom-16 left-5 z-30 w-11 h-11 rounded-full flex items-center justify-center bg-transparent border-0 hover:scale-110 transition" title="wave yumekawaii magic wand ✨">
-            <img id="wand-custom-img" src="" alt="Magic Wand" class="hidden w-10 h-10 object-contain pointer-events-none">
-            <span id="wand-default-glyph" class="text-2xl">🪄</span>
-        </button>
-
     </main>
 
     <div class="fixed bottom-4 left-4 z-40 flex items-center gap-2">
-        <button id="owner-lock-btn" onclick="handleLockClick()" class="w-8 h-8 rounded-full text-white flex items-center justify-center shadow-sm transition hover:scale-105 overflow-hidden" style="background-color: var(--pill-grey);" title="Owner Access">
-            <img id="lock-custom-img" src="" alt="Lock" class="hidden w-5 h-5 object-contain pointer-events-none">
-            <span id="lock-icon" class="text-xs">🔒</span>
+        <button id="owner-lock-btn" onclick="handleLockClick()" class="w-8 h-8 flex items-center justify-center bg-transparent border-0 shadow-none transition hover:scale-110" style="color: var(--text-main);" title="Owner Access">
+            <img id="lock-custom-img" src="" alt="Lock" class="hidden w-6 h-6 object-contain pointer-events-none drop-shadow-sm">
+            <span id="lock-icon" class="text-base drop-shadow-sm">🔒</span>
         </button>
 
         <div id="owner-toolbar" class="owner-only-flex flex-wrap items-center gap-1 px-3 py-1 rounded-full sanctuary-card shadow-sm">
-            <button onclick="openEditModal('sizes')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">📐 sizes</button>
-            <button onclick="openEditModal('colors')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">🎨 colors</button>
-            <button onclick="openEditModal('badges')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">🐾 badges/cursor</button>
-            <button onclick="openEditModal('images')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">🐰 chars</button>
-            <button onclick="openEditModal('music')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">♫ song</button>
-            <button onclick="openEditModal('general')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">✿ text/secret</button>
-            <button onclick="copyFullSiteCode()" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">📋 copy code</button>
-            <button id="preview-toggle-btn" onclick="toggleVisitorPreview()" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">👁 preview</button>
+            <button onclick="openEditModal('sizes')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">sizes</button>
+            <button onclick="openEditModal('colors')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">colors</button>
+            <button onclick="openEditModal('badges')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">badges & cursor</button>
+            <button onclick="openEditModal('images')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">images</button>
+            <button onclick="openEditModal('music')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">song</button>
+            <button onclick="openEditModal('general')" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">text & secret</button>
+            <button onclick="copyFullSiteCode()" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">copy code</button>
+            <button id="preview-toggle-btn" onclick="toggleVisitorPreview()" class="text-xs px-2 py-0.5 rounded-full hover:bg-black/5 transition font-medium">preview</button>
         </div>
 
         <button id="exit-preview-btn" onclick="toggleVisitorPreview()" class="hidden px-3 py-1 rounded-full text-xs font-semibold shadow-sm bg-white" style="color: var(--accent-pink-dark);">
@@ -532,8 +442,8 @@
     <div id="bunny-clue-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
         <div class="sanctuary-card w-full max-w-xs p-5 text-center relative">
             <button onclick="closeModal('bunny-clue-modal')" class="absolute top-3 right-3.5 text-xs opacity-60 hover:opacity-100">✕</button>
-            <div class="text-4xl mb-2 animate-bounce">🐰</div>
-            <p class="text-[11px] opacity-75 mb-1">psst... a little bunny whispers a secret:</p>
+            <div class="text-2xl mb-2" style="color: var(--accent-pink-dark);">♡</div>
+            <p class="text-[11px] opacity-75 mb-2">psst... a little secret for you:</p>
             <div class="px-3 py-2 rounded-2xl text-xs font-bold tracking-wide" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
                 password: "<span id="bunny-clue-password-text">princess</span>"
             </div>
@@ -543,11 +453,11 @@
     <div id="secret-password-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
         <div class="sanctuary-card w-full max-w-xs p-5 text-center relative">
             <button onclick="closeModal('secret-password-modal')" class="absolute top-3 right-3.5 text-xs opacity-60 hover:opacity-100">✕</button>
-            <div class="text-2xl mb-1.5">🔒</div>
+            <div class="text-xl mb-1.5" style="color: var(--accent-pink-dark);">♡</div>
             <h3 class="text-sm font-bold mb-1">secret note</h3>
-            <p class="text-[11px] opacity-75 mb-3">enter the secret password to read my vulnerable note...</p>
-            <input id="secret-pass-input" type="password" placeholder="enter password..." class="w-full text-xs text-center rounded-xl px-3 py-2 focus:outline-none mb-2" style="background-color: var(--bubble-bg);" onkeydown="if(event.key==='Enter') verifySecretPassword()">
-            <p id="secret-pass-error" class="text-[11px] text-rose-500 hidden mb-2">wrong password... maybe ask the bottom heart? 🐰</p>
+            <p class="text-[11px] opacity-75 mb-3">enter the password to read...</p>
+            <input id="secret-pass-input" type="password" placeholder="password..." class="w-full text-xs text-center rounded-xl px-3 py-2 focus:outline-none mb-2" style="background-color: var(--bubble-bg);" onkeydown="if(event.key==='Enter') verifySecretPassword()">
+            <p id="secret-pass-error" class="text-[11px] text-rose-500 hidden mb-2">wrong password... try tapping the bottom heart ♡</p>
             <button onclick="verifySecretPassword()" class="w-full py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">unlock ♡</button>
         </div>
     </div>
@@ -555,11 +465,11 @@
     <div id="secret-note-modal" class="fixed inset-0 bg-black/25 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
         <div class="sanctuary-card w-full max-w-sm p-6 text-center relative">
             <button onclick="closeSecretNoteModal()" class="absolute top-3.5 right-4 text-xs opacity-60 hover:opacity-100">✕</button>
-            <h3 id="secret-note-heading" class="text-xs font-bold uppercase tracking-widest mb-3" style="color: var(--accent-pink-dark);">my vulnerable note ♡</h3>
+            <h3 id="secret-note-heading" class="text-xs font-bold uppercase tracking-widest mb-3" style="color: var(--accent-pink-dark);">secret note ♡</h3>
 
             <div class="flex items-center justify-center my-3 min-h-[120px]">
                 <img id="secret-note-center-img" src="" alt="Secret Note" class="hidden max-h-44 max-w-full object-contain rounded-2xl drop-shadow-sm">
-                <div id="secret-note-img-fallback" class="text-3xl opacity-50">🐇</div>
+                <div id="secret-note-img-fallback" class="text-2xl opacity-50" style="color: var(--accent-pink-dark);">♡</div>
             </div>
 
             <div class="min-h-[64px] flex items-center justify-center px-3">
@@ -576,12 +486,12 @@
 
     <div id="visitor-name-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
         <div class="sanctuary-card w-full max-w-xs p-5">
-            <h3 class="text-sm font-bold mb-2">♡ float your name around the heart</h3>
-            <p class="text-[11px] opacity-75 mb-3">add your name so it floats & glows around the heart (holds up to 10 names)!</p>
-            <input id="visitor-nickname-input" type="text" maxlength="14" placeholder="e.g. bunny, meow, angel..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none mb-3" style="background-color: var(--bubble-bg);">
+            <h3 class="text-sm font-bold mb-2">♡ add your name</h3>
+            <p class="text-[11px] opacity-75 mb-3">put your name around the heart (up to 10 names)</p>
+            <input id="visitor-nickname-input" type="text" maxlength="14" placeholder="your name..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none mb-3" style="background-color: var(--bubble-bg);">
             <div class="flex justify-end gap-2">
                 <button onclick="closeModal('visitor-name-modal')" class="px-3 py-1 rounded-full text-xs opacity-70">cancel</button>
-                <button onclick="saveVisitorNickname()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">float name ♡</button>
+                <button onclick="saveVisitorNickname()" class="px-4 py-1.5 rounded-full text-white text-xs font-bold" style="background-color: var(--accent-pink-dark);">add ♡</button>
             </div>
         </div>
     </div>
@@ -589,23 +499,23 @@
     <div id="auth-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
         <div class="sanctuary-card w-full max-w-sm p-5">
             <div class="flex items-center justify-between pb-2.5">
-                <h3 class="text-sm font-bold">🔒 owner sanctuary access</h3>
+                <h3 class="text-sm font-bold">owner login ♡</h3>
                 <button onclick="closeModal('auth-modal')" class="text-sm opacity-60 hover:opacity-100 px-1.5">✕</button>
             </div>
 
             <div id="auth-signed-out-view" class="space-y-3 mt-2">
                 <p id="auth-status-desc" class="text-xs leading-relaxed opacity-85">
-                    sign in to unlock owner mode so only you can edit, resize boxes, change colors, and post daily notes.
+                    sign in to unlock editing for your page.
                 </p>
 
                 <div class="space-y-2">
-                    <input id="owner-email-input" type="email" placeholder="owner email..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none" style="background-color: var(--bubble-bg);">
-                    <input id="owner-pass-input" type="password" placeholder="password (min 6 chars)..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none" style="background-color: var(--bubble-bg);">
+                    <input id="owner-email-input" type="email" placeholder="email..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none" style="background-color: var(--bubble-bg);">
+                    <input id="owner-pass-input" type="password" placeholder="password (6+ chars)..." class="w-full text-xs rounded-xl px-3 py-2 focus:outline-none" style="background-color: var(--bubble-bg);">
                 </div>
 
                 <div class="flex flex-col gap-2 pt-1">
                     <button onclick="ownerEmailLogin()" class="w-full py-2 rounded-full text-white text-xs font-bold shadow-sm transition" style="background-color: var(--accent-pink-dark);">
-                        sign in / claim owner lock ♡
+                        sign in ♡
                     </button>
                     <button onclick="ownerGoogleLogin()" class="w-full py-2 rounded-full text-xs font-semibold hover:bg-black/5 transition" style="background-color: var(--bubble-bg);">
                         continue with google
@@ -616,11 +526,11 @@
 
             <div id="auth-signed-in-view" class="hidden space-y-3 mt-2">
                 <div class="p-3 rounded-xl text-xs" style="background-color: var(--bubble-bg);">
-                    <p class="font-bold">✨ unlocked as sanctuary owner</p>
+                    <p class="font-bold">unlocked ♡</p>
                     <p id="owner-uid-display" class="text-[10px] opacity-70 break-all mt-1"></p>
                 </div>
                 <button onclick="ownerSignOut()" class="w-full py-2 rounded-full text-xs font-semibold hover:bg-black/5 transition" style="background-color: var(--bubble-bg);">
-                    lock sanctuary & sign out
+                    lock & sign out
                 </button>
             </div>
         </div>
@@ -629,38 +539,34 @@
     <div id="customize-modal" class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 hidden items-center justify-center p-4">
         <div class="sanctuary-card w-full max-w-lg p-5 max-h-[88vh] overflow-y-auto cute-scroll">
             <div class="flex items-center justify-between pb-2">
-                <h3 class="text-sm font-bold">♡ customize your sanctuary</h3>
+                <h3 class="text-sm font-bold">edit page ♡</h3>
                 <button onclick="closeModal('customize-modal')" class="opacity-60 hover:opacity-100 text-sm px-2">✕</button>
             </div>
 
             <div class="flex flex-wrap gap-1 my-2.5 p-1 rounded-xl" style="background-color: var(--bg-blush);">
-                <button onclick="switchModalTab('sizes')" id="tab-btn-sizes" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg bg-white shadow-sm">📐 sizes</button>
-                <button onclick="switchModalTab('colors')" id="tab-btn-colors" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">🎨 hex colors</button>
-                <button onclick="switchModalTab('badges')" id="tab-btn-badges" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">🐾 badges/cursor</button>
-                <button onclick="switchModalTab('images')" id="tab-btn-images" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">🐰 chars</button>
-                <button onclick="switchModalTab('music')" id="tab-btn-music" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">♫ music</button>
-                <button onclick="switchModalTab('general')" id="tab-btn-general" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">✿ text/secret</button>
+                <button onclick="switchModalTab('sizes')" id="tab-btn-sizes" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg bg-white shadow-sm">sizes</button>
+                <button onclick="switchModalTab('colors')" id="tab-btn-colors" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">colors</button>
+                <button onclick="switchModalTab('badges')" id="tab-btn-badges" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">badges & cursor</button>
+                <button onclick="switchModalTab('images')" id="tab-btn-images" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">images</button>
+                <button onclick="switchModalTab('music')" id="tab-btn-music" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">music</button>
+                <button onclick="switchModalTab('general')" id="tab-btn-general" class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg opacity-70">text & secret</button>
             </div>
 
             <div id="tab-sizes" class="space-y-3">
-                <p class="text-[11px] opacity-75">both side boxes resize & move symmetrically together so everything stays balanced!</p>
+                <p class="text-[11px] opacity-75">adjust box, sprite, and heart ring sizes</p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
-                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>both side boxes width</span><span id="val-side-w">310px</span></div>
-                        <input id="size-side-w" type="range" min="240" max="430" value="310" oninput="previewSizesLive()" class="w-full">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>diary box width</span><span id="val-center-w">460px</span></div>
+                        <input id="size-center-w" type="range" min="320" max="620" value="460" oninput="previewSizesLive()" class="w-full">
                     </div>
                     <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
-                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>both side boxes height</span><span id="val-side-h">340px</span></div>
-                        <input id="size-side-h" type="range" min="230" max="520" value="340" oninput="previewSizesLive()" class="w-full">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>diary box height</span><span id="val-center-h">295px</span></div>
+                        <input id="size-center-h" type="range" min="220" max="460" value="295" oninput="previewSizesLive()" class="w-full">
                     </div>
                     <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
-                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>side boxes vertical align</span><span id="val-side-top">155px</span></div>
-                        <input id="size-side-top" type="range" min="80" max="260" value="155" oninput="previewSizesLive()" class="w-full">
-                    </div>
-                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
-                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>center box width</span><span id="val-center-w">320px</span></div>
-                        <input id="size-center-w" type="range" min="220" max="460" value="320" oninput="previewSizesLive()" class="w-full">
+                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>carousel heart ring size</span><span id="val-jar-w">270px</span></div>
+                        <input id="size-jar-w" type="range" min="200" max="360" value="270" oninput="previewSizesLive()" class="w-full">
                     </div>
                     <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
                         <div class="flex justify-between text-[11px] font-semibold mb-1"><span>top char sprite height</span><span id="val-top-h">68px</span></div>
@@ -669,14 +575,6 @@
                     <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
                         <div class="flex justify-between text-[11px] font-semibold mb-1"><span>bunny ears height</span><span id="val-ear-h">54px</span></div>
                         <input id="size-ear-h" type="range" min="28" max="110" value="54" oninput="previewSizesLive()" class="w-full">
-                    </div>
-                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
-                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>tree scale</span><span id="val-stand-h">100%</span></div>
-                        <input id="size-stand-h" type="range" min="50" max="115" value="100" oninput="previewSizesLive()" class="w-full">
-                    </div>
-                    <div class="p-2.5 rounded-xl" style="background-color: var(--bubble-bg);">
-                        <div class="flex justify-between text-[11px] font-semibold mb-1"><span>center orbit ring size</span><span id="val-jar-w">215px</span></div>
-                        <input id="size-jar-w" type="range" min="165" max="290" value="215" oninput="previewSizesLive()" class="w-full">
                     </div>
                 </div>
 
@@ -688,14 +586,14 @@
 
             <div id="tab-colors" class="space-y-3 hidden">
                 <div>
-                    <label class="block text-[11px] font-bold mb-1.5 opacity-80">quick pastel presets</label>
+                    <label class="block text-[11px] font-bold mb-1.5 opacity-80">color presets</label>
                     <div class="flex flex-wrap gap-1.5">
-                        <button onclick="applyColorPreset('cottoncandy')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fff2f8] text-[#8c6d82] font-semibold">🍬 cotton candy</button>
-                        <button onclick="applyColorPreset('blush')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fbf4f5] text-[#555152]">🌸 blush milk</button>
-                        <button onclick="applyColorPreset('matcha')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f3f7f2] text-[#566655]">🍵 strawberry matcha</button>
-                        <button onclick="applyColorPreset('lavender')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f5f2fa] text-[#5e566e]">🔮 lavender dream</button>
-                        <button onclick="applyColorPreset('sky')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f1f6fa] text-[#536370]">☁️ sky cloud</button>
-                        <button onclick="applyColorPreset('peach')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fbf4ef] text-[#6e5b52]">🍑 peach cream</button>
+                        <button onclick="applyColorPreset('cottoncandy')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fff2f8] text-[#8c6d82] font-semibold">cotton candy</button>
+                        <button onclick="applyColorPreset('blush')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fbf4f5] text-[#555152]">blush milk</button>
+                        <button onclick="applyColorPreset('matcha')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f3f7f2] text-[#566655]">strawberry matcha</button>
+                        <button onclick="applyColorPreset('lavender')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f5f2fa] text-[#5e566e]">lavender dream</button>
+                        <button onclick="applyColorPreset('sky')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#f1f6fa] text-[#536370]">sky cloud</button>
+                        <button onclick="applyColorPreset('peach')" class="px-2.5 py-1 rounded-full text-[11px] bg-[#fbf4ef] text-[#6e5b52]">peach cream</button>
                     </div>
                 </div>
 
@@ -757,7 +655,7 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between p-2 rounded-xl text-xs sm:col-span-2" style="background-color: var(--bubble-bg);">
-                        <span>orbiting names & heart count text</span>
+                        <span>carousel names text</span>
                         <div class="flex items-center gap-1.5">
                             <input id="hex-orbit" type="text" maxlength="7" oninput="syncHexToPicker('orbit')" class="w-16 text-[11px] font-mono px-1.5 py-0.5 rounded bg-white text-center uppercase">
                             <input id="color-orbit" type="color" oninput="syncPickerToHex('orbit')" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
@@ -785,10 +683,10 @@
                         <button onclick="clearCustomCursor()" class="text-[11px] underline opacity-70 hover:opacity-100">reset</button>
                     </div>
                     <div class="flex flex-wrap gap-1.5">
-                        <button onclick="selectPresetCursor(0)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">🐾 paw</button>
-                        <button onclick="selectPresetCursor(1)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">♥ heart</button>
-                        <button onclick="selectPresetCursor(2)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">✨ sparkle</button>
-                        <button onclick="selectPresetCursor(3)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">🐰 bunny</button>
+                        <button onclick="selectPresetCursor(0)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">paw</button>
+                        <button onclick="selectPresetCursor(1)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">heart ♥</button>
+                        <button onclick="selectPresetCursor(2)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">sparkle ✦</button>
+                        <button onclick="selectPresetCursor(3)" class="px-2.5 py-1 rounded-full text-[11px] bg-white">bunny</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                         <div class="bg-white/70 p-2 rounded-xl space-y-1">
@@ -808,6 +706,15 @@
             </div>
 
             <div id="tab-images" class="space-y-3 hidden">
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold">0. full-screen background image / gif</span>
+                        <button onclick="clearCharacterImage('bgImg')" class="text-[11px] underline opacity-70 hover:opacity-100">clear bg</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'bgImg')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
+                    <input id="input-bg-img-url" type="text" placeholder="or paste background GIF/PNG URL..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
+                </div>
+
                 <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold">1. top peeking character & 2 corner bunny ears</span>
@@ -831,63 +738,7 @@
 
                 <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
                     <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold">2. mental health interactive tree (3 frames each)</span>
-                        <div class="flex gap-1">
-                            <button id="modal-tree-sad-btn" onclick="setTreeMode('sad')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white">😢 sad chop</button>
-                            <button id="modal-tree-happy-btn" onclick="setTreeMode('happy')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white opacity-65">🌸 happy fruit</button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-1.5">
-                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
-                            <span class="block text-[9px] font-semibold">sad frame 1</span>
-                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'sad', 0)" class="w-full text-[9px]">
-                            <input id="input-sad-tree-0" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
-                        </div>
-                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
-                            <span class="block text-[9px] font-semibold">sad frame 2</span>
-                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'sad', 1)" class="w-full text-[9px]">
-                            <input id="input-sad-tree-1" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
-                        </div>
-                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
-                            <span class="block text-[9px] font-semibold">sad frame 3</span>
-                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'sad', 2)" class="w-full text-[9px]">
-                            <input id="input-sad-tree-2" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-1.5">
-                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
-                            <span class="block text-[9px] font-semibold">happy frame 1</span>
-                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'happy', 0)" class="w-full text-[9px]">
-                            <input id="input-happy-tree-0" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
-                        </div>
-                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
-                            <span class="block text-[9px] font-semibold">happy frame 2</span>
-                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'happy', 1)" class="w-full text-[9px]">
-                            <input id="input-happy-tree-1" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
-                        </div>
-                        <div class="bg-white/70 p-1.5 rounded-xl space-y-1">
-                            <span class="block text-[9px] font-semibold">happy frame 3</span>
-                            <input type="file" accept="image/*" onchange="handleTreeFrameUpload(event, 'happy', 2)" class="w-full text-[9px]">
-                            <input id="input-happy-tree-2" type="text" placeholder="URL..." class="w-full text-[9px] rounded px-1 py-0.5 bg-white">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
-                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
-                            <span class="block text-[10px] font-semibold">axe cursor png (sad mode)</span>
-                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'axe')" class="w-full text-[10px]">
-                            <input id="input-axe-url" type="text" placeholder="or axe URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
-                        </div>
-                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
-                            <span class="block text-[10px] font-semibold">falling fruit png (happy mode)</span>
-                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'fruit')" class="w-full text-[10px]">
-                            <input id="input-fruit-url" type="text" placeholder="or fruit URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold">3. falling background images (up to 3 pngs/gifs)</span>
+                        <span class="text-xs font-bold">2. cereal-pour falling images (up to 3 pngs/gifs)</span>
                         <button onclick="clearAllFallingImages()" class="text-[11px] underline opacity-70 hover:opacity-100">use symbols</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
@@ -909,13 +760,13 @@
                     </div>
                     <div class="flex items-center gap-2 pt-1">
                         <span class="text-[11px] opacity-75">falling size (px):</span>
-                        <input id="input-particle-size" type="number" min="10" max="64" value="22" class="w-16 text-xs rounded-lg px-2 py-1 bg-white text-center">
+                        <input id="input-particle-size" type="number" min="10" max="64" value="24" class="w-16 text-xs rounded-lg px-2 py-1 bg-white text-center">
                     </div>
                 </div>
 
                 <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
                     <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold">4. center orbiting heart icon (png/gif or symbol)</span>
+                        <span class="text-xs font-bold">3. carousel heart icon (png/gif or symbol)</span>
                         <button onclick="clearCharacterImage('bigheart')" class="text-[11px] underline opacity-70 hover:opacity-100">use symbol</button>
                     </div>
                     <input type="file" accept="image/*" onchange="handleImageUpload(event, 'bigheart')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
@@ -927,16 +778,32 @@
 
                 <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
                     <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold">5. owner lock & yumekawaii magic wand icons</span>
+                        <span class="text-xs font-bold">4. owner lock & yumekawaii magic wand icons</span>
                         <button onclick="clearCharacterImage('lock')" class="text-[11px] underline opacity-70 hover:opacity-100">reset lock</button>
                     </div>
                     <input type="file" accept="image/*" onchange="handleImageUpload(event, 'lock')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
                     <input id="input-lock-url" type="text" placeholder="or paste custom key/lock PNG/GIF URL..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
                     <div class="flex items-center gap-1.5 pt-1">
-                        <span class="text-[10px] font-semibold shrink-0">magic wand look:</span>
-                        <input id="input-wand-symbol" type="text" maxlength="4" placeholder="🪄" class="w-10 text-xs text-center rounded px-1 py-0.5 bg-white font-bold" title="Wand Symbol/Emoji">
+                        <span class="text-[10px] font-semibold shrink-0">wand icon:</span>
+                        <input id="input-wand-symbol" type="text" maxlength="4" placeholder="✦" class="w-10 text-xs text-center rounded px-1 py-0.5 bg-white font-bold" title="Wand Symbol">
                         <input type="file" accept="image/*" onchange="handleImageUpload(event, 'wand')" class="w-28 text-[10px] file:mr-1 file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
                         <input id="input-wand-url" type="text" placeholder="or URL..." class="flex-1 text-[10px] rounded px-2 py-0.5 bg-white">
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
+                    <span class="block text-xs font-bold">5. top & bottom floating png/gif streams (side to side)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <div class="flex justify-between text-[10px] font-semibold"><span>top drifting png/gif</span><button onclick="clearCharacterImage('topMarquee')" class="underline opacity-70">clear</button></div>
+                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'topMarquee')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                            <input id="input-top-marquee-url" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
+                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
+                            <div class="flex justify-between text-[10px] font-semibold"><span>bottom drifting png/gif</span><button onclick="clearCharacterImage('bottomMarquee')" class="underline opacity-70">clear</button></div>
+                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'bottomMarquee')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
+                            <input id="input-bottom-marquee-url" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        </div>
                     </div>
                 </div>
 
@@ -946,7 +813,7 @@
             </div>
 
             <div id="tab-music" class="space-y-3 hidden">
-                <p class="text-[11px] opacity-75">your daily song plays softly muffled in the background when visitors click the icon in the corner of your middle box!</p>
+                <p class="text-[11px] opacity-75">plays softly in the background when someone clicks the page or music icon</p>
                 <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold">custom music icon inside middle box (png/gif)</span>
@@ -973,50 +840,26 @@
             </div>
 
             <div id="tab-general" class="space-y-3 hidden">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div class="space-y-1">
-                        <label class="block text-[11px] font-semibold">left box title & icon</label>
-                        <div class="flex gap-1">
-                            <input id="input-love-icon" type="text" maxlength="4" placeholder="♡" class="w-11 text-xs text-center rounded-xl py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
-                            <input id="input-love-title" type="text" class="flex-1 text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[10px] px-2 py-0.5 rounded-full cursor-pointer font-semibold" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
-                                + icon png/gif
-                                <input type="file" accept="image/*" onchange="handleBoxIconUpload(event, 'love')" class="hidden">
-                            </label>
-                            <button type="button" onclick="clearBoxIcon('love')" class="text-[10px] underline opacity-65">use symbol</button>
-                        </div>
+                <div class="space-y-1">
+                    <label class="block text-[11px] font-semibold">diary box title & icon</label>
+                    <div class="flex gap-1">
+                        <input id="input-love-icon" type="text" maxlength="4" placeholder="♡" class="w-11 text-xs text-center rounded-xl py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
+                        <input id="input-center-title" type="text" class="flex-1 text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);" placeholder="my diary:">
                     </div>
-                    <div class="space-y-1">
-                        <label class="block text-[11px] font-semibold">right box title & icon</label>
-                        <div class="flex gap-1">
-                            <input id="input-mental-icon" type="text" maxlength="4" placeholder="✿" class="w-11 text-xs text-center rounded-xl py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
-                            <input id="input-mental-title" type="text" class="flex-1 text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[10px] px-2 py-0.5 rounded-full cursor-pointer font-semibold" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
-                                + icon png/gif
-                                <input type="file" accept="image/*" onchange="handleBoxIconUpload(event, 'mental')" class="hidden">
-                            </label>
-                            <button type="button" onclick="clearBoxIcon('mental')" class="text-[10px] underline opacity-65">use symbol</button>
-                        </div>
+                    <div class="flex items-center gap-1.5">
+                        <label class="text-[10px] px-2 py-0.5 rounded-full cursor-pointer font-semibold" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
+                            + icon png/gif
+                            <input type="file" accept="image/*" onchange="handleBoxIconUpload(event, 'love')" class="hidden">
+                        </label>
+                        <button type="button" onclick="clearBoxIcon('love')" class="text-[10px] underline opacity-65">use symbol</button>
                     </div>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold mb-1">bottom quote / message under love notes</label>
-                    <input id="input-love-quote" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold mb-1">center box header</label>
-                    <input id="input-center-title" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
                 </div>
                 <div>
                     <label class="block text-[11px] font-semibold mb-1">daily gentle affirmation / status</label>
                     <input id="input-daily-status" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold mb-1">orbiting heart names (comma-separated, up to 10)</label>
+                    <label class="block text-[11px] font-semibold mb-1">carousel heart names (comma-separated, up to 10)</label>
                     <input id="input-orbit-names" type="text" class="w-full text-xs rounded-xl px-3 py-1.5 focus:outline-none" style="background-color: var(--bubble-bg);">
                 </div>
                 <div>
@@ -1025,7 +868,7 @@
                 </div>
 
                 <div class="p-3 rounded-xl space-y-2 mt-2" style="background-color: var(--bubble-bg);">
-                    <span class="block text-xs font-bold">🐰 secret vulnerable note box (unlocked by password)</span>
+                    <span class="block text-xs font-bold">secret note (unlocked by password) ♡</span>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[10px] font-semibold mb-1">secret password</label>
@@ -1154,18 +997,19 @@
             sideW: 310,
             sideH: 360,
             sideTop: 155,
-            centerW: 320,
+            centerW: 460,
+            centerH: 250,
             topH: 68,
             earH: 54,
             standH: 100,
-            jarW: 195
+            jarW: 270
         };
 
         const defaultBadges = [
-            { id: 'b1', symbol: 'miffy', img: '', bg: '#fff7f9', color: '#6b5e62', label: 'all feelings', action: 'filter' },
+            { id: 'b1', symbol: 'miffy', img: '', bg: '#fff7f9', color: '#6b5e62', label: 'change cursor', action: 'filter' },
             { id: 'b2', symbol: '✦', img: '', bg: '#f6f2fc', color: '#6b5e62', label: 'toggle sparkles', action: 'sparkles' },
             { id: 'b3', symbol: '♥', img: '', bg: '#fff1f5', color: '#e08ea4', label: 'love burst', action: 'burst' },
-            { id: 'b4', symbol: '🔒', img: '', bg: '#fdf6f8', color: '#e08ea4', label: 'psst... ♥ the page for a bunny secret 🐰', action: 'secret' }
+            { id: 'b4', symbol: '♡', img: '', bg: '#fdf6f8', color: '#e08ea4', label: 'psst... tap the bottom ♥ for a secret ♡', action: 'secret' }
         ];
 
         const defaultState = {
@@ -1174,15 +1018,16 @@
             customCursorImg: '',
             customCursorClickImg: '',
             particlesEnabled: true,
-            pageTitle: '♡ my little sanctuary ♡',
-            loveBoxTitle: 'love notes',
+            pageTitle: '♡ my little diary ♡',
+            bgWallpaperImg: '',
+            loveBoxTitle: 'my diary:',
             loveBoxIcon: '♡',
             loveBoxIconImg: '',
             loveBottomQuote: '"every little thing about you is worthy of gentle love ♡"',
             mentalBoxTitle: 'mental health',
             mentalBoxIcon: '✿',
             mentalBoxIconImg: '',
-            centerTitle: 'things i love:',
+            centerTitle: 'my diary:',
             dailyStatus: '"taking things one gentle step at a time today ♡"',
             bigHeartSymbol: '♥',
             bigHeartImg: '',
@@ -1191,11 +1036,11 @@
             fallingParticleImgs: ['', '', ''],
             fallingParticleSize: 22,
             secretPassword: 'princess',
-            secretNoteTitle: 'my vulnerable note ♡',
+            secretNoteTitle: 'secret note ♡',
             secretNoteImg: '',
             secretNoteTexts: [
                 'sometimes i act stronger than i really feel inside...',
-                'thank you for visiting my little safe space gently ♡',
+                'thank you for visiting my little space gently ♡',
                 'even on quiet heavy days, i am still trying my best.'
             ],
             interests: ['gaming', 'cozy tea', 'plushies', 'rainy days', 'pastel art'],
@@ -1205,7 +1050,9 @@
             earLeftImg: '',
             earRightImg: '',
             wandIconImg: '',
-            wandSymbol: '🪄',
+            wandSymbol: '✦',
+            topMarqueeImg: '',
+            bottomMarqueeImg: '',
             treeMode: 'sad',
             sadTreeFrames: ['', '', ''],
             happyTreeFrames: ['', '', ''],
@@ -1217,13 +1064,13 @@
             theme: { ...defaultTheme },
             loveNotes: [
                 { id: 1, date: 'today ♡', text: 'you are doing so much better than you think. be gentle with your heart.' },
-                { id: 2, date: 'reminder ✿', text: 'drink a glass of water, unclench your jaw, and take a deep breath.' }
+                { id: 2, date: 'reminder ♡', text: 'drink a glass of water, unclench your jaw, and take a deep breath.' }
             ],
             feelings: [
                 { id: 101, mood: 'soft', text: 'feeling cozy & safe in my little room ♡', x: 12, y: 18 },
-                { id: 102, mood: 'healing', text: 'proud of myself for resting today 🌱', x: 185, y: 34 },
-                { id: 103, mood: 'sleepy', text: 'a little tired, listening to my daily song 🌙', x: 14, y: 215 },
-                { id: 104, mood: 'anxious', text: 'overthinking a bit, breathing slowly 🌧️', x: 182, y: 225 }
+                { id: 102, mood: 'healing', text: 'proud of myself for resting today ♡', x: 185, y: 34 },
+                { id: 103, mood: 'sleepy', text: 'a little tired, listening to my daily song ♡', x: 14, y: 215 },
+                { id: 104, mood: 'anxious', text: 'overthinking a bit, breathing slowly ♡', x: 182, y: 225 }
             ],
             positions: {}
         };
@@ -1272,15 +1119,14 @@
         let editingFeelingId = null;
         let selectedFeelingMood = 'soft';
         let visitorName = localStorage.getItem('meow_visitor_name') || '';
-        let interestTurnIndex = 0;
-        let interestTurnTimer = null;
+        let diaryTurnIndex = 0;
+        let diaryTurnTimer = null;
         let secretFadeTimer = null;
         let secretTextIdx = 0;
         let isMousePressed = false;
-        let currentTreeFrame = 0;
-        let activeTreeBuffer = 'a';
         let autoMusicAttempted = false;
         let lastOrbitSignature = '';
+        let cerealPileColumns = [];
 
         renderAll();
 
@@ -1345,7 +1191,7 @@
 
         async function saveDiaryToCloud(toastText = '') {
             if (!isOwner || !currentUser) {
-                showToast('owner lock required to save changes 🔒');
+                showToast('sign in first to save changes ♡');
                 return;
             }
             try {
@@ -1372,14 +1218,14 @@
             if (isOwner && currentUser) {
                 signedOutView.classList.add('hidden');
                 signedInView.classList.remove('hidden');
-                document.getElementById('owner-uid-display').textContent = `signed in as: ${currentUser.email || currentUser.uid}`;
+                document.getElementById('owner-uid-display').textContent = `signed in: ${currentUser.email || currentUser.uid}`;
             } else {
                 signedOutView.classList.remove('hidden');
                 signedInView.classList.add('hidden');
                 if (!appState.ownerUid) {
-                    desc.textContent = 'no owner claimed yet! sign in with your email or google to claim permanent owner lock over this sanctuary.';
+                    desc.textContent = 'sign in with email or google to set up your owner login.';
                 } else {
-                    desc.textContent = 'this sanctuary is locked. only the owner account can unlock editing.';
+                    desc.textContent = 'locked. sign in as the owner to edit.';
                 }
             }
         }
@@ -1395,16 +1241,16 @@
                 isOwner = true;
                 evaluateOwnerStatus();
                 closeModal('auth-modal');
-                showToast('sanctuary claimed & unlocked! 🔓♡');
+                showToast('unlocked ♡');
             } else if (existingOwner === user.uid) {
                 isOwner = true;
                 evaluateOwnerStatus();
                 closeModal('auth-modal');
-                showToast('welcome back, owner! 🔓♡');
+                showToast('welcome back ♡');
             } else {
                 await signInAnonymously(auth);
                 const errEl = document.getElementById('auth-error-msg');
-                errEl.textContent = 'sorry! this sanctuary belongs to another owner account.';
+                errEl.textContent = 'wrong owner account.';
                 errEl.classList.remove('hidden');
             }
         }
@@ -1461,7 +1307,7 @@
             await signOut(auth);
             await signInAnonymously(auth);
             closeModal('auth-modal');
-            showToast('sanctuary locked 🔒');
+            showToast('locked ♡');
         };
 
         window.toggleVisitorPreview = function() {
@@ -1469,7 +1315,7 @@
             isVisitorPreview = !isVisitorPreview;
             document.body.classList.toggle('visitor-preview', isVisitorPreview);
             document.getElementById('exit-preview-btn').classList.toggle('hidden', !isVisitorPreview);
-            showToast(isVisitorPreview ? 'previewing as visitor 👁' : 'back to owner mode 🔓');
+            showToast(isVisitorPreview ? 'visitor view' : 'owner view ♡');
         };
 
         function renderAll() {
@@ -1478,11 +1324,8 @@
             applyCursorToDOM();
             renderTopBadges();
 
-            document.title = appState.pageTitle || '♡ my little sanctuary ♡';
-            document.getElementById('love-box-title').textContent = appState.loveBoxTitle || 'love notes';
-            document.getElementById('mental-box-title').textContent = appState.mentalBoxTitle || 'mental health';
-            const quoteEl = document.getElementById('love-bottom-quote');
-            if (quoteEl) quoteEl.textContent = appState.loveBottomQuote || '"every little thing about you is worthy of gentle love ♡"';
+            document.body.style.backgroundImage = appState.bgWallpaperImg ? `url("${appState.bgWallpaperImg}")` : '';
+            document.title = appState.pageTitle || '♡ my little diary ♡';
 
             const loveIconImg = document.getElementById('love-box-icon-img');
             const loveIconGlyph = document.getElementById('love-box-icon-glyph');
@@ -1498,24 +1341,10 @@
                 }
             }
 
-            const mentalIconImg = document.getElementById('mental-box-icon-img');
-            const mentalIconGlyph = document.getElementById('mental-box-icon-glyph');
-            if (mentalIconImg && mentalIconGlyph) {
-                if (appState.mentalBoxIconImg) {
-                    mentalIconImg.src = appState.mentalBoxIconImg;
-                    mentalIconImg.classList.remove('hidden');
-                    mentalIconGlyph.classList.add('hidden');
-                } else {
-                    mentalIconImg.classList.add('hidden');
-                    mentalIconGlyph.classList.remove('hidden');
-                    mentalIconGlyph.textContent = appState.mentalBoxIcon || '✿';
-                }
-            }
-
-            document.getElementById('center-title').textContent = appState.centerTitle;
+            document.getElementById('center-title').textContent = appState.centerTitle || 'my diary:';
             document.getElementById('daily-status-text').textContent = appState.dailyStatus;
-            renderInterests();
-            startInterestsTurnAnimation();
+            renderDiaryOwnerList();
+            startDiaryTurnAnimation();
             renderStatsAndOrbit();
             updateCharacterDisplay();
 
@@ -1524,9 +1353,6 @@
                 audioEl.src = appState.trackUrl;
                 audioEl.setAttribute('data-url', appState.trackUrl);
             }
-
-            renderLoveNotes();
-            renderFeelingBubbles();
 
             if (window.innerWidth > 900 && appState.positions) {
                 Object.keys(appState.positions).forEach(id => {
@@ -1540,114 +1366,82 @@
         }
 
         function applySizesToDOM(s) {
-            const loveBox = document.getElementById('box-love');
             const centerBox = document.getElementById('box-center');
-            const mentalBox = document.getElementById('box-mental');
+            const centerCardInner = document.getElementById('center-card-inner');
             const orbitStage = document.getElementById('center-orbit-heart-stage');
+            const carouselWrap = document.getElementById('heart-carousel-wrapper');
             const topSprite = document.getElementById('custom-top-sprite');
             const earLeft = document.getElementById('bunny-ear-left');
             const earRight = document.getElementById('bunny-ear-right');
-            const treeStage = document.getElementById('tree-frame-stage');
 
-            const sideW = s.sideW || 310;
-            const sideH = s.sideH || 340;
-            const sideTop = s.sideTop || 155;
-
-            if (loveBox) {
-                loveBox.style.width = `${sideW}px`;
-                loveBox.style.height = `${sideH}px`;
-                if (window.innerWidth > 900) {
-                    loveBox.style.left = `calc(50% - ${sideW + 195}px)`;
-                    loveBox.style.top = `${sideTop}px`;
-                }
+            const ringSize = s.jarW || 270;
+            if (centerBox) centerBox.style.width = `${s.centerW || 460}px`;
+            if (centerCardInner) centerCardInner.style.minHeight = `${s.centerH || 250}px`;
+            if (orbitStage) orbitStage.style.width = `${ringSize + 20}px`;
+            if (carouselWrap) {
+                carouselWrap.style.width = `${ringSize}px`;
+                carouselWrap.style.height = `${ringSize}px`;
             }
-            if (mentalBox) {
-                mentalBox.style.width = `${sideW}px`;
-                mentalBox.style.height = `${sideH}px`;
-                if (window.innerWidth > 900) {
-                    mentalBox.style.left = `calc(50% + 195px)`;
-                    mentalBox.style.top = `${sideTop}px`;
-                }
-            }
-            if (centerBox) centerBox.style.width = `${s.centerW || 320}px`;
-            if (orbitStage) orbitStage.style.width = `160px`;
             if (topSprite) topSprite.style.height = `${s.topH || 68}px`;
             const earH = s.earH || 54;
             if (earLeft) earLeft.style.height = `${earH}px`;
             if (earRight) earRight.style.height = `${earH}px`;
-            if (treeStage) {
-                const pct = s.standH || 100;
-                treeStage.style.transform = `scale(${pct / 100})`;
-                treeStage.style.transformOrigin = 'bottom center';
-            }
         }
 
         window.previewSizesLive = function() {
             const live = {
-                sideW: Number(document.getElementById('size-side-w').value),
-                sideH: Number(document.getElementById('size-side-h').value),
-                sideTop: Number(document.getElementById('size-side-top').value),
                 centerW: Number(document.getElementById('size-center-w').value),
+                centerH: Number(document.getElementById('size-center-h').value),
+                jarW: Number(document.getElementById('size-jar-w').value),
                 topH: Number(document.getElementById('size-top-h').value),
-                earH: Number(document.getElementById('size-ear-h').value),
-                standH: Number(document.getElementById('size-stand-h').value),
-                jarW: Number(document.getElementById('size-jar-w').value)
+                earH: Number(document.getElementById('size-ear-h').value)
             };
 
-            document.getElementById('val-side-w').textContent = `${live.sideW}px`;
-            document.getElementById('val-side-h').textContent = `${live.sideH}px`;
-            document.getElementById('val-side-top').textContent = `${live.sideTop}px`;
             document.getElementById('val-center-w').textContent = `${live.centerW}px`;
+            document.getElementById('val-center-h').textContent = `${live.centerH}px`;
+            document.getElementById('val-jar-w').textContent = `${live.jarW}px`;
             document.getElementById('val-top-h').textContent = `${live.topH}px`;
             document.getElementById('val-ear-h').textContent = `${live.earH}px`;
-            document.getElementById('val-stand-h').textContent = `${live.standH}%`;
-            document.getElementById('val-jar-w').textContent = `${live.jarW}px`;
 
             applySizesToDOM(live);
+            lastOrbitSignature = '';
             renderStatsAndOrbit();
         };
 
         window.saveAllSizes = async function() {
             if (!isOwner) return;
             appState.sizes = {
-                sideW: Number(document.getElementById('size-side-w').value),
-                sideH: Number(document.getElementById('size-side-h').value),
-                sideTop: Number(document.getElementById('size-side-top').value),
+                ...appState.sizes,
                 centerW: Number(document.getElementById('size-center-w').value),
+                centerH: Number(document.getElementById('size-center-h').value),
+                jarW: Number(document.getElementById('size-jar-w').value),
                 topH: Number(document.getElementById('size-top-h').value),
-                earH: Number(document.getElementById('size-ear-h').value),
-                standH: Number(document.getElementById('size-stand-h').value),
-                jarW: Number(document.getElementById('size-jar-w').value)
+                earH: Number(document.getElementById('size-ear-h').value)
             };
-            delete appState.positions['box-love'];
-            delete appState.positions['box-mental'];
             applySizesToDOM(appState.sizes);
+            lastOrbitSignature = '';
             renderStatsAndOrbit();
-            await saveDiaryToCloud('linked side sizes saved ♡');
+            await saveDiaryToCloud('sizes saved ♡');
             closeModal('customize-modal');
         };
 
         window.resetAllSizes = async function() {
             if (!isOwner) return;
             appState.sizes = { ...defaultSizes };
-            delete appState.positions['box-love'];
-            delete appState.positions['box-mental'];
             syncSizeSlidersFromState();
             applySizesToDOM(appState.sizes);
+            lastOrbitSignature = '';
             renderStatsAndOrbit();
             await saveDiaryToCloud('default sizes restored ♡');
         };
 
         function syncSizeSlidersFromState() {
             const s = appState.sizes || defaultSizes;
-            document.getElementById('size-side-w').value = s.sideW || 310;
-            document.getElementById('size-side-h').value = s.sideH || 360;
-            document.getElementById('size-side-top').value = s.sideTop || 155;
-            document.getElementById('size-center-w').value = s.centerW || 320;
+            document.getElementById('size-center-w').value = s.centerW || 460;
+            document.getElementById('size-center-h').value = s.centerH || 250;
+            document.getElementById('size-jar-w').value = Math.min(360, Math.max(200, s.jarW || 270));
             document.getElementById('size-top-h').value = s.topH || 68;
             document.getElementById('size-ear-h').value = s.earH || 54;
-            document.getElementById('size-stand-h').value = Math.min(115, Math.max(50, s.standH || 100));
-            document.getElementById('size-jar-w').value = Math.min(280, Math.max(155, s.jarW || 195));
             previewSizesLive();
         }
 
@@ -1764,174 +1558,102 @@
                 document.head.appendChild(dynamicStyle);
             }
 
-            let rules = '';
             if (activeImg) {
-                rules += `body, body * { cursor: url("${activeImg}") 12 12, auto !important; }\n`;
+                dynamicStyle.textContent = `body, body * { cursor: url("${activeImg}") 12 12, auto !important; }`;
             } else {
+                dynamicStyle.textContent = '';
                 document.body.classList.add(cursors[(appState.cursorIndex || 0) % cursors.length]);
             }
-
-            if ((appState.treeMode || 'sad') === 'sad') {
-                const axeUrl = appState.axeCursorImg || `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'><path fill='%23d4a373' d='M13 10l7 7-2 2-7-7z'/><path fill='%23ff85a2' stroke='%236b5e62' stroke-width='1.2' d='M6 4c4 0 7 2 8 6l-4 4c-4-1-6-4-6-8z'/></svg>`;
-                rules += `#standing-char-wrapper, #standing-char-wrapper * { cursor: url("${axeUrl}") 6 6, pointer !important; }`;
-            }
-            dynamicStyle.textContent = rules;
         }
 
-        window.addEventListener('mousedown', () => {
-            isMousePressed = true;
-            if (appState.customCursorClickImg) applyCursorToDOM();
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (!isMousePressed) return;
-            isMousePressed = false;
-            if (appState.customCursorClickImg || appState.customCursorImg) applyCursorToDOM();
-        });
-
-        window.selectPresetCursor = function(idx) {
-            appState.customCursorImg = '';
-            appState.customCursorClickImg = '';
-            appState.cursorIndex = idx;
-            applyCursorToDOM();
-            if (isOwner) saveDiaryToCloud('cursor updated ♡');
-        };
-
-        window.clearCustomCursor = function() {
-            appState.customCursorImg = '';
-            appState.customCursorClickImg = '';
-            applyCursorToDOM();
-            if (isOwner) saveDiaryToCloud('switched back to preset cursor');
-        };
-
-        window.handleCursorUpload = function(event, mode = 'normal') {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const saveCursorData = (dataUrl) => {
-                    if (mode === 'click') appState.customCursorClickImg = dataUrl;
-                    else appState.customCursorImg = dataUrl;
-                    applyCursorToDOM();
-                    saveDiaryToCloud(`${mode} cursor saved! ♡`);
-                };
-                if (file.type === 'image/gif') {
-                    saveCursorData(e.target.result);
-                    return;
-                }
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 32;
-                    canvas.height = 32;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 32, 32);
-                    saveCursorData(canvas.toDataURL('image/png'));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
         function renderTopBadges() {
-            const container = document.getElementById('badges-pill-container');
-            container.innerHTML = '';
-            (appState.badges || defaultBadges).forEach((b, idx) => {
-                const btn = document.createElement('button');
-                const isSecret = b.action === 'secret';
-                btn.className = `charm-stamp focus:outline-none flex items-center justify-center ${isSecret ? 'secret-charm-special' : ''}`;
-                btn.style.animationDelay = `${(idx * 0.55).toFixed(2)}s`;
-                if (b.color) btn.style.color = b.color;
-                btn.onclick = () => triggerBadgeAction(b);
+            const leftBox = document.getElementById('badges-left-container');
+            const rightBox = document.getElementById('badges-right-container');
+            const bottomSecretBox = document.getElementById('badges-bottom-secret-container');
+            if (!leftBox || !rightBox || !bottomSecretBox) return;
 
-                const defaultLabel = isSecret ? 'psst... ♥ the page for a bunny secret 🐰' : (b.label || 'charm');
+            leftBox.innerHTML = '';
+            rightBox.innerHTML = '';
+            bottomSecretBox.innerHTML = '';
+
+            let sideCounter = 0;
+            (appState.badges || []).forEach((b, idx) => {
+                const isSecret = b.action === 'secret';
+                const defaultLabel = isSecret
+                    ? (b.label && b.label !== 'secret note' ? b.label : 'psst... tap the bottom ♥ for a secret ♡')
+                    : (b.label || '');
+                const btn = document.createElement('button');
+                btn.className = `charm-stamp relative flex items-center justify-center ${isSecret ? 'secret-charm-special' : ''}`;
+                btn.style.animationDelay = `${idx * 0.65}s`;
+                if (!isSecret) {
+                    btn.style.backgroundColor = b.bg || '#fff7f9';
+                    btn.style.color = b.color || 'var(--text-main)';
+                }
+                btn.onclick = () => {
+                    if (b.action === 'sparkles') toggleParticles();
+                    else if (b.action === 'burst') triggerHeartBurst();
+                    else if (b.action === 'secret') openSecretPasswordPrompt();
+                    else cycleCursor();
+                };
 
                 if (b.img) {
-                    btn.innerHTML = `
+                    btn.innerHTML = isSecret ? `
+                        <div class="secret-charm-inner"><img src="${b.img}" alt="${escapeHtml(defaultLabel)}" class="w-6 h-6 object-contain"></div>
+                        <span class="badge-tooltip">${escapeHtml(defaultLabel)}</span>
+                    ` : `
                         <img src="${b.img}" alt="${escapeHtml(defaultLabel)}" class="w-6 h-6 object-contain">
                         <span class="badge-tooltip">${escapeHtml(defaultLabel)}</span>
                     `;
                 } else {
-                    btn.innerHTML = `
+                    btn.innerHTML = isSecret ? `
+                        <div class="secret-charm-inner"><span class="text-sm font-bold tracking-tight">${escapeHtml(b.symbol || '♡')}</span></div>
+                        <span class="badge-tooltip">${escapeHtml(defaultLabel)}</span>
+                    ` : `
                         <span class="text-sm font-bold tracking-tight">${escapeHtml(b.symbol || '♡')}</span>
                         <span class="badge-tooltip">${escapeHtml(defaultLabel)}</span>
                     `;
                 }
-                container.appendChild(btn);
-            });
-        }
 
-        function triggerBadgeAction(b) {
-            if (b.action === 'secret') openSecretPasswordPrompt();
-            else if (b.action === 'filter') filterMood('all');
-            else if (b.action === 'sparkles') toggleParticles();
-            else if (b.action === 'cursor') cycleCursor();
-            else triggerHeartBurst();
+                if (isSecret) {
+                    bottomSecretBox.appendChild(btn);
+                } else {
+                    if (sideCounter < 2) leftBox.appendChild(btn);
+                    else rightBox.appendChild(btn);
+                    sideCounter++;
+                }
+            });
         }
 
         function renderBadgesEditorList() {
             const list = document.getElementById('badges-editor-list');
+            if (!list) return;
             list.innerHTML = '';
             (appState.badges || []).forEach((b, idx) => {
                 const row = document.createElement('div');
                 row.className = 'flex flex-wrap items-center gap-1.5 bg-white p-2 rounded-xl text-xs';
                 row.innerHTML = `
-                    <input type="text" maxlength="10" value="${escapeHtml(b.symbol || '')}" onchange="updateBadgeField(${idx}, 'symbol', this.value)" class="w-14 text-center rounded-lg py-1 font-bold" style="background-color: var(--bubble-bg);" title="Word or Symbol">
-                    <input type="color" value="${b.bg || '#ffffff'}" onchange="updateBadgeField(${idx}, 'bg', this.value)" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent shrink-0" title="Badge Color">
-                    <input type="text" value="${escapeHtml(b.label || '')}" onchange="updateBadgeField(${idx}, 'label', this.value)" class="flex-1 rounded-lg px-2 py-1 min-w-[85px]" style="background-color: var(--bubble-bg);" placeholder="hover label...">
-                    <select onchange="updateBadgeField(${idx}, 'action', this.value)" class="rounded-lg px-1.5 py-1 text-[10px] font-semibold" style="background-color: var(--bubble-bg);">
-                        <option value="secret" ${b.action === 'secret' ? 'selected' : ''}>secret 🔒</option>
-                        <option value="burst" ${b.action === 'burst' ? 'selected' : ''}>hearts ♥</option>
-                        <option value="sparkles" ${b.action === 'sparkles' ? 'selected' : ''}>sparkles ✦</option>
-                        <option value="filter" ${b.action === 'filter' ? 'selected' : ''}>all moods ✿</option>
+                    <input type="text" value="${escapeHtml(b.symbol || '')}" onchange="updateBadgeField(${idx}, 'symbol', this.value)" class="w-12 text-center rounded bg-[#fbf4f5] py-1 font-bold" placeholder="sym">
+                    <input type="text" value="${escapeHtml(b.label || '')}" onchange="updateBadgeField(${idx}, 'label', this.value)" class="flex-1 min-w-[90px] rounded bg-[#fbf4f5] px-2 py-1" placeholder="hover label">
+                    <select onchange="updateBadgeField(${idx}, 'action', this.value)" class="rounded bg-[#fbf4f5] px-1.5 py-1 text-[11px]">
+                        <option value="cursor" ${b.action === 'cursor' || b.action === 'filter' ? 'selected' : ''}>cycle cursor</option>
+                        <option value="sparkles" ${b.action === 'sparkles' ? 'selected' : ''}>sparkles</option>
+                        <option value="burst" ${b.action === 'burst' ? 'selected' : ''}>heart burst</option>
+                        <option value="secret" ${b.action === 'secret' ? 'selected' : ''}>secret note</option>
                     </select>
-                    <label class="px-2 py-1 rounded-lg cursor-pointer text-[10px] font-semibold shrink-0" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">
-                        ${b.img ? '✓ img' : '+ img'}
+                    <label class="px-2 py-1 rounded bg-[#fbf4f5] cursor-pointer text-[10px] font-semibold">
+                        png/gif
                         <input type="file" accept="image/*" onchange="handleBadgeImgUpload(event, ${idx})" class="hidden">
                     </label>
-                    ${b.img ? `<button onclick="clearBadgeImg(${idx})" class="text-[10px] opacity-60 hover:opacity-100">↺</button>` : ''}
-                    <button onclick="removeBadgeSlot(${idx})" class="text-xs opacity-50 hover:opacity-100 px-1">✕</button>
+                    ${b.img ? `<button onclick="updateBadgeField(${idx}, 'img', '')" class="text-[10px] underline opacity-60">clr</button>` : ''}
+                    <button onclick="removeBadgeSlot(${idx})" class="text-rose-400 px-1 font-bold">✕</button>
                 `;
                 list.appendChild(row);
             });
         }
 
-        window.updateBadgeField = function(idx, key, val) {
+        window.updateBadgeField = function(idx, field, val) {
             if (!appState.badges[idx]) return;
-            appState.badges[idx][key] = val;
-            renderTopBadges();
-        };
-
-        window.handleBadgeImgUpload = function(event, idx) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (file.type === 'image/gif') {
-                    appState.badges[idx].img = e.target.result;
-                    renderTopBadges();
-                    renderBadgesEditorList();
-                    return;
-                }
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 64;
-                    canvas.height = 64;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 64, 64);
-                    appState.badges[idx].img = canvas.toDataURL('image/png');
-                    renderTopBadges();
-                    renderBadgesEditorList();
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        window.clearBadgeImg = function(idx) {
-            if (!appState.badges[idx]) return;
-            appState.badges[idx].img = '';
+            appState.badges[idx][field] = val;
             renderTopBadges();
             renderBadgesEditorList();
         };
@@ -1939,11 +1661,11 @@
         window.addBadgeSlot = function() {
             appState.badges.push({
                 id: 'b' + Date.now(),
-                symbol: '♡',
+                symbol: '✿',
                 img: '',
                 bg: '#fff7f9',
                 color: '#6b5e62',
-                label: 'new badge',
+                label: 'sweet charm',
                 action: 'burst'
             });
             renderTopBadges();
@@ -1956,15 +1678,91 @@
             renderBadgesEditorList();
         };
 
+        window.handleBadgeImgUpload = function(event, idx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (file.type === 'image/gif') {
+                    appState.badges[idx].img = e.target.result;
+                    renderTopBadges();
+                    renderBadgesEditorList();
+                    return;
+                }
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 48;
+                    canvas.height = 48;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 48, 48);
+                    appState.badges[idx].img = canvas.toDataURL('image/png');
+                    renderTopBadges();
+                    renderBadgesEditorList();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.selectPresetCursor = function(idx) {
+            appState.customCursorImg = '';
+            appState.customCursorClickImg = '';
+            appState.cursorIndex = idx;
+            applyCursorToDOM();
+        };
+
+        window.clearCustomCursor = function() {
+            appState.customCursorImg = '';
+            appState.customCursorClickImg = '';
+            applyCursorToDOM();
+        };
+
+        window.handleCursorUpload = function(event, which) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 32;
+                    canvas.height = 32;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 32, 32);
+                    const url = canvas.toDataURL('image/png');
+                    if (which === 'click') appState.customCursorClickImg = url;
+                    else appState.customCursorImg = url;
+                    applyCursorToDOM();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
         window.saveBadgesSettings = async function() {
             if (!isOwner) return;
             renderTopBadges();
+            applyCursorToDOM();
             await saveDiaryToCloud('badges & cursors saved ♡');
             closeModal('customize-modal');
         };
 
+        function addNameToOrbitList(list, newName, oldName) {
+            let arr = Array.isArray(list) ? [...list] : [];
+            if (oldName) {
+                arr = arr.filter(n => n.toLowerCase() !== oldName.toLowerCase());
+            }
+            arr = arr.filter(n => n.toLowerCase() !== newName.toLowerCase());
+            arr.unshift(newName);
+            return arr.slice(0, 10);
+        }
+
         function applyUploadedMediaDataUrl(targetType, dataUrl) {
-            if (targetType === 'top') {
+            if (targetType === 'bgImg') {
+                appState.bgWallpaperImg = dataUrl;
+                document.body.style.backgroundImage = `url("${dataUrl}")`;
+                const bgInp = document.getElementById('input-bg-img-url');
+                if (bgInp) bgInp.value = '';
+            } else if (targetType === 'top') {
                 appState.topSpriteImg = dataUrl;
                 document.getElementById('input-top-url').value = '';
             } else if (targetType === 'earLeft') {
@@ -1973,13 +1771,6 @@
             } else if (targetType === 'earRight') {
                 appState.earRightImg = dataUrl;
                 document.getElementById('input-ear-right-url').value = '';
-            } else if (targetType === 'axe') {
-                appState.axeCursorImg = dataUrl;
-                document.getElementById('input-axe-url').value = '';
-                applyCursorToDOM();
-            } else if (targetType === 'fruit') {
-                appState.fruitImg = dataUrl;
-                document.getElementById('input-fruit-url').value = '';
             } else if (targetType === 'wand') {
                 appState.wandIconImg = dataUrl;
                 document.getElementById('input-wand-url').value = '';
@@ -1995,468 +1786,17 @@
             } else if (targetType === 'secret') {
                 appState.secretNoteImg = dataUrl;
                 document.getElementById('input-secret-img-url').value = '';
+            } else if (targetType === 'topMarquee') {
+                appState.topMarqueeImg = dataUrl;
+                const el = document.getElementById('input-top-marquee-url');
+                if (el) el.value = '';
+            } else if (targetType === 'bottomMarquee') {
+                appState.bottomMarqueeImg = dataUrl;
+                const el = document.getElementById('input-bottom-marquee-url');
+                if (el) el.value = '';
             }
             updateCharacterDisplay();
             saveDiaryToCloud('image / gif saved for everyone ♡');
-        }
-
-        window.handleTreeFrameUpload = function(event, mode, frameIdx) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const saveFrame = (dataUrl) => {
-                    if (mode === 'sad') {
-                        if (!Array.isArray(appState.sadTreeFrames)) appState.sadTreeFrames = ['', '', ''];
-                        appState.sadTreeFrames[frameIdx] = dataUrl;
-                    } else {
-                        if (!Array.isArray(appState.happyTreeFrames)) appState.happyTreeFrames = ['', '', ''];
-                        appState.happyTreeFrames[frameIdx] = dataUrl;
-                    }
-                    appState.treeMode = mode;
-                    currentTreeFrame = frameIdx;
-                    updateCharacterDisplay();
-                    saveDiaryToCloud(`${mode} tree frame #${frameIdx + 1} saved ♡`);
-                };
-                if (file.type === 'image/gif') {
-                    saveFrame(e.target.result);
-                    return;
-                }
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const maxDim = 540;
-                    let w = img.width;
-                    let h = img.height;
-                    if (w > maxDim || h > maxDim) {
-                        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
-                        else { w = Math.round((w * maxDim) / h); h = maxDim; }
-                    }
-                    canvas.width = w;
-                    canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    saveFrame(canvas.toDataURL('image/png'));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        window.setTreeMode = async function(mode) {
-            appState.treeMode = mode;
-            currentTreeFrame = 0;
-            applyCursorToDOM();
-            updateCharacterDisplay();
-            if (isOwner) await saveDiaryToCloud(`tree mode: ${mode === 'sad' ? '😢 sad chop' : '🌸 happy fruit'}`);
-        };
-
-        window.toggleTreeMode = function() {
-            const next = (appState.treeMode || 'sad') === 'sad' ? 'happy' : 'sad';
-            setTreeMode(next);
-        };
-
-        window.interactWithTree = function() {
-            const mode = appState.treeMode || 'sad';
-            const frames = (mode === 'sad' ? appState.sadTreeFrames : appState.happyTreeFrames) || [];
-            const validFrames = frames.filter(u => u && u.trim());
-            const wrapper = document.getElementById('standing-char-wrapper');
-
-            if (wrapper) {
-                wrapper.classList.remove('tree-animating');
-                void wrapper.offsetWidth;
-                wrapper.classList.add('tree-animating');
-            }
-
-            if (validFrames.length > 1) {
-                currentTreeFrame = (currentTreeFrame + 1) % validFrames.length;
-                crossfadeTreeTo(validFrames[currentTreeFrame]);
-            }
-
-            if (mode === 'sad') {
-                const layer = document.getElementById('tree-fruits-layer');
-                if (layer) {
-                    const tears = ['💧', '🍂', '💔', '😢'];
-                    for (let i = 0; i < 4; i++) {
-                        const t = document.createElement('span');
-                        t.textContent = tears[Math.floor(Math.random() * tears.length)];
-                        t.className = 'falling-tree-fruit text-sm';
-                        t.style.left = `${30 + Math.random() * 40}%`;
-                        t.style.top = `${25 + Math.random() * 25}%`;
-                        layer.appendChild(t);
-                        setTimeout(() => t.remove(), 1250);
-                    }
-                }
-            } else {
-                const layer = document.getElementById('tree-fruits-layer');
-                if (layer) {
-                    for (let i = 0; i < 4; i++) {
-                        const f = appState.fruitImg ? document.createElement('img') : document.createElement('span');
-                        f.className = 'falling-tree-fruit';
-                        f.style.left = `${22 + Math.random() * 54}%`;
-                        f.style.top = `${18 + Math.random() * 30}%`;
-                        if (appState.fruitImg) {
-                            f.src = appState.fruitImg;
-                            f.style.width = '22px';
-                            f.style.height = '22px';
-                            f.style.objectFit = 'contain';
-                        } else {
-                            f.textContent = ['🍎', '🍓', '🍑', '🍒'][Math.floor(Math.random() * 4)];
-                            f.style.fontSize = '16px';
-                        }
-                        layer.appendChild(f);
-                        setTimeout(() => f.remove(), 1250);
-                    }
-                }
-            }
-        };
-
-        function crossfadeTreeTo(srcUrl) {
-            const imgA = document.getElementById('tree-img-a');
-            const imgB = document.getElementById('tree-img-b');
-            if (!imgA || !imgB || !srcUrl) return;
-            const incoming = activeTreeBuffer === 'a' ? imgB : imgA;
-            const outgoing = activeTreeBuffer === 'a' ? imgA : imgB;
-            incoming.src = srcUrl;
-            incoming.classList.remove('hidden');
-            outgoing.classList.remove('hidden');
-            requestAnimationFrame(() => {
-                incoming.style.opacity = '1';
-                outgoing.style.opacity = '0';
-            });
-            activeTreeBuffer = activeTreeBuffer === 'a' ? 'b' : 'a';
-        }
-
-        window.handleFallingSlotUpload = function(event, slotIdx) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const saveSlot = (url) => {
-                    if (!Array.isArray(appState.fallingParticleImgs)) appState.fallingParticleImgs = ['', '', ''];
-                    appState.fallingParticleImgs[slotIdx] = url;
-                    const inp = document.getElementById(`input-fall-url-${slotIdx}`);
-                    if (inp) inp.value = '';
-                    saveDiaryToCloud(`falling image #${slotIdx + 1} saved ♡`);
-                };
-                if (file.type === 'image/gif') {
-                    if (file.size > 600000) {
-                        showToast('gif is large—paste a github url for big gifs!');
-                        return;
-                    }
-                    saveSlot(e.target.result);
-                    return;
-                }
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 96;
-                    canvas.height = 96;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, 96, 96);
-                    saveSlot(canvas.toDataURL('image/png'));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        window.clearAllFallingImages = async function() {
-            appState.fallingParticleImgs = ['', '', ''];
-            [0, 1, 2].forEach(i => {
-                const el = document.getElementById(`input-fall-url-${i}`);
-                if (el) el.value = '';
-            });
-            await saveDiaryToCloud('switched back to falling symbols');
-        };
-
-        window.handleImageUpload = function(event, targetType) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (file.type === 'image/gif') {
-                    if (file.size > 750000) {
-                        showToast('gif is large—for big gifs, upload to github & paste its URL!');
-                        return;
-                    }
-                    applyUploadedMediaDataUrl(targetType, e.target.result);
-                    return;
-                }
-
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const maxDim = targetType === 'axe' ? 32 : (targetType === 'standing' ? 680 : (targetType === 'top' || targetType === 'secret' ? 300 : 120));
-                    let w = img.width;
-                    let h = img.height;
-                    if (w > maxDim || h > maxDim) {
-                        if (w > h) {
-                            h = Math.round((h * maxDim) / w);
-                            w = maxDim;
-                        } else {
-                            w = Math.round((w * maxDim) / h);
-                            h = maxDim;
-                        }
-                    }
-                    canvas.width = w;
-                    canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    applyUploadedMediaDataUrl(targetType, canvas.toDataURL('image/png'));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        window.saveImageUrlsAndSizes = async function() {
-            const topUrl = document.getElementById('input-top-url').value.trim();
-            const earLUrl = document.getElementById('input-ear-left-url').value.trim();
-            const earRUrl = document.getElementById('input-ear-right-url').value.trim();
-            const axeUrl = document.getElementById('input-axe-url').value.trim();
-            const fruitUrl = document.getElementById('input-fruit-url').value.trim();
-            const wandUrl = document.getElementById('input-wand-url').value.trim();
-            const wandSym = document.getElementById('input-wand-symbol').value.trim();
-            const particleSize = Number(document.getElementById('input-particle-size').value) || 22;
-            const bigHeartUrl = document.getElementById('input-bigheart-url').value.trim();
-            const bigHeartSym = document.getElementById('input-bigheart-symbol').value.trim();
-            const lockUrl = document.getElementById('input-lock-url').value.trim();
-
-            if (!Array.isArray(appState.fallingParticleImgs)) appState.fallingParticleImgs = ['', '', ''];
-            if (!Array.isArray(appState.sadTreeFrames)) appState.sadTreeFrames = ['', '', ''];
-            if (!Array.isArray(appState.happyTreeFrames)) appState.happyTreeFrames = ['', '', ''];
-
-            [0, 1, 2].forEach(i => {
-                const u = document.getElementById(`input-fall-url-${i}`).value.trim();
-                if (u) appState.fallingParticleImgs[i] = u;
-                const su = document.getElementById(`input-sad-tree-${i}`).value.trim();
-                if (su) appState.sadTreeFrames[i] = su;
-                const hu = document.getElementById(`input-happy-tree-${i}`).value.trim();
-                if (hu) appState.happyTreeFrames[i] = hu;
-            });
-
-            if (topUrl) appState.topSpriteImg = topUrl;
-            if (earLUrl) appState.earLeftImg = earLUrl;
-            if (earRUrl) appState.earRightImg = earRUrl;
-            if (axeUrl) appState.axeCursorImg = axeUrl;
-            if (fruitUrl) appState.fruitImg = fruitUrl;
-            if (wandUrl) appState.wandIconImg = wandUrl;
-            if (wandSym) appState.wandSymbol = wandSym;
-            appState.fallingParticleSize = Math.max(10, Math.min(64, particleSize));
-            if (bigHeartUrl) appState.bigHeartImg = bigHeartUrl;
-            if (bigHeartSym) appState.bigHeartSymbol = bigHeartSym;
-            if (lockUrl) appState.lockIconImg = lockUrl;
-
-            applyCursorToDOM();
-            updateCharacterDisplay();
-            await saveDiaryToCloud('images & gifs updated ♡');
-            closeModal('customize-modal');
-        };
-
-        window.clearCharacterImage = async function(targetType) {
-            if (targetType === 'top') {
-                appState.topSpriteImg = '';
-                document.getElementById('input-top-url').value = '';
-            } else if (targetType === 'earLeft') {
-                appState.earLeftImg = '';
-                document.getElementById('input-ear-left-url').value = '';
-            } else if (targetType === 'earRight') {
-                appState.earRightImg = '';
-                document.getElementById('input-ear-right-url').value = '';
-            } else if (targetType === 'wand') {
-                appState.wandIconImg = '';
-                document.getElementById('input-wand-url').value = '';
-            } else if (targetType === 'bigheart') {
-                appState.bigHeartImg = '';
-                document.getElementById('input-bigheart-url').value = '';
-            } else if (targetType === 'lock') {
-                appState.lockIconImg = '';
-                document.getElementById('input-lock-url').value = '';
-            } else if (targetType === 'music') {
-                appState.musicIconImg = '';
-                document.getElementById('input-music-url-img').value = '';
-            } else if (targetType === 'secret') {
-                appState.secretNoteImg = '';
-                document.getElementById('input-secret-img-url').value = '';
-            }
-            updateCharacterDisplay();
-            await saveDiaryToCloud('reset to default');
-        };
-
-        function updateCharacterDisplay() {
-            const s = appState.sizes || defaultSizes;
-            const topImg = document.getElementById('custom-top-sprite');
-            const topPlaceholder = document.getElementById('top-sprite-placeholder');
-            if (appState.topSpriteImg) {
-                topImg.src = appState.topSpriteImg;
-                topImg.style.height = `${s.topH || 68}px`;
-                topImg.classList.remove('hidden');
-                topPlaceholder.classList.remove('owner-only-flex');
-                topPlaceholder.classList.add('hidden');
-            } else {
-                topImg.classList.add('hidden');
-                topPlaceholder.classList.remove('hidden');
-                topPlaceholder.classList.add('owner-only-flex');
-            }
-
-            const earL = document.getElementById('bunny-ear-left');
-            const earR = document.getElementById('bunny-ear-right');
-            if (earL) {
-                earL.style.height = `${s.earH || 54}px`;
-                if (appState.earLeftImg) { earL.src = appState.earLeftImg; earL.classList.remove('hidden'); }
-                else earL.classList.add('hidden');
-            }
-            if (earR) {
-                earR.style.height = `${s.earH || 54}px`;
-                if (appState.earRightImg) { earR.src = appState.earRightImg; earR.classList.remove('hidden'); }
-                else earR.classList.add('hidden');
-            }
-
-            const mode = appState.treeMode || 'sad';
-            const modeBtn = document.getElementById('tree-mode-toggle-btn');
-            if (modeBtn) modeBtn.textContent = mode === 'sad' ? '😢 sad' : '🌸 happy';
-
-            const sadModalBtn = document.getElementById('modal-tree-sad-btn');
-            const happyModalBtn = document.getElementById('modal-tree-happy-btn');
-            if (sadModalBtn && happyModalBtn) {
-                sadModalBtn.classList.toggle('opacity-65', mode !== 'sad');
-                happyModalBtn.classList.toggle('opacity-65', mode !== 'happy');
-            }
-
-            const frames = (mode === 'sad' ? appState.sadTreeFrames : appState.happyTreeFrames) || [];
-            const validFrames = frames.filter(u => u && u.trim());
-            const imgA = document.getElementById('tree-img-a');
-            const imgB = document.getElementById('tree-img-b');
-            const treePlaceholder = document.getElementById('standing-char-placeholder');
-
-            if (validFrames.length > 0 && imgA && imgB) {
-                const frameSrc = validFrames[currentTreeFrame % validFrames.length];
-                imgA.src = frameSrc;
-                imgA.style.opacity = '1';
-                imgA.classList.remove('hidden');
-                imgB.style.opacity = '0';
-                activeTreeBuffer = 'a';
-                treePlaceholder.classList.remove('owner-only-flex');
-                treePlaceholder.classList.add('hidden');
-            } else if (treePlaceholder && imgA && imgB) {
-                imgA.classList.add('hidden');
-                imgB.classList.add('hidden');
-                treePlaceholder.classList.remove('hidden');
-                treePlaceholder.classList.add('owner-only-flex');
-            }
-
-            const wandImg = document.getElementById('wand-custom-img');
-            const wandGlyph = document.getElementById('wand-default-glyph');
-            if (wandImg && wandGlyph) {
-                if (appState.wandIconImg) {
-                    wandImg.src = appState.wandIconImg;
-                    wandImg.classList.remove('hidden');
-                    wandGlyph.classList.add('hidden');
-                } else {
-                    wandImg.classList.add('hidden');
-                    wandGlyph.classList.remove('hidden');
-                    wandGlyph.textContent = appState.wandSymbol || '🪄';
-                }
-            }
-
-            const musicImg = document.getElementById('music-custom-img');
-            const playIcon = document.getElementById('play-icon');
-            if (musicImg && playIcon) {
-                if (appState.musicIconImg) {
-                    musicImg.src = appState.musicIconImg;
-                    musicImg.classList.remove('hidden');
-                    playIcon.classList.add('hidden');
-                } else {
-                    musicImg.classList.add('hidden');
-                    playIcon.classList.remove('hidden');
-                }
-            }
-
-            const bigHeartImg = document.getElementById('big-heart-custom-img');
-            const bigHeartGlyph = document.getElementById('big-heart-glyph');
-            if (bigHeartImg && bigHeartGlyph) {
-                if (appState.bigHeartImg) {
-                    bigHeartImg.src = appState.bigHeartImg;
-                    bigHeartImg.classList.remove('hidden');
-                    bigHeartGlyph.classList.add('hidden');
-                } else {
-                    bigHeartImg.classList.add('hidden');
-                    bigHeartGlyph.classList.remove('hidden');
-                    bigHeartGlyph.textContent = appState.bigHeartSymbol || '♥';
-                }
-            }
-
-            const lockImg = document.getElementById('lock-custom-img');
-            const lockGlyph = document.getElementById('lock-icon');
-            if (lockImg && lockGlyph) {
-                if (appState.lockIconImg) {
-                    lockImg.src = appState.lockIconImg;
-                    lockImg.classList.remove('hidden');
-                    lockGlyph.classList.add('hidden');
-                } else {
-                    lockImg.classList.add('hidden');
-                    lockGlyph.classList.remove('hidden');
-                }
-            }
-        }
-
-        function renderStatsAndOrbit() {
-            document.getElementById('heart-count').textContent = (statsState.hearts || 0).toLocaleString();
-
-            if (visitorName) {
-                document.getElementById('visitor-tag-btn').textContent = `${visitorName} ✎`;
-            }
-
-            const layerEl = document.getElementById('floating-names-layer');
-            if (!layerEl) return;
-
-            const names = Array.isArray(statsState.orbitNames) && statsState.orbitNames.length
-                ? statsState.orbitNames.slice(0, 10)
-                : ['bunny ♡', 'angel ✦', 'meow'];
-
-            const signature = names.join('||');
-            if (signature === lastOrbitSignature) return;
-            lastOrbitSignature = signature;
-
-            layerEl.innerHTML = '';
-
-            const safeSpots = [
-                { left: '6%', top: '12%' },
-                { left: '84%', top: '11%' },
-                { left: '12%', top: '78%' },
-                { left: '80%', top: '79%' },
-                { left: '26%', top: '8%' },
-                { left: '68%', top: '8%' },
-                { left: '4%', top: '46%' },
-                { left: '88%', top: '46%' },
-                { left: '28%', top: '86%' },
-                { left: '66%', top: '86%' }
-            ];
-
-            names.forEach((rawName, idx) => {
-                const spot = safeSpots[idx % safeSpots.length];
-                const span = document.createElement('span');
-                span.className = 'floating-ambient-name';
-                span.style.left = spot.left;
-                span.style.top = spot.top;
-                span.style.animationDelay = `${(idx * 0.7).toFixed(2)}s`;
-                span.textContent = rawName;
-                layerEl.appendChild(span);
-            });
-        }
-
-        function addNameToOrbitList(currentList, newName, previousName = '') {
-            const clean = newName.trim().slice(0, 14);
-            if (!clean) return currentList || [];
-            const filtered = (Array.isArray(currentList) ? currentList : []).filter(n => {
-                const lower = n.toLowerCase();
-                if (lower === clean.toLowerCase()) return false;
-                if (previousName && lower === previousName.trim().toLowerCase()) return false;
-                return true;
-            });
-            filtered.push(clean);
-            return filtered.slice(-10);
         }
 
         window.openVisitorNamePrompt = function() {
@@ -2496,7 +1836,7 @@
             const btn = document.getElementById('big-spam-heart-btn');
 
             const pop = document.createElement('span');
-            pop.textContent = ['♥', '♡', '💖', '✦'][Math.floor(Math.random() * 4)];
+            pop.textContent = ['♥', '♡', '✦'][Math.floor(Math.random() * 3)];
             const rect = btn.getBoundingClientRect();
             pop.style.position = 'fixed';
             pop.style.left = `${rect.left + rect.width / 2 + (Math.random() - 0.5) * 28}px`;
@@ -2903,8 +2243,6 @@
             document.getElementById('box-center').style.top = '235px';
             document.getElementById('box-mental').style.left = 'calc(50% + 195px)';
             document.getElementById('box-mental').style.top = '155px';
-            document.getElementById('center-orbit-heart-stage').style.left = 'calc(50% - 80px)';
-            document.getElementById('center-orbit-heart-stage').style.top = '475px';
             await saveDiaryToCloud('box layout reset ♡');
         };
 
@@ -3008,13 +2346,13 @@
 
         window.waveMagicWand = function() {
             const btn = document.getElementById('yumekawaii-wand-btn');
-            const charms = ['✨', '🎀', '🍼', '🦄', '🌙', '🍓', '☁️', '💖', '⭐'];
+            const charms = ['♥', '♡', '✦', '✿', '·'];
             const whispers = [
-                'you are safe, loved, and protected ♡',
-                'magical starlight blessing just for you ✨',
-                'soft angel energy activated 🎀',
-                'take a cozy breath, little star 🌙',
-                'sending warm pastel hugs your way 🍓'
+                'you are safe & loved ♡',
+                'sending warm hugs your way ♡',
+                'be gentle with your heart today ♡',
+                'take a deep cozy breath ♡',
+                'everything will be okay ♡'
             ];
             const rect = btn ? btn.getBoundingClientRect() : { left: 40, top: window.innerHeight - 90 };
             for (let i = 0; i < 12; i++) {
@@ -3071,14 +2409,11 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const saveIcon = (url) => {
-                    if (boxType === 'love') appState.loveBoxIconImg = url;
-                    else appState.mentalBoxIconImg = url;
+                if (file.type === 'image/gif') {
+                    if (boxType === 'love') appState.loveBoxIconImg = e.target.result;
+                    else appState.mentalBoxIconImg = e.target.result;
                     renderAll();
                     saveDiaryToCloud('box icon updated ♡');
-                };
-                if (file.type === 'image/gif') {
-                    saveIcon(e.target.result);
                     return;
                 }
                 const img = new Image();
@@ -3087,11 +2422,396 @@
                     canvas.width = 48;
                     canvas.height = 48;
                     canvas.getContext('2d').drawImage(img, 0, 0, 48, 48);
-                    saveIcon(canvas.toDataURL('image/png'));
+                    const pngUrl = canvas.toDataURL('image/png');
+                    if (boxType === 'love') appState.loveBoxIconImg = pngUrl;
+                    else appState.mentalBoxIconImg = pngUrl;
+                    renderAll();
+                    saveDiaryToCloud('box icon updated ♡');
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+        };
+
+        window.handleImageUpload = function(event, targetType) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type === 'image/gif') {
+                    if (file.size > 950000) {
+                        showToast('gif is large—for big gifs, upload to github & paste its URL!');
+                        return;
+                    }
+                    applyUploadedMediaDataUrl(targetType, e.target.result);
+                    return;
+                }
+
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = targetType === 'bgImg' ? 1280 : (targetType === 'top' || targetType === 'secret' ? 300 : 120);
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    applyUploadedMediaDataUrl(targetType, canvas.toDataURL('image/png'));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.handleFallingSlotUpload = function(event, slotIdx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!Array.isArray(appState.fallingParticleImgs)) appState.fallingParticleImgs = ['', '', ''];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type === 'image/gif') {
+                    appState.fallingParticleImgs[slotIdx] = e.target.result;
+                    saveDiaryToCloud('falling gif saved ♡');
+                    return;
+                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 64;
+                    canvas.height = 64;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 64, 64);
+                    appState.fallingParticleImgs[slotIdx] = canvas.toDataURL('image/png');
+                    saveDiaryToCloud('falling image saved ♡');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearAllFallingImages = async function() {
+            appState.fallingParticleImgs = ['', '', ''];
+            [0, 1, 2].forEach(i => {
+                const el = document.getElementById(`input-fall-url-${i}`);
+                if (el) el.value = '';
+            });
+            await saveDiaryToCloud('using falling symbols ♡');
+        };
+
+        window.saveImageUrlsAndSizes = async function() {
+            const bgImgUrl = document.getElementById('input-bg-img-url').value.trim();
+            const topUrl = document.getElementById('input-top-url').value.trim();
+            const earLUrl = document.getElementById('input-ear-left-url').value.trim();
+            const earRUrl = document.getElementById('input-ear-right-url').value.trim();
+            const wandUrl = document.getElementById('input-wand-url').value.trim();
+            const wandSym = document.getElementById('input-wand-symbol').value.trim();
+            const particleSize = Number(document.getElementById('input-particle-size').value) || 24;
+            const bigHeartUrl = document.getElementById('input-bigheart-url').value.trim();
+            const bigHeartSym = document.getElementById('input-bigheart-symbol').value.trim();
+            const lockUrl = document.getElementById('input-lock-url').value.trim();
+            const topMarqueeUrl = document.getElementById('input-top-marquee-url').value.trim();
+            const bottomMarqueeUrl = document.getElementById('input-bottom-marquee-url').value.trim();
+
+            if (!Array.isArray(appState.fallingParticleImgs)) appState.fallingParticleImgs = ['', '', ''];
+
+            [0, 1, 2].forEach(i => {
+                const u = document.getElementById(`input-fall-url-${i}`).value.trim();
+                if (u) appState.fallingParticleImgs[i] = u;
+            });
+
+            if (bgImgUrl) {
+                appState.bgWallpaperImg = bgImgUrl;
+                document.body.style.backgroundImage = `url("${bgImgUrl}")`;
+            }
+            if (topUrl) appState.topSpriteImg = topUrl;
+            if (earLUrl) appState.earLeftImg = earLUrl;
+            if (earRUrl) appState.earRightImg = earRUrl;
+            if (wandUrl) appState.wandIconImg = wandUrl;
+            if (wandSym) appState.wandSymbol = wandSym;
+            appState.fallingParticleSize = Math.max(10, Math.min(64, particleSize));
+            if (bigHeartUrl) appState.bigHeartImg = bigHeartUrl;
+            if (bigHeartSym) appState.bigHeartSymbol = bigHeartSym;
+            if (lockUrl) appState.lockIconImg = lockUrl;
+            if (topMarqueeUrl) appState.topMarqueeImg = topMarqueeUrl;
+            if (bottomMarqueeUrl) appState.bottomMarqueeImg = bottomMarqueeUrl;
+
+            applyCursorToDOM();
+            updateCharacterDisplay();
+            await saveDiaryToCloud('images & gifs updated ♡');
+            closeModal('customize-modal');
+        };
+
+        window.clearCharacterImage = async function(targetType) {
+            if (targetType === 'bgImg') {
+                appState.bgWallpaperImg = '';
+                document.body.style.backgroundImage = '';
+                const el = document.getElementById('input-bg-img-url');
+                if (el) el.value = '';
+            } else if (targetType === 'top') {
+                appState.topSpriteImg = '';
+                document.getElementById('input-top-url').value = '';
+            } else if (targetType === 'earLeft') {
+                appState.earLeftImg = '';
+                document.getElementById('input-ear-left-url').value = '';
+            } else if (targetType === 'earRight') {
+                appState.earRightImg = '';
+                document.getElementById('input-ear-right-url').value = '';
+            } else if (targetType === 'wand') {
+                appState.wandIconImg = '';
+                document.getElementById('input-wand-url').value = '';
+            } else if (targetType === 'bigheart') {
+                appState.bigHeartImg = '';
+                document.getElementById('input-bigheart-url').value = '';
+            } else if (targetType === 'lock') {
+                appState.lockIconImg = '';
+                document.getElementById('input-lock-url').value = '';
+            } else if (targetType === 'music') {
+                appState.musicIconImg = '';
+                document.getElementById('input-music-url-img').value = '';
+            } else if (targetType === 'secret') {
+                appState.secretNoteImg = '';
+                document.getElementById('input-secret-img-url').value = '';
+            } else if (targetType === 'topMarquee') {
+                appState.topMarqueeImg = '';
+                const el = document.getElementById('input-top-marquee-url');
+                if (el) el.value = '';
+            } else if (targetType === 'bottomMarquee') {
+                appState.bottomMarqueeImg = '';
+                const el = document.getElementById('input-bottom-marquee-url');
+                if (el) el.value = '';
+            }
+            updateCharacterDisplay();
+            await saveDiaryToCloud('reset to default');
+        };
+
+        function renderEdgeMarqueeStream(trackId, innerId, imgUrl) {
+            const track = document.getElementById(trackId);
+            const inner = document.getElementById(innerId);
+            if (!track || !inner) return;
+            if (!imgUrl) {
+                track.classList.add('hidden');
+                inner.innerHTML = '';
+                return;
+            }
+            track.classList.remove('hidden');
+            const strip = Array.from({ length: 12 }, () => `<img src="${imgUrl}" alt="" class="h-8 w-8 object-contain mx-7 inline-block">`).join('');
+            inner.innerHTML = `<div>${strip}</div><div>${strip}</div>`;
+        }
+
+        function updateCharacterDisplay() {
+            const s = appState.sizes || defaultSizes;
+            renderEdgeMarqueeStream('top-marquee-track', 'top-marquee-inner', appState.topMarqueeImg);
+            renderEdgeMarqueeStream('bottom-marquee-track', 'bottom-marquee-inner', appState.bottomMarqueeImg);
+            const topImg = document.getElementById('custom-top-sprite');
+            const topPlaceholder = document.getElementById('top-sprite-placeholder');
+            if (appState.topSpriteImg) {
+                topImg.src = appState.topSpriteImg;
+                topImg.style.height = `${s.topH || 68}px`;
+                topImg.classList.remove('hidden');
+                topPlaceholder.classList.remove('owner-only-flex');
+                topPlaceholder.classList.add('hidden');
+            } else {
+                topImg.classList.add('hidden');
+                topPlaceholder.classList.remove('hidden');
+                topPlaceholder.classList.add('owner-only-flex');
+            }
+
+            const earL = document.getElementById('bunny-ear-left');
+            const earR = document.getElementById('bunny-ear-right');
+            if (earL) {
+                earL.style.height = `${s.earH || 54}px`;
+                if (appState.earLeftImg) { earL.src = appState.earLeftImg; earL.classList.remove('hidden'); }
+                else earL.classList.add('hidden');
+            }
+            if (earR) {
+                earR.style.height = `${s.earH || 54}px`;
+                if (appState.earRightImg) { earR.src = appState.earRightImg; earR.classList.remove('hidden'); }
+                else earR.classList.add('hidden');
+            }
+
+            const wandImg = document.getElementById('wand-custom-img');
+            const wandGlyph = document.getElementById('wand-default-glyph');
+            if (wandImg && wandGlyph) {
+                if (appState.wandIconImg) {
+                    wandImg.src = appState.wandIconImg;
+                    wandImg.classList.remove('hidden');
+                    wandGlyph.classList.add('hidden');
+                } else {
+                    wandImg.classList.add('hidden');
+                    wandGlyph.classList.remove('hidden');
+                    wandGlyph.textContent = appState.wandSymbol || '✦';
+                }
+            }
+
+            const musicImg = document.getElementById('music-custom-img');
+            const playIcon = document.getElementById('play-icon');
+            if (musicImg && playIcon) {
+                if (appState.musicIconImg) {
+                    musicImg.src = appState.musicIconImg;
+                    musicImg.classList.remove('hidden');
+                    playIcon.classList.add('hidden');
+                } else {
+                    musicImg.classList.add('hidden');
+                    playIcon.classList.remove('hidden');
+                }
+            }
+
+            const bigHeartImg = document.getElementById('big-heart-custom-img');
+            const bigHeartGlyph = document.getElementById('big-heart-glyph');
+            if (bigHeartImg && bigHeartGlyph) {
+                if (appState.bigHeartImg) {
+                    bigHeartImg.src = appState.bigHeartImg;
+                    bigHeartImg.classList.remove('hidden');
+                    bigHeartGlyph.classList.add('hidden');
+                } else {
+                    bigHeartImg.classList.add('hidden');
+                    bigHeartGlyph.classList.remove('hidden');
+                    bigHeartGlyph.textContent = appState.bigHeartSymbol || '♥';
+                }
+            }
+
+            const lockImg = document.getElementById('lock-custom-img');
+            const lockGlyph = document.getElementById('lock-icon');
+            if (lockImg && lockGlyph) {
+                if (appState.lockIconImg) {
+                    lockImg.src = appState.lockIconImg;
+                    lockImg.classList.remove('hidden');
+                    lockGlyph.classList.add('hidden');
+                } else {
+                    lockImg.classList.add('hidden');
+                    lockGlyph.classList.remove('hidden');
+                }
+            }
+        }
+
+        function renderStatsAndOrbit() {
+            document.getElementById('heart-count').textContent = (statsState.hearts || 0).toLocaleString();
+
+            if (visitorName) {
+                document.getElementById('visitor-tag-btn').textContent = `${visitorName} ✎`;
+            }
+
+            const ringEl = document.getElementById('heart-orbit-ring');
+            if (!ringEl) return;
+
+            const names = Array.isArray(statsState.orbitNames) && statsState.orbitNames.length
+                ? statsState.orbitNames.slice(0, 10)
+                : ['bunny ♡', 'angel ✦', 'meow'];
+
+            const ringSz = (appState.sizes && appState.sizes.jarW) || 270;
+            const signature = `${ringSz}::${names.join('||')}`;
+            if (signature === lastOrbitSignature) return;
+            lastOrbitSignature = signature;
+
+            ringEl.innerHTML = '';
+            const radius = Math.round(ringSz * 0.37);
+
+            names.forEach((rawName, idx) => {
+                const angle = (idx / names.length) * Math.PI * 2 - Math.PI / 2;
+                const x = Math.round(Math.cos(angle) * radius);
+                const y = Math.round(Math.sin(angle) * radius);
+
+                const slot = document.createElement('div');
+                slot.className = 'baby-carousel-slot';
+                slot.style.transform = `translate(${x}px, ${y}px)`;
+
+                const label = document.createElement('span');
+                label.className = 'baby-carousel-label';
+                label.textContent = rawName;
+
+                slot.appendChild(label);
+                ringEl.appendChild(slot);
+            });
+        }
+        function startDiaryTurnAnimation() {
+            clearInterval(diaryTurnTimer);
+            const stage = document.getElementById('diary-turn-stage');
+            if (!stage) return;
+
+            const notes = Array.isArray(appState.loveNotes) && appState.loveNotes.length
+                ? appState.loveNotes
+                : [{ id: 1, date: 'today ♡', text: 'you are doing so much better than you think. be gentle with your heart.' }];
+
+            const showTurn = () => {
+                const current = notes[diaryTurnIndex % notes.length];
+                stage.innerHTML = '';
+                const wrap = document.createElement('div');
+                wrap.className = 'diary-turn-note flex flex-col items-center justify-center max-w-full';
+                wrap.innerHTML = `
+                    <p class="text-xs leading-relaxed mb-2.5 px-1">${escapeHtml(current.text)}</p>
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full" style="background-color: var(--bubble-bg); color: var(--accent-pink-dark);">${escapeHtml(current.date || 'today ♡')}</span>
+                `;
+                stage.appendChild(wrap);
+                diaryTurnIndex = (diaryTurnIndex + 1) % notes.length;
+            };
+
+            showTurn();
+            if (notes.length > 1) {
+                diaryTurnTimer = setInterval(showTurn, 4600);
+            }
+        }
+
+        function renderDiaryOwnerList() {
+            const list = document.getElementById('diary-owner-list');
+            if (!list) return;
+            list.innerHTML = '';
+            (appState.loveNotes || []).forEach(note => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between gap-2 px-2.5 py-1 rounded-xl text-[11px]';
+                row.style.backgroundColor = 'var(--bubble-bg)';
+                row.innerHTML = `
+                    <span class="truncate"><strong style="color: var(--accent-pink-dark);">${escapeHtml(note.date)}:</strong> ${escapeHtml(note.text)}</span>
+                    <button onclick="deleteLoveNote(${note.id})" class="text-[10px] opacity-60 hover:opacity-100 shrink-0" title="Delete note">✕</button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        window.openAddLoveNote = function() {
+            if (!isOwner) return;
+            document.getElementById('love-note-date').value = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toLowerCase() + ' ♡';
+            document.getElementById('love-note-text').value = '';
+            openModal('love-modal');
+        };
+
+        window.saveLoveNote = async function() {
+            if (!isOwner) return;
+            const date = document.getElementById('love-note-date').value.trim() || 'note ♡';
+            const text = document.getElementById('love-note-text').value.trim();
+            if (!text) return;
+            appState.loveNotes.unshift({ id: Date.now(), date, text });
+            diaryTurnIndex = 0;
+            renderDiaryOwnerList();
+            startDiaryTurnAnimation();
+            closeModal('love-modal');
+            await saveDiaryToCloud('diary note posted ♡');
+        };
+
+        window.deleteLoveNote = async function(id) {
+            if (!isOwner) return;
+            appState.loveNotes = appState.loveNotes.filter(n => n.id !== id);
+            diaryTurnIndex = 0;
+            renderDiaryOwnerList();
+            startDiaryTurnAnimation();
+            await saveDiaryToCloud();
+        };
+        window.resetLayoutPositions = async function() {
+            if (!isOwner) return;
+            appState.positions = {};
+            document.getElementById('box-center').style.left = 'calc(50% - 470px)';
+            document.getElementById('box-center').style.top = '165px';
+            document.getElementById('center-orbit-heart-stage').style.left = 'calc(50% + 75px)';
+            document.getElementById('center-orbit-heart-stage').style.top = '175px';
+            await saveDiaryToCloud('box layout reset ♡');
         };
 
         window.clearBoxIcon = async function(boxType) {
@@ -3103,12 +2823,10 @@
 
         window.saveGeneralSettings = async function() {
             if (!isOwner) return;
-            appState.loveBoxTitle = document.getElementById('input-love-title').value.trim() || 'love notes';
+            const titleVal = document.getElementById('input-center-title').value.trim() || 'my diary:';
+            appState.loveBoxTitle = titleVal;
+            appState.centerTitle = titleVal;
             appState.loveBoxIcon = document.getElementById('input-love-icon').value.trim() || '♡';
-            appState.loveBottomQuote = document.getElementById('input-love-quote').value.trim() || '"every little thing about you is worthy of gentle love ♡"';
-            appState.mentalBoxTitle = document.getElementById('input-mental-title').value.trim() || 'mental health';
-            appState.mentalBoxIcon = document.getElementById('input-mental-icon').value.trim() || '✿';
-            appState.centerTitle = document.getElementById('input-center-title').value.trim() || 'things i love:';
             appState.dailyStatus = document.getElementById('input-daily-status').value.trim() || '"taking things one gentle step at a time today ♡"';
             appState.pageTitle = document.getElementById('input-page-title').value.trim() || '♡ my little sanctuary ♡';
 
@@ -3162,47 +2880,39 @@
 
             renderBadgesEditorList();
 
+            const bgUrlInput = document.getElementById('input-bg-img-url');
+            if (bgUrlInput) bgUrlInput.value = appState.bgWallpaperImg && !appState.bgWallpaperImg.startsWith('data:') ? appState.bgWallpaperImg : '';
             document.getElementById('input-top-url').value = appState.topSpriteImg && !appState.topSpriteImg.startsWith('data:') ? appState.topSpriteImg : '';
             document.getElementById('input-ear-left-url').value = appState.earLeftImg && !appState.earLeftImg.startsWith('data:') ? appState.earLeftImg : '';
             document.getElementById('input-ear-right-url').value = appState.earRightImg && !appState.earRightImg.startsWith('data:') ? appState.earRightImg : '';
-            document.getElementById('input-axe-url').value = appState.axeCursorImg && !appState.axeCursorImg.startsWith('data:') ? appState.axeCursorImg : '';
-            document.getElementById('input-fruit-url').value = appState.fruitImg && !appState.fruitImg.startsWith('data:') ? appState.fruitImg : '';
             document.getElementById('input-wand-url').value = appState.wandIconImg && !appState.wandIconImg.startsWith('data:') ? appState.wandIconImg : '';
-            document.getElementById('input-wand-symbol').value = appState.wandSymbol || '🪄';
-            const sadArr = appState.sadTreeFrames || ['', '', ''];
-            const happyArr = appState.happyTreeFrames || ['', '', ''];
-            [0, 1, 2].forEach(i => {
-                const sEl = document.getElementById(`input-sad-tree-${i}`);
-                if (sEl) sEl.value = sadArr[i] && !sadArr[i].startsWith('data:') ? sadArr[i] : '';
-                const hEl = document.getElementById(`input-happy-tree-${i}`);
-                if (hEl) hEl.value = happyArr[i] && !happyArr[i].startsWith('data:') ? happyArr[i] : '';
-            });
+            document.getElementById('input-wand-symbol').value = appState.wandSymbol || '✦';
             const fallArr = appState.fallingParticleImgs || ['', '', ''];
             [0, 1, 2].forEach(i => {
                 const el = document.getElementById(`input-fall-url-${i}`);
                 if (el) el.value = fallArr[i] && !fallArr[i].startsWith('data:') ? fallArr[i] : '';
             });
-            document.getElementById('input-particle-size').value = appState.fallingParticleSize || 22;
+            document.getElementById('input-particle-size').value = appState.fallingParticleSize || 24;
             document.getElementById('input-bigheart-url').value = appState.bigHeartImg && !appState.bigHeartImg.startsWith('data:') ? appState.bigHeartImg : '';
             document.getElementById('input-bigheart-symbol').value = appState.bigHeartSymbol || '♥';
             document.getElementById('input-lock-url').value = appState.lockIconImg && !appState.lockIconImg.startsWith('data:') ? appState.lockIconImg : '';
             document.getElementById('input-music-url-img').value = appState.musicIconImg && !appState.musicIconImg.startsWith('data:') ? appState.musicIconImg : '';
+            const topMUrl = document.getElementById('input-top-marquee-url');
+            if (topMUrl) topMUrl.value = appState.topMarqueeImg && !appState.topMarqueeImg.startsWith('data:') ? appState.topMarqueeImg : '';
+            const botMUrl = document.getElementById('input-bottom-marquee-url');
+            if (botMUrl) botMUrl.value = appState.bottomMarqueeImg && !appState.bottomMarqueeImg.startsWith('data:') ? appState.bottomMarqueeImg : '';
 
             document.getElementById('input-track-title').value = appState.trackTitle || '';
             document.getElementById('input-track-url').value = appState.trackUrl || '';
 
-            document.getElementById('input-love-title').value = appState.loveBoxTitle || 'love notes';
             document.getElementById('input-love-icon').value = appState.loveBoxIcon || '♡';
-            document.getElementById('input-love-quote').value = appState.loveBottomQuote || '"every little thing about you is worthy of gentle love ♡"';
-            document.getElementById('input-mental-title').value = appState.mentalBoxTitle || 'mental health';
-            document.getElementById('input-mental-icon').value = appState.mentalBoxIcon || '✿';
-            document.getElementById('input-center-title').value = appState.centerTitle || 'things i love:';
+            document.getElementById('input-center-title').value = appState.centerTitle || 'my diary:';
             document.getElementById('input-daily-status').value = appState.dailyStatus || '';
             document.getElementById('input-orbit-names').value = (statsState.orbitNames || []).join(', ');
-            document.getElementById('input-page-title').value = appState.pageTitle || '♡ my little sanctuary ♡';
+            document.getElementById('input-page-title').value = appState.pageTitle || '♡ my little diary ♡';
 
             document.getElementById('input-secret-pass').value = appState.secretPassword || 'princess';
-            document.getElementById('input-secret-title').value = appState.secretNoteTitle || 'my vulnerable note ♡';
+            document.getElementById('input-secret-title').value = appState.secretNoteTitle || 'secret note ♡';
             document.getElementById('input-secret-img-url').value = appState.secretNoteImg && !appState.secretNoteImg.startsWith('data:') ? appState.secretNoteImg : '';
             const secTexts = appState.secretNoteTexts || ['', '', ''];
             [0, 1, 2].forEach(i => {
@@ -3251,19 +2961,19 @@
             appState.customCursorClickImg = '';
             appState.cursorIndex = ((appState.cursorIndex || 0) + 1) % 4;
             applyCursorToDOM();
-            const names = ['paw 🐾', 'heart ♥', 'sparkle ✨', 'bunny 🐰'];
+            const names = ['paw', 'heart ♥', 'sparkle ✦', 'bunny'];
             showToast(`cursor: ${names[appState.cursorIndex]}`);
             if (isOwner && !isVisitorPreview) saveDiaryToCloud();
         };
 
         window.toggleParticles = function() {
             appState.particlesEnabled = !appState.particlesEnabled;
-            showToast(appState.particlesEnabled ? 'falling sparkles on ✨' : 'falling sparkles paused');
+            showToast(appState.particlesEnabled ? 'falling particles on ♡' : 'falling particles paused');
             if (isOwner && !isVisitorPreview) saveDiaryToCloud();
         };
 
         window.triggerHeartBurst = function() {
-            const symbols = ['♥', '♡', '✿', '✦', '🌸'];
+            const symbols = ['♥', '♡', '✿', '✦'];
             for (let i = 0; i < 14; i++) {
                 const el = document.createElement('span');
                 el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
@@ -3327,10 +3037,24 @@
                 setTimeout(() => dot.remove(), 860);
             });
 
-            setInterval(() => {
+            function spawnCerealPiece() {
                 if (!appState.particlesEnabled) return;
                 const layer = document.getElementById('particles-layer');
                 if (!layer) return;
+
+                const sz = appState.fallingParticleSize || 24;
+                const colWidth = Math.max(20, sz * 0.85);
+                const numCols = Math.max(6, Math.floor(window.innerWidth / colWidth));
+                if (cerealPileColumns.length !== numCols) {
+                    cerealPileColumns = new Array(numCols).fill(0);
+                }
+
+                const colIdx = Math.floor(Math.random() * numCols);
+                const pileHeight = cerealPileColumns[colIdx] || 0;
+                const maxPile = 72;
+                if (pileHeight >= maxPile) {
+                    cerealPileColumns = cerealPileColumns.map(h => Math.max(0, h - sz * 0.7));
+                }
 
                 const activeFallImgs = (appState.fallingParticleImgs || []).filter(u => u && u.trim());
                 const chosenImg = activeFallImgs.length
@@ -3338,27 +3062,46 @@
                     : '';
 
                 const p = document.createElement(chosenImg ? 'img' : 'span');
-                p.className = 'falling-particle';
-                p.style.left = `${Math.random() * 98}vw`;
-                const duration = 6 + Math.random() * 6;
-                p.style.animationDuration = `${duration}s`;
+                p.className = 'cereal-piece';
+                const xPos = Math.min(window.innerWidth - sz - 8, Math.max(6, colIdx * colWidth + (Math.random() - 0.5) * 10));
+                const landY = Math.max(80, window.innerHeight - sz - 6 - (cerealPileColumns[colIdx] || 0));
+                const rotEnd = Math.round((Math.random() - 0.5) * 260);
+                const duration = 2700 + Math.random() * 1300;
+
+                p.style.left = `${xPos}px`;
+                p.style.transform = `translate3d(0, -50px, 0) rotate(0deg)`;
+                p.style.opacity = '0.95';
 
                 if (chosenImg) {
                     p.src = chosenImg;
-                    const sz = appState.fallingParticleSize || 22;
                     p.style.width = `${sz}px`;
                     p.style.height = `${sz}px`;
                     p.style.objectFit = 'contain';
                 } else {
-                    const symbols = ['♡', '✿', '✦', '·', '❄'];
+                    const symbols = ['♡', '♥', '✿', '✦'];
                     p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                    p.style.fontSize = `${10 + Math.random() * 10}px`;
+                    p.style.fontSize = `${Math.max(14, sz * 0.75)}px`;
                     p.style.color = (appState.theme && appState.theme.particleColor) || 'var(--accent-pink-dark)';
                 }
 
                 layer.appendChild(p);
-                setTimeout(() => p.remove(), duration * 1000);
-            }, 850);
+                cerealPileColumns[colIdx] = (cerealPileColumns[colIdx] || 0) + sz * 0.42;
+
+                void p.offsetHeight;
+                setTimeout(() => {
+                    p.style.transition = `transform ${duration}ms cubic-bezier(0.32, 0, 0.67, 0.88)`;
+                    p.style.transform = `translate3d(0, ${landY}px, 0) rotate(${rotEnd}deg)`;
+                }, 20);
+
+                setTimeout(() => {
+                    p.style.transition = 'opacity 1.2s ease';
+                    p.style.opacity = '0';
+                    cerealPileColumns[colIdx] = Math.max(0, (cerealPileColumns[colIdx] || 0) - sz * 0.42);
+                    setTimeout(() => p.remove(), 1250);
+                }, duration + 6500);
+            }
+
+            setInterval(spawnCerealPiece, 650);
         }
 
         function showToast(msg) {
