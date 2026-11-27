@@ -297,6 +297,35 @@
             animation: floatRightToLeft 28s linear infinite;
         }
 
+        #bg-media-layer {
+            position: fixed;
+            inset: -24px;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            display: none;
+        }
+
+        #bg-media-layer.active {
+            display: block;
+        }
+
+        #bg-video-el, #bg-yt-iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 108vw;
+            height: 108vh;
+            min-width: 177.78vh;
+            min-height: 56.25vw;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            border: 0;
+            pointer-events: none;
+            filter: blur(var(--bg-video-blur, 5px));
+            opacity: 0.78;
+        }
+
         @media (max-width: 900px) {
             .workspace-stage {
                 display: flex !important;
@@ -325,6 +354,10 @@
     </style>
 </head>
 <body class="cursor-paw">
+    <div id="bg-media-layer">
+        <video id="bg-video-el" muted playsinline></video>
+        <iframe id="bg-yt-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
     <div id="particles-layer"></div>
     <div id="top-marquee-track" class="edge-marquee-track top-2 hidden">
         <div id="top-marquee-inner" class="edge-marquee-inner marquee-ltr"></div>
@@ -708,30 +741,30 @@
             <div id="tab-images" class="space-y-3 hidden">
                 <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
                     <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold">0. full-screen background image / gif</span>
+                        <span class="text-xs font-bold">0. background image / gif or looping video / youtube</span>
                         <button onclick="clearCharacterImage('bgImg')" class="text-[11px] underline opacity-70 hover:opacity-100">clear bg</button>
                     </div>
                     <input type="file" accept="image/*" onchange="handleImageUpload(event, 'bgImg')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
                     <input id="input-bg-img-url" type="text" placeholder="or paste background GIF/PNG URL..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
-                </div>
-
-                <div class="p-3 rounded-xl space-y-2" style="background-color: var(--bubble-bg);">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold">1. top peeking character & 2 corner bunny ears</span>
-                        <button onclick="clearCharacterImage('top')" class="text-[11px] underline opacity-70 hover:opacity-100">clear top</button>
-                    </div>
-                    <input type="file" accept="image/*" onchange="handleImageUpload(event, 'top')" class="w-full text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white">
-                    <input id="input-top-url" type="text" placeholder="or paste top sprite PNG/GIF URL..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
-                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
-                            <div class="flex justify-between text-[10px] font-semibold"><span>left bunny ear</span><button onclick="clearCharacterImage('earLeft')" class="underline opacity-70">clear</button></div>
-                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'earLeft')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
-                            <input id="input-ear-left-url" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                    <div class="pt-1 border-t border-black/5 space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] font-semibold">or looping video / youtube link (softly blurred)</span>
+                            <button onclick="clearBgVideo()" class="text-[10px] underline opacity-70 hover:opacity-100">clear video</button>
                         </div>
-                        <div class="bg-white/70 p-2 rounded-xl space-y-1">
-                            <div class="flex justify-between text-[10px] font-semibold"><span>right bunny ear</span><button onclick="clearCharacterImage('earRight')" class="underline opacity-70">clear</button></div>
-                            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'earRight')" class="w-full text-[10px] file:py-0.5 file:px-2 file:rounded-full file:border-0 file:bg-white">
-                            <input id="input-ear-right-url" type="text" placeholder="or URL..." class="w-full text-[10px] rounded px-1.5 py-0.5 bg-white">
+                        <input id="input-bg-video-url" type="text" placeholder="paste youtube link or direct .mp4/.webm url..." class="w-full text-xs rounded-lg px-2.5 py-1.5 bg-white">
+                        <div class="grid grid-cols-3 gap-1.5 text-[10px]">
+                            <div class="bg-white/80 rounded-lg px-2 py-1">
+                                <span class="block opacity-70">start (sec)</span>
+                                <input id="input-bg-loop-start" type="number" min="0" value="0" class="w-full text-xs bg-transparent font-semibold focus:outline-none">
+                            </div>
+                            <div class="bg-white/80 rounded-lg px-2 py-1">
+                                <span class="block opacity-70">end (sec, 0=full)</span>
+                                <input id="input-bg-loop-end" type="number" min="0" value="0" class="w-full text-xs bg-transparent font-semibold focus:outline-none">
+                            </div>
+                            <div class="bg-white/80 rounded-lg px-2 py-1">
+                                <span class="block opacity-70">blur (px)</span>
+                                <input id="input-bg-video-blur" type="number" min="0" max="24" value="5" class="w-full text-xs bg-transparent font-semibold focus:outline-none">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1020,6 +1053,10 @@
             particlesEnabled: true,
             pageTitle: '♡ my little diary ♡',
             bgWallpaperImg: '',
+            bgVideoUrl: '',
+            bgLoopStart: 0,
+            bgLoopEnd: 0,
+            bgVideoBlur: 5,
             loveBoxTitle: 'my diary:',
             loveBoxIcon: '♡',
             loveBoxIconImg: '',
@@ -1127,6 +1164,8 @@
         let autoMusicAttempted = false;
         let lastOrbitSignature = '';
         let cerealPileColumns = [];
+        let bgVideoLoopTimer = null;
+        let lastAppliedBgVideoSig = '';
 
         renderAll();
 
@@ -1325,6 +1364,7 @@
             renderTopBadges();
 
             document.body.style.backgroundImage = appState.bgWallpaperImg ? `url("${appState.bgWallpaperImg}")` : '';
+            applyBackgroundVideo();
             document.title = appState.pageTitle || '♡ my little diary ♡';
 
             const loveIconImg = document.getElementById('love-box-icon-img');
@@ -2509,6 +2549,10 @@
 
         window.saveImageUrlsAndSizes = async function() {
             const bgImgUrl = document.getElementById('input-bg-img-url').value.trim();
+            const bgVideoUrl = document.getElementById('input-bg-video-url').value.trim();
+            const bgLoopStart = Math.max(0, Number(document.getElementById('input-bg-loop-start').value) || 0);
+            const bgLoopEnd = Math.max(0, Number(document.getElementById('input-bg-loop-end').value) || 0);
+            const bgVideoBlur = Math.max(0, Math.min(24, Number(document.getElementById('input-bg-video-blur').value) ?? 5));
             const topUrl = document.getElementById('input-top-url').value.trim();
             const earLUrl = document.getElementById('input-ear-left-url').value.trim();
             const earRUrl = document.getElementById('input-ear-right-url').value.trim();
@@ -2532,6 +2576,12 @@
                 appState.bgWallpaperImg = bgImgUrl;
                 document.body.style.backgroundImage = `url("${bgImgUrl}")`;
             }
+            appState.bgVideoUrl = bgVideoUrl;
+            appState.bgLoopStart = bgLoopStart;
+            appState.bgLoopEnd = bgLoopEnd;
+            appState.bgVideoBlur = bgVideoBlur;
+            lastAppliedBgVideoSig = '';
+            applyBackgroundVideo();
             if (topUrl) appState.topSpriteImg = topUrl;
             if (earLUrl) appState.earLeftImg = earLUrl;
             if (earRUrl) appState.earRightImg = earRUrl;
@@ -2592,6 +2642,107 @@
             updateCharacterDisplay();
             await saveDiaryToCloud('reset to default');
         };
+
+        window.clearBgVideo = async function() {
+            appState.bgVideoUrl = '';
+            appState.bgLoopStart = 0;
+            appState.bgLoopEnd = 0;
+            const urlEl = document.getElementById('input-bg-video-url');
+            if (urlEl) urlEl.value = '';
+            lastAppliedBgVideoSig = '';
+            applyBackgroundVideo();
+            await saveDiaryToCloud('background video cleared');
+        };
+
+        function extractYouTubeId(url) {
+            if (!url) return '';
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/
+            ];
+            for (const rx of patterns) {
+                const m = url.match(rx);
+                if (m && m[1]) return m[1];
+            }
+            return '';
+        }
+
+        function applyBackgroundVideo() {
+            const layer = document.getElementById('bg-media-layer');
+            const videoEl = document.getElementById('bg-video-el');
+            const ytFrame = document.getElementById('bg-yt-iframe');
+            if (!layer || !videoEl || !ytFrame) return;
+
+            const rawUrl = (appState.bgVideoUrl || '').trim();
+            const startSec = Math.max(0, Number(appState.bgLoopStart) || 0);
+            const endSec = Math.max(0, Number(appState.bgLoopEnd) || 0);
+            const blurPx = Math.max(0, Math.min(24, Number(appState.bgVideoBlur) ?? 5));
+
+            layer.style.setProperty('--bg-video-blur', `${blurPx}px`);
+            videoEl.style.filter = `blur(${blurPx}px)`;
+            ytFrame.style.filter = `blur(${blurPx}px)`;
+
+            if (!rawUrl) {
+                clearInterval(bgVideoLoopTimer);
+                layer.classList.remove('active');
+                videoEl.pause();
+                videoEl.removeAttribute('src');
+                videoEl.classList.add('hidden');
+                ytFrame.src = '';
+                ytFrame.classList.add('hidden');
+                lastAppliedBgVideoSig = '';
+                return;
+            }
+
+            const sig = `${rawUrl}|${startSec}|${endSec}`;
+            if (sig === lastAppliedBgVideoSig) return;
+            lastAppliedBgVideoSig = sig;
+
+            clearInterval(bgVideoLoopTimer);
+            layer.classList.add('active');
+
+            const ytId = extractYouTubeId(rawUrl);
+            if (ytId) {
+                videoEl.pause();
+                videoEl.classList.add('hidden');
+                ytFrame.classList.remove('hidden');
+
+                let embedUrl = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${ytId}`;
+                if (startSec > 0) embedUrl += `&start=${Math.floor(startSec)}`;
+                if (endSec > startSec) embedUrl += `&end=${Math.floor(endSec)}`;
+                ytFrame.src = embedUrl;
+
+                if (endSec > startSec) {
+                    const spanMs = (endSec - startSec) * 1000;
+                    bgVideoLoopTimer = setInterval(() => {
+                        ytFrame.src = embedUrl;
+                    }, spanMs);
+                }
+            } else {
+                ytFrame.src = '';
+                ytFrame.classList.add('hidden');
+                videoEl.classList.remove('hidden');
+                videoEl.src = rawUrl;
+                videoEl.loop = !(endSec > startSec);
+
+                videoEl.onloadedmetadata = () => {
+                    if (startSec > 0 && startSec < videoEl.duration) {
+                        videoEl.currentTime = startSec;
+                    }
+                    videoEl.play().catch(() => {});
+                };
+
+                if (endSec > startSec) {
+                    bgVideoLoopTimer = setInterval(() => {
+                        if (videoEl.currentTime >= endSec || videoEl.ended) {
+                            videoEl.currentTime = startSec;
+                            videoEl.play().catch(() => {});
+                        }
+                    }, 200);
+                }
+
+                videoEl.play().catch(() => {});
+            }
+        }
 
         function renderEdgeMarqueeStream(trackId, innerId, imgUrl) {
             const track = document.getElementById(trackId);
@@ -2882,6 +3033,14 @@
 
             const bgUrlInput = document.getElementById('input-bg-img-url');
             if (bgUrlInput) bgUrlInput.value = appState.bgWallpaperImg && !appState.bgWallpaperImg.startsWith('data:') ? appState.bgWallpaperImg : '';
+            const bgVidInput = document.getElementById('input-bg-video-url');
+            if (bgVidInput) bgVidInput.value = appState.bgVideoUrl || '';
+            const bgStartInput = document.getElementById('input-bg-loop-start');
+            if (bgStartInput) bgStartInput.value = appState.bgLoopStart || 0;
+            const bgEndInput = document.getElementById('input-bg-loop-end');
+            if (bgEndInput) bgEndInput.value = appState.bgLoopEnd || 0;
+            const bgBlurInput = document.getElementById('input-bg-video-blur');
+            if (bgBlurInput) bgBlurInput.value = appState.bgVideoBlur ?? 5;
             document.getElementById('input-top-url').value = appState.topSpriteImg && !appState.topSpriteImg.startsWith('data:') ? appState.topSpriteImg : '';
             document.getElementById('input-ear-left-url').value = appState.earLeftImg && !appState.earLeftImg.startsWith('data:') ? appState.earLeftImg : '';
             document.getElementById('input-ear-right-url').value = appState.earRightImg && !appState.earRightImg.startsWith('data:') ? appState.earRightImg : '';
