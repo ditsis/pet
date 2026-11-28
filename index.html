@@ -427,6 +427,14 @@
           <label class="text-[11.5px] block mb-1">accent</label>
           <input id="color-accent-pink-dark" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('accentPinkDark', this.value)" />
         </div>
+        <div>
+          <label class="text-[11.5px] block mb-1">date pill</label>
+          <input id="color-pill-bg" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('accentPillBg', this.value)" />
+        </div>
+        <div>
+          <label class="text-[11.5px] block mb-1">date text</label>
+          <input id="color-pill-text" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('accentPillText', this.value)" />
+        </div>
       </div>
 
       <div id="tab-images" class="edit-tab-pane space-y-3 hidden">
@@ -555,7 +563,9 @@
         boxBorder: "#eee5ea",
         textPrimary: "#6c6167",
         textSecondary: "#a598a0",
-        accentPinkDark: "#b98ea3"
+        accentPinkDark: "#b98ea3",
+        accentPillBg: "#f8f2f5",
+        accentPillText: "#a598a0"
       },
       images: {
         faviconUrl: "",
@@ -659,6 +669,8 @@
       root.style.setProperty("--text-primary", state.colors.textPrimary);
       root.style.setProperty("--text-secondary", state.colors.textSecondary);
       root.style.setProperty("--accent-pink-dark", state.colors.accentPinkDark);
+      root.style.setProperty("--accent-pill-bg", state.colors.accentPillBg || "#f8f2f5");
+      root.style.setProperty("--accent-pill-text", state.colors.accentPillText || "#a598a0");
 
       root.style.setProperty("--diary-width", state.sizes.diaryWidth + "px");
       root.style.setProperty("--diary-height", state.sizes.diaryHeight + "px");
@@ -1054,6 +1066,8 @@
       document.getElementById("color-text-primary").value = state.colors.textPrimary;
       document.getElementById("color-text-secondary").value = state.colors.textSecondary;
       document.getElementById("color-accent-pink-dark").value = state.colors.accentPinkDark;
+      document.getElementById("color-pill-bg").value = state.colors.accentPillBg || "#f8f2f5";
+      document.getElementById("color-pill-text").value = state.colors.accentPillText || "#a598a0";
 
       document.getElementById("input-favicon-url").value = state.images.faviconUrl || "";
       document.getElementById("input-top-drifter-url").value = state.images.topDrifterUrl || "";
