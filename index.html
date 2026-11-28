@@ -575,6 +575,7 @@
 
     let state = structuredClone(DEFAULT_STATE);
     let isOwnerUnlocked = false;
+    let isCloudStateLoaded = false;
     let currentNoteIndex = 0;
     let noteCycleTimer = null;
     let ytLoopTimer = null;
@@ -922,6 +923,10 @@
         showToast("locked");
         return;
       }
+      if (state.firebaseConfig && state.firebaseConfig.apiKey && !isCloudStateLoaded) {
+        showToast("syncing...");
+        return;
+      }
       const desc = document.getElementById("lock-modal-desc");
       const passBox = document.getElementById("passcode-auth-box");
       const fbSub = document.getElementById("fb-auth-subtitle");
@@ -1182,6 +1187,16 @@
 
         onAuthStateChanged(fbAuth, async (user) => {
           if (user && !user.isAnonymous) {
+            if (!isCloudStateLoaded) {
+              try {
+                const { getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+                const firstSnap = await getDoc(doc(fbDb, "diary_sanctuary", "main_state"));
+                if (firstSnap.exists()) {
+                  state = mergeDeep(state, firstSnap.data());
+                }
+                isCloudStateLoaded = true;
+              } catch (e) {}
+            }
             if (!state.ownerUid) {
               state.ownerUid = user.uid;
               isOwnerUnlocked = true;
@@ -1203,6 +1218,7 @@
 
         if (fbUnsubState) fbUnsubState();
         fbUnsubState = onSnapshot(doc(fbDb, "diary_sanctuary", "main_state"), (snap) => {
+          isCloudStateLoaded = true;
           if (snap.exists() && !isOwnerUnlocked) {
             const remote = snap.data();
             state = mergeDeep(state, remote);
@@ -1212,7 +1228,9 @@
             applyThemeAndSizes();
             renderDiaryNote(false);
           }
-        }, () => {});
+        }, () => {
+          isCloudStateLoaded = true;
+        });
       } catch (e) {}
     }
 
