@@ -3,31 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>my gentle diary ♡</title>
-  <link id="page-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='25' x='4' font-size='24' fill='%23dd7fa6'%3E%E2%99%A5%3C/text%3E%3C/svg%3E" />
+  <title>diary</title>
+  <link id="page-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='24' x='5' font-size='22' fill='%23b5a4ad'%3E%E2%99%A1%3C/text%3E%3C/svg%3E" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Silkscreen:wght@400;700&family=Sniglet:wght@400;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&family=Silkscreen:wght@400&family=Sniglet:wght@400&display=swap" rel="stylesheet" />
   <style id="dynamic-theme-styles">
     :root {
-      --bg-color: #fbf4f7;
+      --bg-color: #fbf6f8;
       --box-bg: #ffffff;
-      --box-border: #eddbe4;
-      --box-glow: rgba(235, 198, 220, 0.28);
-      --text-primary: #63585f;
-      --text-secondary: #988792;
-      --accent-pink: #f4b8d4;
-      --accent-pink-dark: #dd7fa6;
-      --accent-pill-bg: #faf2f6;
-      --accent-pill-text: #988792;
+      --box-border: #eee5ea;
+      --box-glow: rgba(175, 152, 165, 0.08);
+      --text-primary: #6c6167;
+      --text-secondary: #a598a0;
+      --accent-pink: #e4c6d4;
+      --accent-pink-dark: #b98ea3;
+      --accent-pill-bg: #f8f2f5;
+      --accent-pill-text: #a598a0;
       --font-main: 'Quicksand', sans-serif;
       --font-pixel: 'Silkscreen', monospace;
       --font-cute: 'Sniglet', cursive;
-      --diary-width: 500px;
-      --diary-height: 290px;
-      --top-char-size: 56px;
-      --drifter-size: 40px;
+      --diary-width: 490px;
+      --diary-height: 280px;
+      --drifter-size: 38px;
     }
 
     * {
@@ -44,7 +43,7 @@
       min-height: 100vh;
       overflow: hidden;
       position: relative;
-      transition: background-color 0.4s ease, color 0.3s ease;
+      transition: background-color 0.3s ease, color 0.25s ease;
     }
 
     #custom-bg-layer {
@@ -55,7 +54,7 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      opacity: 0.42;
+      opacity: 0.4;
       display: none;
     }
 
@@ -81,7 +80,7 @@
       object-fit: cover;
       border: 0;
       pointer-events: none;
-      opacity: 0.46;
+      opacity: 0.44;
       filter: blur(5px);
     }
 
@@ -89,7 +88,7 @@
       position: fixed;
       left: 0;
       right: 0;
-      height: 60px;
+      height: 56px;
       pointer-events: none;
       z-index: 6;
       overflow: hidden;
@@ -109,130 +108,79 @@
       height: var(--drifter-size);
       object-fit: contain;
       pointer-events: none;
-      filter: drop-shadow(0 3px 8px rgba(221, 127, 166, 0.25));
     }
 
     @keyframes driftLeftToRight {
-      0% {
-        transform: translateX(-80px) translateY(0px) rotate(-4deg);
-      }
-      50% {
-        transform: translateX(50vw) translateY(-6px) rotate(4deg);
-      }
-      100% {
-        transform: translateX(calc(100vw + 80px)) translateY(0px) rotate(-4deg);
-      }
+      0% { transform: translateX(-80px); }
+      100% { transform: translateX(calc(100vw + 80px)); }
     }
 
     @keyframes driftRightToLeft {
-      0% {
-        transform: translateX(calc(100vw + 80px)) translateY(0px) rotate(4deg);
-      }
-      50% {
-        transform: translateX(50vw) translateY(-6px) rotate(-4deg);
-      }
-      100% {
-        transform: translateX(-80px) translateY(0px) rotate(4deg);
-      }
+      0% { transform: translateX(calc(100vw + 80px)); }
+      100% { transform: translateX(-80px); }
     }
 
     .diary-card {
       background: var(--box-bg);
-      border: none;
-      border-radius: 36px;
-      box-shadow: 0 18px 46px -8px var(--box-glow), 0 2px 14px rgba(255, 255, 255, 0.92) inset;
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+      border: 1px solid var(--box-border);
+      border-radius: 30px;
+      box-shadow: 0 8px 28px var(--box-glow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
       position: relative;
-    }
-
-    .diary-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 24px 54px -8px var(--box-glow), 0 4px 16px rgba(255, 255, 255, 0.96) inset;
     }
 
     @keyframes dateFloatBob {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-3px); }
+      50% { transform: translateY(-2px); }
     }
 
     .floating-date-pill {
-      animation: dateFloatBob 3.8s ease-in-out infinite;
-    }
-
-    .diary-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 44px -10px var(--box-glow), 0 4px 14px rgba(255, 255, 255, 0.95) inset;
-    }
-
-    #top-peeking-char {
-      position: absolute;
-      top: calc(-0.82 * var(--top-char-size));
-      left: 50%;
-      transform: translateX(-50%);
-      width: var(--top-char-size);
-      height: var(--top-char-size);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 12;
-      pointer-events: none;
-      animation: gentlePeek 3.4s ease-in-out infinite;
-    }
-
-    @keyframes gentlePeek {
-      0%, 100% { transform: translateX(-50%) translateY(0px); }
-      50% { transform: translateX(-50%) translateY(-4px); }
+      animation: dateFloatBob 4.5s ease-in-out infinite;
     }
 
     .note-text-stage {
-      transition: opacity 0.65s ease, filter 0.65s ease, transform 0.65s ease;
+      transition: opacity 0.55s ease, filter 0.55s ease;
     }
 
     .note-blur-out {
       opacity: 0;
-      filter: blur(7px);
-      transform: translateY(4px);
+      filter: blur(5px);
     }
 
     @keyframes floatingPillBob {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-3px); }
     }
 
     .floating-music-pill {
       background: var(--box-bg);
-      border: none;
-      border-radius: 9999px;
-      box-shadow: 0 12px 30px -6px var(--box-glow);
-      animation: floatingPillBob 3.6s ease-in-out infinite;
-      transition: box-shadow 0.25s ease;
+      border: 1px solid var(--box-border);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px var(--box-glow);
+      animation: floatingPillBob 4.2s ease-in-out infinite;
+      transition: border-color 0.2s ease;
     }
 
     .floating-music-pill:hover {
-      box-shadow: 0 14px 34px -4px rgba(221, 127, 166, 0.38);
-    }
-
-    .floating-music-pill:hover {
-      border-color: var(--accent-pink);
-      box-shadow: 0 12px 30px -4px rgba(221, 127, 166, 0.35);
+      border-color: var(--accent-pink-dark);
     }
 
     @keyframes eqBarBounce {
-      0%, 100% { height: 4px; }
-      50% { height: 12px; }
+      0%, 100% { height: 3px; }
+      50% { height: 10px; }
     }
 
     .eq-bar {
-      width: 2.5px;
-      height: 5px;
-      border-radius: 9999px;
+      width: 2px;
+      height: 4px;
+      border-radius: 2px;
       background-color: var(--accent-pink-dark);
       transition: height 0.2s ease;
     }
 
-    .eq-playing .eq-bar:nth-child(1) { animation: eqBarBounce 0.7s ease-in-out infinite; }
-    .eq-playing .eq-bar:nth-child(2) { animation: eqBarBounce 0.55s ease-in-out 0.15s infinite; }
-    .eq-playing .eq-bar:nth-child(3) { animation: eqBarBounce 0.8s ease-in-out 0.3s infinite; }
+    .eq-playing .eq-bar:nth-child(1) { animation: eqBarBounce 0.75s ease-in-out infinite; }
+    .eq-playing .eq-bar:nth-child(2) { animation: eqBarBounce 0.6s ease-in-out 0.15s infinite; }
+    .eq-playing .eq-bar:nth-child(3) { animation: eqBarBounce 0.85s ease-in-out 0.3s infinite; }
 
     .draggable-widget {
       touch-action: none;
@@ -240,34 +188,34 @@
 
     .drag-handle {
       cursor: grab;
-      opacity: 0.38;
+      opacity: 0.28;
       transition: opacity 0.2s ease;
     }
 
     .drag-handle:hover {
-      opacity: 0.85;
+      opacity: 0.75;
     }
 
     .modal-backdrop {
-      background: rgba(248, 236, 243, 0.65);
-      backdrop-filter: blur(6px);
+      background: rgba(250, 244, 247, 0.75);
+      backdrop-filter: blur(4px);
     }
 
     .modal-card {
       background: #ffffff;
-      border: 1.5px solid var(--box-border);
-      border-radius: 28px;
-      box-shadow: 0 18px 46px rgba(185, 138, 164, 0.22);
+      border: 1px solid #ece3e8;
+      border-radius: 20px;
+      box-shadow: 0 12px 32px rgba(130, 110, 120, 0.1);
     }
 
     .soft-input {
       width: 100%;
-      background: #faf5f8;
-      border: 1.5px solid #f0e0ea;
-      border-radius: 16px;
-      padding: 9px 14px;
+      background: #fcf9fa;
+      border: 1px solid #e9dfe4;
+      border-radius: 10px;
+      padding: 8px 12px;
       font-family: var(--font-main);
-      font-size: 13px;
+      font-size: 12.5px;
       color: var(--text-primary);
       outline: none;
       transition: border-color 0.2s ease;
@@ -278,35 +226,39 @@
     }
 
     .soft-btn {
-      background: var(--accent-pink);
-      color: #ffffff;
-      border-radius: 9999px;
-      padding: 8px 18px;
-      font-family: var(--font-cute);
-      font-size: 13px;
+      background: #f5ebf0;
+      color: var(--text-primary);
+      border: 1px solid #e6d6df;
+      border-radius: 10px;
+      padding: 7px 14px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 12px;
       cursor: pointer;
-      transition: transform 0.2s ease, background-color 0.2s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
     }
 
     .soft-btn:hover {
-      background: var(--accent-pink-dark);
-      transform: translateY(-1px);
+      background: #eee0e7;
+      border-color: #d8c2ce;
     }
 
     .soft-btn-ghost {
-      background: #faf4f7;
+      background: transparent;
       color: var(--text-secondary);
-      border: 1px solid #eedce6;
-      border-radius: 9999px;
-      padding: 7px 15px;
-      font-family: var(--font-cute);
-      font-size: 12.5px;
+      border: 1px solid #ede4e9;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-family: var(--font-main);
+      font-weight: 500;
+      font-size: 12px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.15s ease, color 0.15s ease;
     }
 
     .soft-btn-ghost:hover {
-      background: #f3e6ee;
+      background: #faf5f8;
+      color: var(--text-primary);
     }
   </style>
 </head>
@@ -327,37 +279,35 @@
 
     <section id="widget-diary" class="draggable-widget flex flex-col items-center justify-center">
       <div id="diary-box-card" class="diary-card px-8 py-6 flex flex-col justify-between text-center" style="width: min(90vw, var(--diary-width)); min-height: var(--diary-height);">
-        <div id="top-peeking-char"></div>
-
-        <span class="drag-handle absolute top-4 right-5 px-1 text-xs" data-drag-target="widget-diary" title="drag">⋮⋮</span>
+        <span class="drag-handle absolute top-4 right-5 px-1 text-[11px]" data-drag-target="widget-diary" title="move">⋮⋮</span>
 
         <div class="flex items-center justify-center pt-1">
-          <span id="diary-note-date" class="floating-date-pill inline-block px-3.5 py-1 rounded-full text-[11.5px] tracking-wide" style="background: var(--accent-pill-bg); color: var(--accent-pill-text); font-family: var(--font-cute); box-shadow: 0 4px 12px var(--box-glow);">today ♡</span>
+          <span id="diary-note-date" class="floating-date-pill inline-block px-3 py-0.5 rounded-full text-[11px] tracking-wide" style="background: var(--accent-pill-bg); color: var(--accent-pill-text);">nov 28</span>
         </div>
 
         <div id="diary-note-stage" class="note-text-stage my-auto py-3 flex flex-col items-center justify-center">
-          <p id="diary-note-text" class="text-sm sm:text-[15px] leading-relaxed font-medium px-2 whitespace-pre-line" style="color: var(--text-primary);"></p>
+          <p id="diary-note-text" class="text-[13.5px] sm:text-[14.5px] leading-relaxed font-normal px-2 whitespace-pre-line" style="color: var(--text-primary);"></p>
 
           <div class="flex items-center justify-center gap-3 mt-2.5" style="color: var(--text-secondary);">
-            <button type="button" onclick="prevDiaryNote()" class="px-2 py-0.5 rounded-full hover:bg-pink-50 text-xs transition" title="previous">‹</button>
-            <button type="button" onclick="nextDiaryNote()" class="px-2 py-0.5 rounded-full hover:bg-pink-50 text-xs transition" title="next">›</button>
+            <button type="button" onclick="prevDiaryNote()" class="px-2 py-0.5 rounded hover:opacity-70 text-xs transition" title="previous">‹</button>
+            <button type="button" onclick="nextDiaryNote()" class="px-2 py-0.5 rounded hover:opacity-70 text-xs transition" title="next">›</button>
           </div>
         </div>
 
         <div class="flex flex-col items-center gap-2 pt-1">
-          <p id="diary-footer-whisper" class="text-xs italic" style="color: var(--text-secondary);"></p>
+          <p id="diary-footer-whisper" class="text-[11.5px]" style="color: var(--text-secondary);"></p>
 
           <div id="owner-inline-note-bar" class="hidden flex items-center justify-center gap-2 pt-1">
-            <button type="button" onclick="openNoteManagerModal()" class="soft-btn-ghost text-[11px] py-1 px-3">+ add / edit notes</button>
+            <button type="button" onclick="openNoteManagerModal()" class="soft-btn-ghost text-[11px] py-1 px-2.5">+ notes</button>
           </div>
         </div>
       </div>
 
-      <div id="floating-music-bar" onclick="toggleBgMusic(event)" class="floating-music-pill mt-5 px-4 py-2 flex items-center gap-3 cursor-pointer" title="play / pause music">
-        <span id="floating-play-icon" class="text-xs font-bold pl-0.5" style="color: var(--accent-pink-dark);">▶</span>
-        <div class="h-3.5 w-[1px]" style="background: var(--box-border);"></div>
-        <span id="floating-song-title" class="text-xs tracking-wide max-w-[200px] truncate" style="color: var(--text-secondary); font-family: var(--font-cute);">girl favorite ♡</span>
-        <div id="floating-eq" class="flex items-end gap-[2.5px] h-3 ml-0.5">
+      <div id="floating-music-bar" onclick="toggleBgMusic(event)" class="floating-music-pill mt-4 px-3.5 py-1.5 flex items-center gap-2.5 cursor-pointer" title="play / pause">
+        <span id="floating-play-icon" class="text-[10px]" style="color: var(--text-secondary);">▶</span>
+        <div class="h-3 w-[1px]" style="background: var(--box-border);"></div>
+        <span id="floating-song-title" class="text-[11.5px] tracking-wide max-w-[200px] truncate" style="color: var(--text-secondary);">girl favorite</span>
+        <div id="floating-eq" class="flex items-end gap-[2px] h-2.5 ml-0.5">
           <span class="eq-bar"></span>
           <span class="eq-bar"></span>
           <span class="eq-bar"></span>
@@ -368,59 +318,59 @@
   </main>
 
   <div class="fixed bottom-3 left-3 z-40 flex items-center gap-2">
-    <button id="owner-lock-btn" type="button" onclick="handleLockClick()" class="p-2 text-base transition hover:scale-110 focus:outline-none" style="background: transparent; border: none; color: var(--text-secondary);" title="owner lock">
+    <button id="owner-lock-btn" type="button" onclick="handleLockClick()" class="p-2 text-sm transition opacity-65 hover:opacity-100 focus:outline-none" style="background: transparent; border: none; color: var(--text-secondary);" title="lock">
       <span id="owner-lock-icon">♡</span>
     </button>
 
-    <div id="owner-toolbar" class="hidden flex flex-wrap items-center gap-1.5 px-3 py-1.5 rounded-full shadow-md" style="background: rgba(255,255,255,0.92); border: 1.5px solid var(--box-border); backdrop-filter: blur(8px);">
-      <button type="button" onclick="openEditModal('sizes')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">sizes</button>
-      <button type="button" onclick="openEditModal('colors')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">colors</button>
-      <button type="button" onclick="openEditModal('images')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">images / bg</button>
-      <button type="button" onclick="openEditModal('song')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">song</button>
-      <button type="button" onclick="openEditModal('text')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-primary);">text</button>
-      <button type="button" onclick="openEditModal('security')" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--accent-pink-dark);">cloud / lock</button>
-      <button type="button" onclick="copyBakedCode()" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-secondary);">copy code</button>
-      <button type="button" onclick="resetLayoutPositions()" class="px-2.5 py-1 rounded-full text-xs hover:bg-pink-50" style="font-family: var(--font-cute); color: var(--text-secondary);">reset pos</button>
+    <div id="owner-toolbar" class="hidden flex flex-wrap items-center gap-1 px-2.5 py-1 rounded-xl" style="background: rgba(255,255,255,0.95); border: 1px solid #ece3e8;">
+      <button type="button" onclick="openEditModal('sizes')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">sizes</button>
+      <button type="button" onclick="openEditModal('colors')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">colors</button>
+      <button type="button" onclick="openEditModal('images')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">images</button>
+      <button type="button" onclick="openEditModal('song')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">song</button>
+      <button type="button" onclick="openEditModal('text')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">text</button>
+      <button type="button" onclick="openEditModal('security')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--accent-pink-dark);">account</button>
+      <button type="button" onclick="copyBakedCode()" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-secondary);">export</button>
+      <button type="button" onclick="resetLayoutPositions()" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-secondary);">center</button>
     </div>
   </div>
 
-  <div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-1.5 rounded-full text-xs shadow-md pointer-events-none opacity-0 transition-opacity duration-300" style="background: #ffffff; border: 1.5px solid var(--box-border); color: var(--text-primary); font-family: var(--font-cute);"></div>
+  <div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-3.5 py-1 rounded-lg text-[11.5px] pointer-events-none opacity-0 transition-opacity duration-200" style="background: #ffffff; border: 1px solid #ece3e8; color: var(--text-primary);"></div>
 
   <div id="lock-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="modal-card w-full max-w-sm p-6 text-center">
+    <div class="modal-card w-full max-w-xs p-5 text-center">
       <div class="flex justify-end">
-        <button type="button" onclick="closeModal('lock-modal')" class="text-sm px-2" style="color: var(--text-secondary);">✕</button>
+        <button type="button" onclick="closeModal('lock-modal')" class="text-xs px-1.5" style="color: var(--text-secondary);">✕</button>
       </div>
-      <h3 class="text-base font-bold mb-1" style="font-family: var(--font-cute); color: var(--text-primary);">owner access ♡</h3>
-      <p id="lock-modal-desc" class="text-xs mb-4" style="color: var(--text-secondary);">sign in with your owner account</p>
+      <p class="text-sm font-medium mb-1" style="color: var(--text-primary);">sign in</p>
+      <p id="lock-modal-desc" class="text-[11.5px] mb-4" style="color: var(--text-secondary);">owner access</p>
 
-      <div id="passcode-auth-box" class="space-y-3">
-        <input id="owner-passcode-input" type="password" placeholder="passcode..." class="soft-input text-center" onkeydown="if(event.key==='Enter') submitOwnerPasscode()" />
-        <button type="button" onclick="submitOwnerPasscode()" class="soft-btn w-full">unlock ♡</button>
+      <div id="passcode-auth-box" class="space-y-2.5">
+        <input id="owner-passcode-input" type="password" placeholder="passcode" class="soft-input text-center" onkeydown="if(event.key==='Enter') submitOwnerPasscode()" />
+        <button type="button" onclick="submitOwnerPasscode()" class="soft-btn w-full">unlock</button>
       </div>
 
-      <div id="firebase-auth-box" class="space-y-2.5 mt-2">
-        <p id="fb-auth-subtitle" class="text-[11px]" style="color: var(--text-secondary);">sign in to claim owner lock</p>
-        <input id="fb-email-input" type="email" placeholder="owner email..." class="soft-input" />
-        <input id="fb-pass-input" type="password" placeholder="password..." class="soft-input" />
-        <button type="button" onclick="signInWithFirebaseEmail()" class="soft-btn w-full">sign in with email ♡</button>
-        <button type="button" onclick="signInWithFirebaseGoogle()" class="soft-btn-ghost w-full">continue with google</button>
+      <div id="firebase-auth-box" class="space-y-2 mt-2">
+        <p id="fb-auth-subtitle" class="text-[11px]" style="color: var(--text-secondary);"></p>
+        <input id="fb-email-input" type="email" placeholder="email" class="soft-input" />
+        <input id="fb-pass-input" type="password" placeholder="password" class="soft-input" />
+        <button type="button" onclick="signInWithFirebaseEmail()" class="soft-btn w-full">sign in</button>
+        <button type="button" onclick="signInWithFirebaseGoogle()" class="soft-btn-ghost w-full">google</button>
       </div>
     </div>
   </div>
 
   <div id="notes-manager-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="modal-card w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+    <div class="modal-card w-full max-w-md p-5 max-h-[85vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base font-bold" style="font-family: var(--font-cute); color: var(--text-primary);">diary notes ♡</h3>
-        <button type="button" onclick="closeModal('notes-manager-modal')" class="text-sm px-2" style="color: var(--text-secondary);">✕</button>
+        <p class="text-sm font-medium" style="color: var(--text-primary);">notes</p>
+        <button type="button" onclick="closeModal('notes-manager-modal')" class="text-xs px-1.5" style="color: var(--text-secondary);">✕</button>
       </div>
 
-      <div class="space-y-2.5 mb-4 p-3 rounded-2xl" style="background: #faf5f8;">
-        <textarea id="new-note-text" rows="3" placeholder="write a gentle note..." class="soft-input"></textarea>
+      <div class="space-y-2 mb-4 p-3 rounded-xl" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
+        <textarea id="new-note-text" rows="3" placeholder="write something..." class="soft-input"></textarea>
         <div class="flex items-center gap-2">
-          <input id="new-note-date" type="text" placeholder="date / label (e.g. nov 27 ♡)" class="soft-input" />
-          <button type="button" onclick="addDiaryNote()" class="soft-btn shrink-0">add ♡</button>
+          <input id="new-note-date" type="text" placeholder="date" class="soft-input" />
+          <button type="button" onclick="addDiaryNote()" class="soft-btn shrink-0">add</button>
         </div>
       </div>
 
@@ -429,104 +379,95 @@
   </div>
 
   <div id="customize-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="modal-card w-full max-w-lg p-6 max-h-[86vh] overflow-y-auto">
-      <div class="flex items-center justify-between mb-4">
-        <h3 id="customize-modal-title" class="text-base font-bold" style="font-family: var(--font-cute); color: var(--text-primary);">customize ♡</h3>
-        <button type="button" onclick="closeModal('customize-modal')" class="text-sm px-2" style="color: var(--text-secondary);">✕</button>
+    <div class="modal-card w-full max-w-lg p-5 max-h-[86vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-3">
+        <p id="customize-modal-title" class="text-sm font-medium" style="color: var(--text-primary);">settings</p>
+        <button type="button" onclick="closeModal('customize-modal')" class="text-xs px-1.5" style="color: var(--text-secondary);">✕</button>
       </div>
 
-      <div class="flex flex-wrap gap-1.5 mb-4 pb-3 border-b" style="border-color: var(--box-border);">
-        <button type="button" onclick="switchEditTab('sizes')" class="soft-btn-ghost text-xs">sizes</button>
-        <button type="button" onclick="switchEditTab('colors')" class="soft-btn-ghost text-xs">colors</button>
-        <button type="button" onclick="switchEditTab('images')" class="soft-btn-ghost text-xs">images / bg</button>
-        <button type="button" onclick="switchEditTab('song')" class="soft-btn-ghost text-xs">song</button>
-        <button type="button" onclick="switchEditTab('text')" class="soft-btn-ghost text-xs">text</button>
-        <button type="button" onclick="switchEditTab('security')" class="soft-btn-ghost text-xs">cloud / lock</button>
+      <div class="flex flex-wrap gap-1 mb-4 pb-2.5 border-b" style="border-color: #f0e7ec;">
+        <button type="button" onclick="switchEditTab('sizes')" class="soft-btn-ghost text-[11.5px]">sizes</button>
+        <button type="button" onclick="switchEditTab('colors')" class="soft-btn-ghost text-[11.5px]">colors</button>
+        <button type="button" onclick="switchEditTab('images')" class="soft-btn-ghost text-[11.5px]">images</button>
+        <button type="button" onclick="switchEditTab('song')" class="soft-btn-ghost text-[11.5px]">song</button>
+        <button type="button" onclick="switchEditTab('text')" class="soft-btn-ghost text-[11.5px]">text</button>
+        <button type="button" onclick="switchEditTab('security')" class="soft-btn-ghost text-[11.5px]">account</button>
       </div>
 
       <div id="tab-sizes" class="edit-tab-pane space-y-3 hidden">
         <div>
-          <label class="text-xs block mb-1">diary box width (<span id="val-diary-w">500</span>px)</label>
-          <input id="size-diary-w" type="range" min="300" max="660" value="500" class="w-full" oninput="updateSizeSetting('diaryWidth', this.value)" />
+          <label class="text-[11.5px] block mb-1">width (<span id="val-diary-w">490</span>px)</label>
+          <input id="size-diary-w" type="range" min="300" max="660" value="490" class="w-full" oninput="updateSizeSetting('diaryWidth', this.value)" />
         </div>
         <div>
-          <label class="text-xs block mb-1">diary box height (<span id="val-diary-h">290</span>px)</label>
-          <input id="size-diary-h" type="range" min="210" max="480" value="290" class="w-full" oninput="updateSizeSetting('diaryHeight', this.value)" />
+          <label class="text-[11.5px] block mb-1">height (<span id="val-diary-h">280</span>px)</label>
+          <input id="size-diary-h" type="range" min="210" max="480" value="280" class="w-full" oninput="updateSizeSetting('diaryHeight', this.value)" />
         </div>
-        <div>
-          <label class="text-xs block mb-1">top peeking character size (<span id="val-top-char">56</span>px)</label>
-          <input id="size-top-char" type="range" min="28" max="100" value="56" class="w-full" oninput="updateSizeSetting('topCharSize', this.value)" />
-        </div>
+      </div>
       </div>
 
       <div id="tab-colors" class="edit-tab-pane grid grid-cols-2 gap-3 hidden">
         <div>
-          <label class="text-xs block mb-1">page background</label>
-          <input id="color-bg" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('bgColor', this.value)" />
+          <label class="text-[11.5px] block mb-1">background</label>
+          <input id="color-bg" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('bgColor', this.value)" />
         </div>
         <div>
-          <label class="text-xs block mb-1">diary box fill</label>
-          <input id="color-box-bg" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('boxBg', this.value)" />
+          <label class="text-[11.5px] block mb-1">box</label>
+          <input id="color-box-bg" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('boxBg', this.value)" />
         </div>
         <div>
-          <label class="text-xs block mb-1">main text</label>
-          <input id="color-text-primary" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('textPrimary', this.value)" />
+          <label class="text-[11.5px] block mb-1">primary text</label>
+          <input id="color-text-primary" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('textPrimary', this.value)" />
         </div>
         <div>
-          <label class="text-xs block mb-1">secondary text</label>
-          <input id="color-text-secondary" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('textSecondary', this.value)" />
+          <label class="text-[11.5px] block mb-1">secondary text</label>
+          <input id="color-text-secondary" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('textSecondary', this.value)" />
         </div>
         <div>
-          <label class="text-xs block mb-1">accent & snowflakes</label>
-          <input id="color-accent-pink-dark" type="color" class="w-full h-9 rounded-xl cursor-pointer" onchange="updateColorSetting('accentPinkDark', this.value)" />
+          <label class="text-[11.5px] block mb-1">accent</label>
+          <input id="color-accent-pink-dark" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('accentPinkDark', this.value)" />
         </div>
       </div>
 
-      <div id="tab-images" class="edit-tab-pane space-y-4 hidden">
-        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
-          <p class="text-xs font-bold">top peeking character (png/gif)</p>
-          <input id="input-peeking-url" type="text" placeholder="top character image url..." class="soft-input" onchange="updateImageSetting('peekingCharUrl', this.value)" />
-          <input type="file" accept="image/*" class="text-xs" onchange="handleImageUpload(event, 'peekingCharUrl')" />
+      <div id="tab-images" class="edit-tab-pane space-y-3 hidden">
+        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
+          <p class="text-[11.5px] font-medium">tab favicon</p>
+          <input id="input-favicon-url" type="text" placeholder="favicon url" class="soft-input" onchange="updateImageSetting('faviconUrl', this.value)" />
+          <input type="file" accept="image/*" class="text-[11px]" onchange="handleImageUpload(event, 'faviconUrl')" />
         </div>
 
-        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
-          <p class="text-xs font-bold">browser tab favicon (png/gif/ico)</p>
-          <input id="input-favicon-url" type="text" placeholder="favicon image url..." class="soft-input" onchange="updateImageSetting('faviconUrl', this.value)" />
-          <input type="file" accept="image/*" class="text-xs" onchange="handleImageUpload(event, 'faviconUrl')" />
-        </div>
-
-        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
-          <p class="text-xs font-bold">top & bottom floating side-to-side png/gif</p>
+        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
+          <p class="text-[11.5px] font-medium">floating png/gif</p>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div>
-              <label class="text-[11px] block mb-1">top drifter url</label>
-              <input id="input-top-drifter-url" type="text" placeholder="top png/gif url..." class="soft-input" onchange="updateImageSetting('topDrifterUrl', this.value)" />
+              <label class="text-[11px] block mb-1">top</label>
+              <input id="input-top-drifter-url" type="text" placeholder="url" class="soft-input" onchange="updateImageSetting('topDrifterUrl', this.value)" />
               <input type="file" accept="image/*" class="text-[11px] mt-1" onchange="handleImageUpload(event, 'topDrifterUrl')" />
             </div>
             <div>
-              <label class="text-[11px] block mb-1">bottom drifter url</label>
-              <input id="input-bottom-drifter-url" type="text" placeholder="bottom png/gif url..." class="soft-input" onchange="updateImageSetting('bottomDrifterUrl', this.value)" />
+              <label class="text-[11px] block mb-1">bottom</label>
+              <input id="input-bottom-drifter-url" type="text" placeholder="url" class="soft-input" onchange="updateImageSetting('bottomDrifterUrl', this.value)" />
               <input type="file" accept="image/*" class="text-[11px] mt-1" onchange="handleImageUpload(event, 'bottomDrifterUrl')" />
             </div>
           </div>
         </div>
 
-        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
-          <p class="text-xs font-bold">background image / gif</p>
-          <input id="input-bg-img-url" type="text" placeholder="background image/gif url..." class="soft-input" onchange="updateImageSetting('bgImageUrl', this.value)" />
-          <input type="file" accept="image/*" class="text-xs" onchange="handleImageUpload(event, 'bgImageUrl')" />
+        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
+          <p class="text-[11.5px] font-medium">background image</p>
+          <input id="input-bg-img-url" type="text" placeholder="image url" class="soft-input" onchange="updateImageSetting('bgImageUrl', this.value)" />
+          <input type="file" accept="image/*" class="text-[11px]" onchange="handleImageUpload(event, 'bgImageUrl')" />
         </div>
 
-        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
-          <p class="text-xs font-bold">looping blurred background video / youtube</p>
-          <input id="input-bg-video-url" type="text" placeholder="youtube link or .mp4/.webm url..." class="soft-input" onchange="updateVideoBgSetting()" />
+        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
+          <p class="text-[11.5px] font-medium">background video / youtube</p>
+          <input id="input-bg-video-url" type="text" placeholder="youtube or mp4 url" class="soft-input" onchange="updateVideoBgSetting()" />
           <div class="grid grid-cols-3 gap-2">
             <div>
-              <label class="text-[11px] block">start (sec)</label>
+              <label class="text-[11px] block">start (s)</label>
               <input id="input-bg-video-start" type="number" min="0" value="0" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
             </div>
             <div>
-              <label class="text-[11px] block">end (sec, 0=full)</label>
+              <label class="text-[11px] block">end (s)</label>
               <input id="input-bg-video-end" type="number" min="0" value="0" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
             </div>
             <div>
@@ -538,40 +479,37 @@
       </div>
 
       <div id="tab-song" class="edit-tab-pane space-y-3 hidden">
-        <p class="text-xs" style="color: var(--text-secondary);">plays softly muffled when visitors click the page or player</p>
         <div>
-          <label class="text-xs block mb-1">song label on floating player</label>
-          <input id="input-song-title" type="text" placeholder="girl favorite ♡" class="soft-input" onchange="updateTextSetting('songTitle', this.value)" />
+          <label class="text-[11.5px] block mb-1">track label</label>
+          <input id="input-song-title" type="text" placeholder="song name" class="soft-input" onchange="updateTextSetting('songTitle', this.value)" />
         </div>
         <div>
-          <label class="text-xs block mb-1">audio url (.mp3 / .wav / .ogg)</label>
-          <input id="input-song-url" type="text" placeholder="direct .mp3 / audio url..." class="soft-input" onchange="updateSongSetting(this.value)" />
+          <label class="text-[11.5px] block mb-1">audio url (.mp3 / .wav)</label>
+          <input id="input-song-url" type="text" placeholder="direct audio url" class="soft-input" onchange="updateSongSetting(this.value)" />
         </div>
-        <input type="file" accept="audio/*" class="text-xs" onchange="handleAudioUpload(event)" />
+        <input type="file" accept="audio/*" class="text-[11px]" onchange="handleAudioUpload(event)" />
       </div>
 
       <div id="tab-text" class="edit-tab-pane space-y-3 hidden">
         <div>
-          <label class="text-xs block mb-1">diary bottom quote / whisper</label>
+          <label class="text-[11.5px] block mb-1">bottom quote</label>
           <input id="input-diary-whisper" type="text" class="soft-input" onchange="updateTextSetting('diaryWhisper', this.value)" />
         </div>
       </div>
 
-      <div id="tab-security" class="edit-tab-pane space-y-4 hidden">
-        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
-          <p class="text-xs font-bold">local owner passcode</p>
-          <p class="text-[11px]" style="color: var(--text-secondary);">change your secret passcode used to unlock this page</p>
-          <input id="input-new-passcode" type="password" placeholder="new passcode..." class="soft-input" />
-          <button type="button" onclick="changeOwnerPasscode()" class="soft-btn text-xs">update passcode ♡</button>
+      <div id="tab-security" class="edit-tab-pane space-y-3 hidden">
+        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
+          <p class="text-[11.5px] font-medium">passcode</p>
+          <input id="input-new-passcode" type="password" placeholder="new passcode" class="soft-input" />
+          <button type="button" onclick="changeOwnerPasscode()" class="soft-btn text-[11.5px]">save</button>
         </div>
 
-        <div class="p-3 rounded-2xl space-y-2" style="background: #faf5f8;">
-          <p class="text-xs font-bold">firebase live cloud sync</p>
-          <p class="text-[11px]" style="color: var(--text-secondary);">paste your firebaseConfig JSON or JS object so edits sync live on github pages</p>
-          <textarea id="input-firebase-config" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' class="soft-input font-mono text-[11px]"></textarea>
+        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
+          <p class="text-[11.5px] font-medium">firebase config</p>
+          <textarea id="input-firebase-config" rows="5" placeholder='{"apiKey":"..."}' class="soft-input font-mono text-[11px]"></textarea>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="saveFirebaseConfig()" class="soft-btn text-xs">connect & sync live ♡</button>
-            <span id="firebase-status-badge" class="text-[11px]" style="color: var(--text-secondary);">not connected</span>
+            <button type="button" onclick="saveFirebaseConfig()" class="soft-btn text-[11.5px]">connect</button>
+            <span id="firebase-status-badge" class="text-[11px]" style="color: var(--text-secondary);">offline</span>
           </div>
         </div>
       </div>
@@ -599,30 +537,28 @@
       passcodeHash: "",
       firebaseConfig: DEFAULT_FIREBASE_CONFIG,
       ownerUid: "",
-      diaryTitle: "♡ my diary:",
-      diaryWhisper: "\"taking things one gentle step at a time ♡\"",
-      songTitle: "girl favorite ♡",
+      diaryTitle: "diary",
+      diaryWhisper: "taking things slowly",
+      songTitle: "girl favorite",
       notes: [
-        { id: "n1", text: "drink a glass of water,\nunclench your jaw, and take\na deep breath.", date: "today ♡" },
-        { id: "n2", text: "soft mornings, warm tea, and quiet little moments.", date: "nov 27 ♡" }
+        { id: "n1", text: "quiet mornings & warm tea.", date: "nov 28" },
+        { id: "n2", text: "remember to breathe.", date: "nov 27" }
       ],
       sizes: {
-        diaryWidth: 500,
-        diaryHeight: 290,
-        topCharSize: 56,
-        drifterSize: 40
+        diaryWidth: 490,
+        diaryHeight: 280,
+        drifterSize: 38
       },
       colors: {
-        bgColor: "#fbf4f7",
+        bgColor: "#fbf6f8",
         boxBg: "#ffffff",
-        boxBorder: "#eddbe4",
-        textPrimary: "#63585f",
-        textSecondary: "#988792",
-        accentPinkDark: "#dd7fa6"
+        boxBorder: "#eee5ea",
+        textPrimary: "#6c6167",
+        textSecondary: "#a598a0",
+        accentPinkDark: "#b98ea3"
       },
       images: {
         faviconUrl: "",
-        peekingCharUrl: "",
         topDrifterUrl: "",
         bottomDrifterUrl: "",
         bgImageUrl: "",
@@ -647,12 +583,21 @@
     let fbDb = null;
     let fbUnsubState = null;
 
+    const LOCAL_BACKUP_KEY = "gentle_diary_backup_v1";
+
     function loadInitialState() {
       try {
         const bakedEl = document.getElementById("baked-state-data");
         if (bakedEl && bakedEl.textContent.trim().length > 2) {
           const parsedBaked = JSON.parse(bakedEl.textContent);
           state = mergeDeep(structuredClone(DEFAULT_STATE), parsedBaked);
+        }
+      } catch (e) {}
+      try {
+        const saved = localStorage.getItem(LOCAL_BACKUP_KEY);
+        if (saved) {
+          const parsedSaved = JSON.parse(saved);
+          state = mergeDeep(state, parsedSaved);
         }
       } catch (e) {}
       if (!state.firebaseConfig || !state.firebaseConfig.apiKey) {
@@ -687,11 +632,21 @@
     }
 
     async function persistState() {
-      if (fbDb && isOwnerUnlocked && fbAuth && fbAuth.currentUser) {
+      try {
+        localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(state));
+      } catch (e) {}
+
+      if (fbDb && isOwnerUnlocked) {
         try {
+          if (!fbAuth.currentUser) {
+            await signInAnonymously(fbAuth);
+          }
           const cleanState = structuredClone(state);
           await setDoc(doc(fbDb, "diary_sanctuary", "main_state"), cleanState, { merge: true });
-        } catch (e) {}
+        } catch (err) {
+          console.error("Firestore save error:", err);
+          showToast("cloud save blocked");
+        }
       }
     }
 
@@ -706,7 +661,6 @@
 
       root.style.setProperty("--diary-width", state.sizes.diaryWidth + "px");
       root.style.setProperty("--diary-height", state.sizes.diaryHeight + "px");
-      root.style.setProperty("--top-char-size", state.sizes.topCharSize + "px");
 
       const favEl = document.getElementById("page-favicon");
       if (favEl) {
@@ -715,16 +669,13 @@
           favEl.href = state.images.faviconUrl;
         } else {
           favEl.type = "image/svg+xml";
-          favEl.href = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='25' x='4' font-size='24' fill='%23dd7fa6'%3E%E2%99%A5%3C/text%3E%3C/svg%3E";
+          favEl.href = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='24' x='5' font-size='22' fill='%23b5a4ad'%3E%E2%99%A1%3C/text%3E%3C/svg%3E";
         }
       }
-      const titleDisplay = document.getElementById("diary-title-display");
-      if (titleDisplay) titleDisplay.textContent = state.diaryTitle;
       document.getElementById("diary-footer-whisper").textContent = state.diaryWhisper;
-      document.getElementById("floating-song-title").textContent = state.songTitle || "girl favorite ♡";
+      document.getElementById("floating-song-title").textContent = state.songTitle || "girl favorite";
 
       applyPositions();
-      renderPeekingChar();
       renderDrifters();
       renderBackgroundMedia();
     }
@@ -734,15 +685,6 @@
       const pos = state.positions?.["widget-diary"] || { x: 0, y: 0 };
       if (el) {
         el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-      }
-    }
-
-    function renderPeekingChar() {
-      const box = document.getElementById("top-peeking-char");
-      if (state.images.peekingCharUrl) {
-        box.innerHTML = `<img src="${state.images.peekingCharUrl}" alt="peeking" style="width:100%;height:100%;object-fit:contain;" />`;
-      } else {
-        box.innerHTML = `<span style="font-size: calc(var(--top-char-size) * 0.62); color: var(--accent-pink-dark);">♡</span>`;
       }
     }
 
@@ -843,7 +785,7 @@
       const stage = document.getElementById("diary-note-stage");
       const textEl = document.getElementById("diary-note-text");
       const dateEl = document.getElementById("diary-note-date");
-      const notes = state.notes && state.notes.length ? state.notes : [{ text: "...", date: "today ♡" }];
+      const notes = state.notes && state.notes.length ? state.notes : [{ text: "...", date: "nov 28" }];
       if (currentNoteIndex >= notes.length) currentNoteIndex = 0;
       const note = notes[currentNoteIndex];
 
@@ -853,7 +795,7 @@
           textEl.textContent = note.text;
           dateEl.textContent = note.date || "♡";
           stage.classList.remove("note-blur-out");
-        }, 420);
+        }, 380);
       } else {
         textEl.textContent = note.text;
         dateEl.textContent = note.date || "♡";
@@ -939,7 +881,7 @@
       if (e) e.stopPropagation();
       const audio = document.getElementById("bg-music-player");
       if (!state.songUrl) {
-        showToast("no song added yet ♡");
+        showToast("no audio set");
         return;
       }
       if (audio.paused) {
@@ -977,7 +919,7 @@
       if (isOwnerUnlocked) {
         isOwnerUnlocked = false;
         updateOwnerUI();
-        showToast("locked ♡");
+        showToast("locked");
         return;
       }
       const desc = document.getElementById("lock-modal-desc");
@@ -986,11 +928,11 @@
 
       if (state.firebaseConfig && state.firebaseConfig.apiKey) {
         passBox.classList.add("hidden");
-        desc.textContent = state.ownerUid ? "owner sign in required" : "sign in with your account to claim ownership";
-        if (fbSub) fbSub.textContent = state.ownerUid ? "only the claimed owner account can unlock" : "first sign in locks ownership to your account";
+        desc.textContent = state.ownerUid ? "owner sign in" : "claim ownership";
+        if (fbSub) fbSub.textContent = "";
       } else {
         passBox.classList.remove("hidden");
-        desc.textContent = state.passcodeHash ? "enter your owner passcode to unlock" : "create your private owner passcode";
+        desc.textContent = state.passcodeHash ? "enter passcode" : "set passcode";
       }
       document.getElementById("owner-passcode-input").value = "";
       openModal("lock-modal");
@@ -999,7 +941,7 @@
     window.submitOwnerPasscode = async function () {
       const val = document.getElementById("owner-passcode-input").value;
       if (!val || val.length < 2) {
-        showToast("enter a passcode first");
+        showToast("enter passcode");
         return;
       }
       const hashed = await hashString(val);
@@ -1009,12 +951,12 @@
         await persistState();
         updateOwnerUI();
         closeModal("lock-modal");
-        showToast("passcode set & unlocked ♡");
+        showToast("unlocked");
       } else if (hashed === state.passcodeHash) {
         isOwnerUnlocked = true;
         updateOwnerUI();
         closeModal("lock-modal");
-        showToast("welcome back ♡");
+        showToast("unlocked");
       } else {
         showToast("wrong passcode");
       }
@@ -1045,14 +987,15 @@
       list.innerHTML = "";
       (state.notes || []).forEach((n, idx) => {
         const row = document.createElement("div");
-        row.className = "p-3 rounded-2xl flex items-start justify-between gap-2 text-xs";
-        row.style.background = "#faf5f8";
+        row.className = "p-2.5 rounded-xl flex items-start justify-between gap-2 text-xs";
+        row.style.background = "#fcf9fa";
+        row.style.border = "1px solid #f0e7ec";
         row.innerHTML = `
           <div>
-            <p class="font-medium whitespace-pre-line">${escapeHtml(n.text)}</p>
+            <p class="whitespace-pre-line">${escapeHtml(n.text)}</p>
             <span class="text-[11px]" style="color:var(--text-secondary);">${escapeHtml(n.date || "")}</span>
           </div>
-          <button type="button" onclick="deleteDiaryNote(${idx})" class="px-2 py-1 rounded-full hover:bg-pink-100" style="color:var(--accent-pink-dark);">✕</button>
+          <button type="button" onclick="deleteDiaryNote(${idx})" class="px-1.5 py-0.5 rounded hover:opacity-70" style="color:var(--text-secondary);">✕</button>
         `;
         list.appendChild(row);
       });
@@ -1060,7 +1003,7 @@
 
     window.addDiaryNote = async function () {
       const text = document.getElementById("new-note-text").value.trim();
-      const date = document.getElementById("new-note-date").value.trim() || "today ♡";
+      const date = document.getElementById("new-note-date").value.trim() || "today";
       if (!text) return;
       state.notes.unshift({ id: crypto.randomUUID(), text, date });
       currentNoteIndex = 0;
@@ -1069,13 +1012,13 @@
       renderNotesEditorList();
       renderDiaryNote(false);
       await persistState();
-      showToast("note added ♡");
+      showToast("added");
     };
 
     window.deleteDiaryNote = async function (idx) {
       state.notes.splice(idx, 1);
       if (!state.notes.length) {
-        state.notes.push({ id: crypto.randomUUID(), text: "write something gentle...", date: "♡" });
+        state.notes.push({ id: crypto.randomUUID(), text: "...", date: "♡" });
       }
       currentNoteIndex = 0;
       renderNotesEditorList();
@@ -1100,8 +1043,6 @@
       document.getElementById("val-diary-w").textContent = state.sizes.diaryWidth;
       document.getElementById("size-diary-h").value = state.sizes.diaryHeight;
       document.getElementById("val-diary-h").textContent = state.sizes.diaryHeight;
-      document.getElementById("size-top-char").value = state.sizes.topCharSize;
-      document.getElementById("val-top-char").textContent = state.sizes.topCharSize;
 
       document.getElementById("color-bg").value = state.colors.bgColor;
       document.getElementById("color-box-bg").value = state.colors.boxBg;
@@ -1109,7 +1050,6 @@
       document.getElementById("color-text-secondary").value = state.colors.textSecondary;
       document.getElementById("color-accent-pink-dark").value = state.colors.accentPinkDark;
 
-      document.getElementById("input-peeking-url").value = state.images.peekingCharUrl || "";
       document.getElementById("input-favicon-url").value = state.images.faviconUrl || "";
       document.getElementById("input-top-drifter-url").value = state.images.topDrifterUrl || "";
       document.getElementById("input-bottom-drifter-url").value = state.images.bottomDrifterUrl || "";
@@ -1132,8 +1072,7 @@
       state.sizes[key] = Number(val);
       const map = {
         diaryWidth: "val-diary-w",
-        diaryHeight: "val-diary-h",
-        topCharSize: "val-top-char"
+        diaryHeight: "val-diary-h"
       };
       if (map[key]) document.getElementById(map[key]).textContent = val;
       applyThemeAndSizes();
@@ -1175,7 +1114,7 @@
         state.images[key] = reader.result;
         applyThemeAndSizes();
         await persistState();
-        showToast("image updated ♡");
+        showToast("updated");
       };
       reader.readAsDataURL(file);
     };
@@ -1184,7 +1123,7 @@
       state.songUrl = val.trim();
       musicUnlockedByClick = false;
       await persistState();
-      showToast("song updated ♡");
+      showToast("updated");
     };
 
     window.handleAudioUpload = function (e) {
@@ -1195,7 +1134,7 @@
         state.songUrl = reader.result;
         musicUnlockedByClick = false;
         await persistState();
-        showToast("audio loaded ♡");
+        showToast("loaded");
       };
       reader.readAsDataURL(file);
     };
@@ -1203,13 +1142,13 @@
     window.changeOwnerPasscode = async function () {
       const next = document.getElementById("input-new-passcode").value;
       if (!next || next.length < 2) {
-        showToast("enter a longer passcode");
+        showToast("too short");
         return;
       }
       state.passcodeHash = await hashString(next);
       document.getElementById("input-new-passcode").value = "";
       await persistState();
-      showToast("passcode updated ♡");
+      showToast("saved");
     };
 
     window.saveFirebaseConfig = async function () {
@@ -1225,9 +1164,9 @@
         state.firebaseConfig = cfg;
         await persistState();
         initFirebaseConnection(cfg);
-        showToast("firebase connected ♡");
+        showToast("connected");
       } catch (e) {
-        showToast("invalid firebaseConfig format");
+        showToast("invalid config");
       }
     };
 
@@ -1237,7 +1176,7 @@
         fbAuth = getAuth(fbApp);
         fbDb = getFirestore(fbApp);
         const statusEl = document.getElementById("firebase-status-badge");
-        if (statusEl) statusEl.textContent = "connected ♡";
+        if (statusEl) statusEl.textContent = "connected";
 
         signInAnonymously(fbAuth).catch(() => {});
 
@@ -1248,7 +1187,7 @@
               isOwnerUnlocked = true;
               await persistState();
               updateOwnerUI();
-              showToast("owner account claimed ♡");
+              showToast("claimed");
             } else if (user.uid === state.ownerUid) {
               isOwnerUnlocked = true;
               updateOwnerUI();
@@ -1257,7 +1196,7 @@
               updateOwnerUI();
               await fbAuth.signOut();
               await signInAnonymously(fbAuth);
-              showToast("access denied — not the owner account");
+              showToast("not owner");
             }
           }
         });
@@ -1267,6 +1206,9 @@
           if (snap.exists() && !isOwnerUnlocked) {
             const remote = snap.data();
             state = mergeDeep(state, remote);
+            try {
+              localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(state));
+            } catch (e) {}
             applyThemeAndSizes();
             renderDiaryNote(false);
           }
@@ -1283,7 +1225,7 @@
         if (state.ownerUid && cred.user.uid !== state.ownerUid) {
           await fbAuth.signOut();
           await signInAnonymously(fbAuth);
-          showToast("not the owner account");
+          showToast("not owner");
           return;
         }
         if (!state.ownerUid) state.ownerUid = cred.user.uid;
@@ -1291,7 +1233,7 @@
         await persistState();
         updateOwnerUI();
         closeModal("lock-modal");
-        showToast("signed in ♡");
+        showToast("signed in");
       } catch (e) {
         showToast("sign in failed");
       }
@@ -1304,7 +1246,7 @@
         if (state.ownerUid && cred.user.uid !== state.ownerUid) {
           await fbAuth.signOut();
           await signInAnonymously(fbAuth);
-          showToast("not the owner account");
+          showToast("not owner");
           return;
         }
         if (!state.ownerUid) state.ownerUid = cred.user.uid;
@@ -1312,9 +1254,9 @@
         await persistState();
         updateOwnerUI();
         closeModal("lock-modal");
-        showToast("signed in with google ♡");
+        showToast("signed in");
       } catch (e) {
-        showToast("google sign in failed");
+        showToast("sign in failed");
       }
     };
 
@@ -1340,7 +1282,7 @@
       ta.select();
       document.execCommand("copy");
       ta.remove();
-      showToast("copied full html with edits ♡");
+      showToast("copied html");
     };
 
     window.resetLayoutPositions = async function () {
@@ -1349,7 +1291,7 @@
       };
       applyPositions();
       await persistState();
-      showToast("position reset ♡");
+      showToast("centered");
     };
 
     function initDragging() {
