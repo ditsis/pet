@@ -4,532 +4,526 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>diary</title>
-  <link id="page-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='24' x='5' font-size='22' fill='%23b5a4ad'%3E%E2%99%A1%3C/text%3E%3C/svg%3E" />
+  <link id="dynamic-favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%23f2b6cc%22 d=%22M50 86C50 86 12 61 12 34C12 20 23 11 35 11C42 11 47 15 50 20C53 15 58 11 65 11C77 11 88 20 88 34C88 61 50 86 50 86Z%22/></svg>" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&family=Silkscreen:wght@400&family=Sniglet:wght@400&display=swap" rel="stylesheet" />
-  <style id="dynamic-theme-styles">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
     :root {
-      --bg-color: #fbf6f8;
-      --box-bg: #ffffff;
-      --box-border: #eee5ea;
-      --box-glow: rgba(175, 152, 165, 0.08);
-      --text-primary: #6c6167;
-      --text-secondary: #a598a0;
-      --accent-pink: #e4c6d4;
-      --accent-pink-dark: #b98ea3;
-      --accent-pill-bg: #f8f2f5;
-      --accent-pill-text: #a598a0;
-      --font-main: 'Quicksand', sans-serif;
-      --font-pixel: 'Silkscreen', monospace;
-      --font-cute: 'Sniglet', cursive;
-      --diary-width: 490px;
-      --diary-height: 280px;
-      --drifter-size: 38px;
+      --bg-color: #fdf3f7;
+      --box-bg: rgba(252, 252, 252, 0.94);
+      --text-color: #9e969c;
+      --accent-color: #e8a8c0;
+      --date-bg: #f9eff4;
+      --date-text: #b89aa8;
+      --box-width: 580px;
+      --box-min-height: 280px;
+      --text-size: 16px;
     }
 
     * {
       box-sizing: border-box;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    input, textarea {
+      user-select: text;
     }
 
     body {
       margin: 0;
       padding: 0;
-      background-color: var(--bg-color);
-      color: var(--text-primary);
-      font-family: var(--font-main);
       min-height: 100vh;
-      overflow: hidden;
-      position: relative;
-      transition: background-color 0.3s ease, color 0.25s ease;
+      width: 100vw;
+      overflow-x: hidden;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: "Quicksand", sans-serif;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
-    #custom-bg-layer {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0.4;
-      display: none;
-    }
-
-    #custom-bg-video-wrap {
+    #bg-media-layer {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
-      display: none;
     }
 
-    #custom-bg-video,
-    #custom-bg-yt-frame {
+    #bg-image-el,
+    #bg-video-el {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.4s ease, filter 0.4s ease;
+    }
+
+    #bg-yt-wrap {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 112vw;
-      height: 112vh;
-      min-width: 177.78vh;
-      min-height: 56.25vw;
+      width: 120vw;
+      height: 120vh;
       transform: translate(-50%, -50%);
-      object-fit: cover;
+      pointer-events: none;
+      transition: opacity 0.4s ease, filter 0.4s ease;
+    }
+
+    #bg-yt-wrap iframe {
+      width: 100%;
+      height: 100%;
       border: 0;
-      pointer-events: none;
-      opacity: 0.44;
-      filter: blur(5px);
     }
 
-    .drifter-track {
-      position: fixed;
-      left: 0;
-      right: 0;
-      height: 56px;
-      pointer-events: none;
-      z-index: 6;
-      overflow: hidden;
-    }
-
-    .drifter-track-top {
-      top: 10px;
-    }
-
-    .drifter-track-bottom {
-      bottom: 14px;
-    }
-
-    .drifter-sprite {
-      position: absolute;
-      width: var(--drifter-size);
-      height: var(--drifter-size);
-      object-fit: contain;
-      pointer-events: none;
-    }
-
-    @keyframes driftLeftToRight {
-      0% { transform: translateX(-80px); }
-      100% { transform: translateX(calc(100vw + 80px)); }
-    }
-
-    @keyframes driftRightToLeft {
-      0% { transform: translateX(calc(100vw + 80px)); }
-      100% { transform: translateX(-80px); }
-    }
-
-    .diary-card {
+    #diary-card {
+      width: min(92vw, var(--box-width));
+      min-height: var(--box-min-height);
       background: var(--box-bg);
-      border: 1px solid var(--box-border);
-      border-radius: 30px;
-      box-shadow: 0 8px 28px var(--box-glow);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      position: relative;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 36px;
+      box-shadow: 0 12px 40px rgba(200, 165, 180, 0.08);
+      transition: background 0.35s ease, width 0.25s ease, min-height 0.25s ease;
     }
 
-    @keyframes dateFloatBob {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-2px); }
+    #note-date-pill {
+      background-color: var(--date-bg);
+      color: var(--date-text);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      padding: 4px 14px;
+      border-radius: 999px;
+      display: inline-block;
+      animation: gentleFloat 4.2s ease-in-out infinite;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    .floating-date-pill {
-      animation: dateFloatBob 4.5s ease-in-out infinite;
-    }
-
-    .note-text-stage {
-      transition: opacity 0.55s ease, filter 0.55s ease;
-    }
-
-    .note-blur-out {
-      opacity: 0;
-      filter: blur(5px);
-    }
-
-    @keyframes floatingPillBob {
+    @keyframes gentleFloat {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-3px); }
     }
 
-    .floating-music-pill {
+    #diary-text-display {
+      font-size: var(--text-size);
+      line-height: 1.75;
+      color: var(--text-color);
+      white-space: pre-wrap;
+      word-break: break-word;
+      transition: opacity 0.55s ease, filter 0.55s ease, transform 0.55s ease;
+    }
+
+    #diary-text-display.note-fading {
+      opacity: 0;
+      filter: blur(6px);
+      transform: translateY(4px);
+    }
+
+    #music-pill {
       background: var(--box-bg);
-      border: 1px solid var(--box-border);
-      border-radius: 12px;
-      box-shadow: 0 4px 16px var(--box-glow);
-      animation: floatingPillBob 4.2s ease-in-out infinite;
-      transition: border-color 0.2s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--text-color);
+      border-radius: 999px;
+      padding: 7px 18px;
+      box-shadow: 0 8px 26px rgba(200, 165, 180, 0.07);
+      animation: gentleFloat 4.8s ease-in-out infinite;
+      transition: transform 0.2s ease, background 0.3s ease;
     }
 
-    .floating-music-pill:hover {
-      border-color: var(--accent-pink-dark);
-    }
-
-    @keyframes eqBarBounce {
-      0%, 100% { height: 3px; }
-      50% { height: 10px; }
+    #music-pill:hover {
+      transform: translateY(-2px);
     }
 
     .eq-bar {
       width: 2px;
-      height: 4px;
+      height: 8px;
+      background-color: var(--accent-color);
       border-radius: 2px;
-      background-color: var(--accent-pink-dark);
       transition: height 0.2s ease;
     }
 
-    .eq-playing .eq-bar:nth-child(1) { animation: eqBarBounce 0.75s ease-in-out infinite; }
-    .eq-playing .eq-bar:nth-child(2) { animation: eqBarBounce 0.6s ease-in-out 0.15s infinite; }
-    .eq-playing .eq-bar:nth-child(3) { animation: eqBarBounce 0.85s ease-in-out 0.3s infinite; }
+    .playing .eq-bar:nth-child(1) { animation: eqBounce 0.7s ease-in-out infinite; }
+    .playing .eq-bar:nth-child(2) { animation: eqBounce 0.55s ease-in-out infinite 0.15s; }
+    .playing .eq-bar:nth-child(3) { animation: eqBounce 0.8s ease-in-out infinite 0.3s; }
 
-    .draggable-widget {
+    @keyframes eqBounce {
+      0%, 100% { height: 4px; }
+      50% { height: 12px; }
+    }
+
+    .draggable-el {
+      position: relative;
       touch-action: none;
     }
 
-    .drag-handle {
+    .drag-unlocked .draggable-el {
       cursor: grab;
-      opacity: 0.28;
-      transition: opacity 0.2s ease;
+      outline: 1px dashed rgba(210, 150, 175, 0.45);
+      outline-offset: 4px;
     }
 
-    .drag-handle:hover {
-      opacity: 0.75;
+    .drag-unlocked .draggable-el:active {
+      cursor: grabbing;
     }
 
-    .modal-backdrop {
-      background: rgba(250, 244, 247, 0.75);
-      backdrop-filter: blur(4px);
-    }
-
-    .modal-card {
-      background: #ffffff;
-      border: 1px solid #ece3e8;
-      border-radius: 20px;
-      box-shadow: 0 12px 32px rgba(130, 110, 120, 0.1);
-    }
-
-    .soft-input {
-      width: 100%;
-      background: #fcf9fa;
-      border: 1px solid #e9dfe4;
+    .clean-btn {
+      padding: 6px 13px;
       border-radius: 10px;
-      padding: 8px 12px;
-      font-family: var(--font-main);
-      font-size: 12.5px;
-      color: var(--text-primary);
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-
-    .soft-input:focus {
-      border-color: var(--accent-pink-dark);
-    }
-
-    .soft-btn {
-      background: #f5ebf0;
-      color: var(--text-primary);
-      border: 1px solid #e6d6df;
-      border-radius: 10px;
-      padding: 7px 14px;
-      font-family: var(--font-main);
-      font-weight: 600;
       font-size: 12px;
-      cursor: pointer;
-      transition: background-color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .soft-btn:hover {
-      background: #eee0e7;
-      border-color: #d8c2ce;
-    }
-
-    .soft-btn-ghost {
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid #ede4e9;
-      border-radius: 10px;
-      padding: 6px 12px;
-      font-family: var(--font-main);
       font-weight: 500;
-      font-size: 12px;
+      border: 1px solid rgba(180, 165, 175, 0.28);
+      background: #ffffff;
+      color: #6e646a;
+      transition: background 0.18s ease, border-color 0.18s ease;
       cursor: pointer;
-      transition: background-color 0.15s ease, color 0.15s ease;
     }
 
-    .soft-btn-ghost:hover {
-      background: #faf5f8;
-      color: var(--text-primary);
+    .clean-btn:hover {
+      background: #faf6f8;
+      border-color: rgba(180, 165, 175, 0.5);
+    }
+
+    .clean-btn.primary {
+      background: #f5e6ed;
+      border-color: #e7c6d5;
+      color: #6d4f5d;
+    }
+
+    .clean-input {
+      width: 100%;
+      padding: 8px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(180, 165, 175, 0.3);
+      background: #fcfafb;
+      color: #5a5056;
+      font-family: inherit;
+      font-size: 12.5px;
+      outline: none;
+    }
+
+    .clean-input:focus {
+      border-color: #d9a7bc;
+      background: #ffffff;
+    }
+
+    .tab-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 8px;
+      color: #8a7f86;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: #f4e8ee;
+      color: #5e4953;
+      font-weight: 600;
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="flex flex-col items-center justify-center p-4">
 
-  <div id="custom-bg-layer"></div>
-  <div id="custom-bg-video-wrap">
-    <video id="custom-bg-video" autoplay muted loop playsinline style="display:none;"></video>
-    <iframe id="custom-bg-yt-frame" allow="autoplay; encrypted-media" style="display:none;"></iframe>
+  <!-- Background Media Layer -->
+  <div id="bg-media-layer">
+    <img id="bg-image-el" alt="" class="hidden" />
+    <video id="bg-video-el" loop muted playsinline class="hidden"></video>
+    <div id="bg-yt-wrap" class="hidden"></div>
   </div>
 
-  <div id="top-drifter-track" class="drifter-track drifter-track-top"></div>
-  <div id="bottom-drifter-track" class="drifter-track drifter-track-bottom"></div>
+  <!-- Main Stage -->
+  <main id="main-stage" class="relative z-10 flex flex-col items-center justify-center w-full max-w-3xl gap-5 my-auto">
 
-  <audio id="bg-music-player" loop preload="auto"></audio>
+    <!-- Centered Diary Box -->
+    <section id="diary-card" class="draggable-el flex flex-col items-center justify-between px-7 py-8 sm:px-12 sm:py-10 text-center" data-drag-key="diaryCard">
 
-  <main id="main-stage" class="relative z-10 w-full flex flex-col items-center justify-center">
+      <!-- Floating Date Pill -->
+      <div class="w-full flex justify-center mb-5">
+        <span id="note-date-pill">nov 28</span>
+      </div>
 
-    <section id="widget-diary" class="draggable-widget flex flex-col items-center justify-center">
-      <div id="diary-box-card" class="diary-card px-8 py-6 flex flex-col justify-between text-center" style="width: min(90vw, var(--diary-width)); min-height: var(--diary-height);">
-        <span class="drag-handle absolute top-4 right-5 px-1 text-[11px]" data-drag-target="widget-diary" title="move">⋮⋮</span>
+      <!-- Diary Note Text -->
+      <div class="w-full my-auto flex flex-col items-center justify-center min-h-[110px]">
+        <p id="diary-text-display">quiet mornings & warm tea.</p>
 
-        <div class="flex items-center justify-center pt-1">
-          <span id="diary-note-date" class="floating-date-pill inline-block px-3 py-0.5 rounded-full text-[11px] tracking-wide" style="background: var(--accent-pill-bg); color: var(--accent-pill-text);">nov 28</span>
-        </div>
-
-        <div id="diary-note-stage" class="note-text-stage my-auto py-3 flex flex-col items-center justify-center">
-          <p id="diary-note-text" class="text-[13.5px] sm:text-[14.5px] leading-relaxed font-normal px-2 whitespace-pre-line" style="color: var(--text-primary);"></p>
-
-          <div class="flex items-center justify-center gap-3 mt-2.5" style="color: var(--text-secondary);">
-            <button type="button" onclick="prevDiaryNote()" class="px-2 py-0.5 rounded hover:opacity-70 text-xs transition" title="previous">‹</button>
-            <button type="button" onclick="nextDiaryNote()" class="px-2 py-0.5 rounded hover:opacity-70 text-xs transition" title="next">›</button>
-          </div>
-        </div>
-
-        <div class="flex flex-col items-center gap-2 pt-1">
-          <p id="diary-footer-whisper" class="text-[11.5px]" style="color: var(--text-secondary);"></p>
-
-          <div id="owner-inline-note-bar" class="hidden flex items-center justify-center gap-2 pt-1">
-            <button type="button" onclick="openNoteManagerModal()" class="soft-btn-ghost text-[11px] py-1 px-2.5">+ notes</button>
-          </div>
+        <!-- Minimal Left / Right Arrows Beneath Text -->
+        <div id="note-nav-row" class="flex items-center justify-center gap-6 mt-5 text-sm opacity-60 hover:opacity-100 transition-opacity">
+          <button type="button" onclick="prevNote(event)" aria-label="previous note" class="px-2 py-1 hover:scale-110 transition-transform cursor-pointer">‹</button>
+          <button type="button" onclick="nextNote(event)" aria-label="next note" class="px-2 py-1 hover:scale-110 transition-transform cursor-pointer">›</button>
         </div>
       </div>
 
-      <div id="floating-music-bar" onclick="toggleBgMusic(event)" class="floating-music-pill mt-4 px-3.5 py-1.5 flex items-center gap-2.5 cursor-pointer" title="play / pause">
-        <span id="floating-play-icon" class="text-[10px]" style="color: var(--text-secondary);">▶</span>
-        <div class="h-3 w-[1px]" style="background: var(--box-border);"></div>
-        <span id="floating-song-title" class="text-[11.5px] tracking-wide max-w-[200px] truncate" style="color: var(--text-secondary);">girl favorite</span>
-        <div id="floating-eq" class="flex items-end gap-[2px] h-2.5 ml-0.5">
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-        </div>
+      <!-- Bottom Quote / Whisper -->
+      <div class="w-full mt-5 flex flex-col items-center gap-2">
+        <p id="whisper-display" class="text-xs opacity-65 tracking-wide">taking things slowly</p>
+        <button id="quick-notes-btn" type="button" onclick="openEditorModal('notes')" class="hidden text-[11px] px-3 py-1 rounded-full border border-current/20 opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+          + notes
+        </button>
       </div>
     </section>
 
+    <!-- Floating Mini Music Player Pill Underneath -->
+    <div id="music-pill" class="draggable-el flex items-center gap-3 cursor-pointer" data-drag-key="musicPill" onclick="toggleAudioPlayback(event)">
+      <span id="music-play-icon" class="text-[11px] opacity-80">▶</span>
+      <span class="opacity-25 text-xs">|</span>
+      <span id="song-title-display" class="text-xs tracking-wide opacity-85">girl favorite</span>
+      <div id="music-eq" class="flex items-end gap-[2px] h-3 ml-1 opacity-75">
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+      </div>
+    </div>
+
   </main>
 
-  <div class="fixed bottom-3 left-3 z-40 flex items-center gap-2">
-    <button id="owner-lock-btn" type="button" onclick="handleLockClick()" class="p-2 text-sm transition opacity-65 hover:opacity-100 focus:outline-none" style="background: transparent; border: none; color: var(--text-secondary);" title="lock">
-      <span id="owner-lock-icon">♡</span>
+  <!-- Subtle Corner Lock / Edit Trigger -->
+  <div class="fixed bottom-4 left-4 z-40 flex items-center gap-2">
+    <button id="lock-toggle-btn" type="button" onclick="handleLockClick()" title="owner lock" class="w-8 h-8 rounded-full flex items-center justify-center text-xs opacity-45 hover:opacity-95 transition-opacity bg-white/70 backdrop-blur-sm cursor-pointer">
+      ♡
     </button>
-
-    <div id="owner-toolbar" class="hidden flex flex-wrap items-center gap-1 px-2.5 py-1 rounded-xl" style="background: rgba(255,255,255,0.95); border: 1px solid #ece3e8;">
-      <button type="button" onclick="openEditModal('sizes')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">sizes</button>
-      <button type="button" onclick="openEditModal('colors')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">colors</button>
-      <button type="button" onclick="openEditModal('images')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">images</button>
-      <button type="button" onclick="openEditModal('song')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">song</button>
-      <button type="button" onclick="openEditModal('text')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-primary);">text</button>
-      <button type="button" onclick="openEditModal('security')" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--accent-pink-dark);">account</button>
-      <button type="button" onclick="copyBakedCode()" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-secondary);">export</button>
-      <button type="button" onclick="resetLayoutPositions()" class="px-2 py-1 rounded-lg text-[11.5px] hover:bg-stone-50" style="color: var(--text-secondary);">center</button>
-    </div>
+    <button id="open-editor-btn" type="button" onclick="openEditorModal('notes')" class="hidden px-3 py-1.5 rounded-full text-xs bg-white/85 backdrop-blur-sm text-[#6b5d64] shadow-sm hover:bg-white cursor-pointer">
+      edit
+    </button>
   </div>
 
-  <div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-3.5 py-1 rounded-lg text-[11.5px] pointer-events-none opacity-0 transition-opacity duration-200" style="background: #ffffff; border: 1px solid #ece3e8; color: var(--text-primary);"></div>
+  <!-- Toast Status -->
+  <div id="toast-banner" class="fixed bottom-4 right-4 z-50 hidden px-3.5 py-1.5 rounded-lg bg-white/90 text-[#665960] text-xs shadow-sm border border-black/5"></div>
 
-  <div id="lock-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="modal-card w-full max-w-xs p-5 text-center">
-      <div class="flex justify-end">
-        <button type="button" onclick="closeModal('lock-modal')" class="text-xs px-1.5" style="color: var(--text-secondary);">✕</button>
-      </div>
-      <p class="text-sm font-medium mb-1" style="color: var(--text-primary);">sign in</p>
-      <p id="lock-modal-desc" class="text-[11.5px] mb-4" style="color: var(--text-secondary);">owner access</p>
-
-      <div id="passcode-auth-box" class="space-y-2.5">
-        <input id="owner-passcode-input" type="password" placeholder="passcode" class="soft-input text-center" onkeydown="if(event.key==='Enter') submitOwnerPasscode()" />
-        <button type="button" onclick="submitOwnerPasscode()" class="soft-btn w-full">unlock</button>
-      </div>
-
-      <div id="firebase-auth-box" class="space-y-2 mt-2">
-        <p id="fb-auth-subtitle" class="text-[11px]" style="color: var(--text-secondary);"></p>
-        <input id="fb-email-input" type="email" placeholder="email" class="soft-input" />
-        <input id="fb-pass-input" type="password" placeholder="password" class="soft-input" />
-        <button type="button" onclick="signInWithFirebaseEmail()" class="soft-btn w-full">sign in</button>
-        <button type="button" onclick="signInWithFirebaseGoogle()" class="soft-btn-ghost w-full">google</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="notes-manager-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="modal-card w-full max-w-md p-5 max-h-[85vh] overflow-y-auto">
+  <!-- Owner Sign-In Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/20 backdrop-blur-[2px] p-4">
+    <div class="w-full max-w-xs bg-white rounded-2xl p-6 shadow-lg border border-black/5 text-[#5c5157]">
       <div class="flex items-center justify-between mb-3">
-        <p class="text-sm font-medium" style="color: var(--text-primary);">notes</p>
-        <button type="button" onclick="closeModal('notes-manager-modal')" class="text-xs px-1.5" style="color: var(--text-secondary);">✕</button>
+        <span class="text-xs font-semibold tracking-wide text-[#7c6d75]">owner access</span>
+        <button type="button" onclick="closeAuthModal()" class="text-xs opacity-50 hover:opacity-100 cursor-pointer">✕</button>
       </div>
+      <p id="auth-status-text" class="text-xs text-[#8c7e85] mb-4 leading-relaxed">
+        sign in with your owner account to edit this page.
+      </p>
 
-      <div class="space-y-2 mb-4 p-3 rounded-xl" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
-        <textarea id="new-note-text" rows="3" placeholder="write something..." class="soft-input"></textarea>
-        <div class="flex items-center gap-2">
-          <input id="new-note-date" type="text" placeholder="date" class="soft-input" />
-          <button type="button" onclick="addDiaryNote()" class="soft-btn shrink-0">add</button>
+      <div class="flex flex-col gap-2.5">
+        <button type="button" onclick="signInOwnerGoogle()" class="clean-btn primary w-full py-2 text-center">
+          continue with google
+        </button>
+
+        <div class="flex items-center gap-2 my-1">
+          <div class="h-px bg-black/10 flex-1"></div>
+          <span class="text-[10px] text-black/35">or email</span>
+          <div class="h-px bg-black/10 flex-1"></div>
         </div>
-      </div>
 
-      <div id="notes-editor-list" class="space-y-2"></div>
+        <input id="owner-email-input" type="email" placeholder="email" class="clean-input" />
+        <input id="owner-pass-input" type="password" placeholder="password" class="clean-input" />
+        <button type="button" onclick="signInOwnerEmail()" class="clean-btn w-full py-2 text-center">
+          sign in
+        </button>
+      </div>
     </div>
   </div>
 
-  <div id="customize-modal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="modal-card w-full max-w-lg p-5 max-h-[86vh] overflow-y-auto">
-      <div class="flex items-center justify-between mb-3">
-        <p id="customize-modal-title" class="text-sm font-medium" style="color: var(--text-primary);">settings</p>
-        <button type="button" onclick="closeModal('customize-modal')" class="text-xs px-1.5" style="color: var(--text-secondary);">✕</button>
+  <!-- Clean Editorial Customizer Modal -->
+  <div id="editor-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/20 backdrop-blur-[2px] p-4">
+    <div class="w-full max-w-lg max-h-[86vh] flex flex-col bg-white rounded-2xl shadow-xl border border-black/5 text-[#5c5157] overflow-hidden">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-black/5">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button type="button" class="tab-btn active" data-tab="notes" onclick="switchEditorTab('notes')">notes</button>
+          <button type="button" class="tab-btn" data-tab="colors" onclick="switchEditorTab('colors')">colors & size</button>
+          <button type="button" class="tab-btn" data-tab="media" onclick="switchEditorTab('media')">music & bg</button>
+          <button type="button" class="tab-btn" data-tab="account" onclick="switchEditorTab('account')">account</button>
+        </div>
+        <button type="button" onclick="closeEditorModal()" class="text-xs opacity-50 hover:opacity-100 px-2 py-1 cursor-pointer">✕</button>
       </div>
 
-      <div class="flex flex-wrap gap-1 mb-4 pb-2.5 border-b" style="border-color: #f0e7ec;">
-        <button type="button" onclick="switchEditTab('sizes')" class="soft-btn-ghost text-[11.5px]">sizes</button>
-        <button type="button" onclick="switchEditTab('colors')" class="soft-btn-ghost text-[11.5px]">colors</button>
-        <button type="button" onclick="switchEditTab('images')" class="soft-btn-ghost text-[11.5px]">images</button>
-        <button type="button" onclick="switchEditTab('song')" class="soft-btn-ghost text-[11.5px]">song</button>
-        <button type="button" onclick="switchEditTab('text')" class="soft-btn-ghost text-[11.5px]">text</button>
-        <button type="button" onclick="switchEditTab('security')" class="soft-btn-ghost text-[11.5px]">account</button>
-      </div>
+      <!-- Modal Body -->
+      <div class="p-5 overflow-y-auto flex-1 space-y-4 text-xs">
 
-      <div id="tab-sizes" class="edit-tab-pane space-y-3 hidden">
-        <div>
-          <label class="text-[11.5px] block mb-1">width (<span id="val-diary-w">490</span>px)</label>
-          <input id="size-diary-w" type="range" min="300" max="660" value="490" class="w-full" oninput="updateSizeSetting('diaryWidth', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">height (<span id="val-diary-h">280</span>px)</label>
-          <input id="size-diary-h" type="range" min="210" max="480" value="280" class="w-full" oninput="updateSizeSetting('diaryHeight', this.value)" />
-        </div>
-      </div>
-      </div>
+        <!-- TAB: NOTES -->
+        <div id="tab-notes" class="editor-tab space-y-4">
+          <div>
+            <label class="block text-[11px] text-[#8a7d84] mb-1">bottom quote / whisper</label>
+            <input id="edit-whisper-input" type="text" class="clean-input" oninput="updateWhisper(this.value)" />
+          </div>
 
-      <div id="tab-colors" class="edit-tab-pane grid grid-cols-2 gap-3 hidden">
-        <div>
-          <label class="text-[11.5px] block mb-1">background</label>
-          <input id="color-bg" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('bgColor', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">box</label>
-          <input id="color-box-bg" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('boxBg', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">primary text</label>
-          <input id="color-text-primary" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('textPrimary', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">secondary text</label>
-          <input id="color-text-secondary" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('textSecondary', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">accent</label>
-          <input id="color-accent-pink-dark" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('accentPinkDark', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">date pill</label>
-          <input id="color-pill-bg" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('accentPillBg', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">date text</label>
-          <input id="color-pill-text" type="color" class="w-full h-8 rounded-lg cursor-pointer" onchange="updateColorSetting('accentPillText', this.value)" />
-        </div>
-      </div>
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-[11px] text-[#8a7d84]">diary entries</span>
+            <button type="button" onclick="addNewNote()" class="clean-btn primary">+ add entry</button>
+          </div>
 
-      <div id="tab-images" class="edit-tab-pane space-y-3 hidden">
-        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
-          <p class="text-[11.5px] font-medium">tab favicon</p>
-          <input id="input-favicon-url" type="text" placeholder="favicon url" class="soft-input" onchange="updateImageSetting('faviconUrl', this.value)" />
-          <input type="file" accept="image/*" class="text-[11px]" onchange="handleImageUpload(event, 'faviconUrl')" />
+          <div id="notes-editor-list" class="space-y-3"></div>
         </div>
 
-        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
-          <p class="text-[11.5px] font-medium">floating png/gif</p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <!-- TAB: COLORS & SIZE -->
+        <div id="tab-colors" class="editor-tab hidden space-y-4">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-[#8a7d84]">page background</span>
+              <input id="col-bg" type="color" class="w-full h-8 rounded cursor-pointer border border-black/10" oninput="updateColor('bgColor', this.value)" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-[#8a7d84]">box fill</span>
+              <input id="col-box" type="color" class="w-full h-8 rounded cursor-pointer border border-black/10" oninput="updateColor('boxColor', this.value)" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-[#8a7d84]">text color</span>
+              <input id="col-text" type="color" class="w-full h-8 rounded cursor-pointer border border-black/10" oninput="updateColor('textColor', this.value)" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-[#8a7d84]">accent / equalizer</span>
+              <input id="col-accent" type="color" class="w-full h-8 rounded cursor-pointer border border-black/10" oninput="updateColor('accentColor', this.value)" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-[#8a7d84]">date pill fill</span>
+              <input id="col-date-bg" type="color" class="w-full h-8 rounded cursor-pointer border border-black/10" oninput="updateColor('dateBgColor', this.value)" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-[#8a7d84]">date text</span>
+              <input id="col-date-text" type="color" class="w-full h-8 rounded cursor-pointer border border-black/10" oninput="updateColor('dateTextColor', this.value)" />
+            </label>
+          </div>
+
+          <div class="space-y-3 pt-2 border-t border-black/5">
             <div>
-              <label class="text-[11px] block mb-1">top</label>
-              <input id="input-top-drifter-url" type="text" placeholder="url" class="soft-input" onchange="updateImageSetting('topDrifterUrl', this.value)" />
-              <input type="file" accept="image/*" class="text-[11px] mt-1" onchange="handleImageUpload(event, 'topDrifterUrl')" />
+              <div class="flex justify-between text-[11px] text-[#8a7d84] mb-1">
+                <span>box opacity</span>
+                <span id="val-box-opacity">94%</span>
+              </div>
+              <input id="rng-box-opacity" type="range" min="20" max="100" class="w-full" oninput="updateSize('boxOpacity', this.value)" />
             </div>
+
             <div>
-              <label class="text-[11px] block mb-1">bottom</label>
-              <input id="input-bottom-drifter-url" type="text" placeholder="url" class="soft-input" onchange="updateImageSetting('bottomDrifterUrl', this.value)" />
-              <input type="file" accept="image/*" class="text-[11px] mt-1" onchange="handleImageUpload(event, 'bottomDrifterUrl')" />
+              <div class="flex justify-between text-[11px] text-[#8a7d84] mb-1">
+                <span>box width</span>
+                <span id="val-box-width">580px</span>
+              </div>
+              <input id="rng-box-width" type="range" min="320" max="860" class="w-full" oninput="updateSize('boxWidth', this.value)" />
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] text-[#8a7d84] mb-1">
+                <span>box height</span>
+                <span id="val-box-height">280px</span>
+              </div>
+              <input id="rng-box-height" type="range" min="180" max="540" class="w-full" oninput="updateSize('boxHeight', this.value)" />
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] text-[#8a7d84] mb-1">
+                <span>note font size</span>
+                <span id="val-text-size">16px</span>
+              </div>
+              <input id="rng-text-size" type="range" min="12" max="26" class="w-full" oninput="updateSize('textSize', this.value)" />
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-black/5 flex items-center justify-between">
+            <span class="text-[11px] text-[#8a7d84]">reset dragged positions</span>
+            <button type="button" onclick="resetDragPositions()" class="clean-btn">reset layout</button>
+          </div>
+        </div>
+
+        <!-- TAB: MUSIC & BG -->
+        <div id="tab-media" class="editor-tab hidden space-y-4">
+          <div class="space-y-2">
+            <label class="block text-[11px] text-[#8a7d84]">song label on floating player</label>
+            <input id="edit-song-title" type="text" class="clean-input" oninput="updateMusicField('title', this.value)" />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-[11px] text-[#8a7d84]">audio link (mp3 / direct audio url)</label>
+            <input id="edit-song-url" type="text" placeholder="https://..." class="clean-input" onchange="updateMusicField('url', this.value)" />
+            <div class="flex items-center gap-2 pt-1">
+              <label class="clean-btn cursor-pointer">
+                upload audio file
+                <input type="file" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)" />
+              </label>
+              <button type="button" onclick="clearAudio()" class="clean-btn">clear audio</button>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-3 border-t border-black/5">
+            <label class="block text-[11px] text-[#8a7d84]">browser tab favicon image</label>
+            <div class="flex items-center gap-2">
+              <input id="edit-favicon-url" type="text" placeholder="image url..." class="clean-input" onchange="updateImageField('faviconUrl', this.value)" />
+              <label class="clean-btn whitespace-nowrap cursor-pointer">
+                upload
+                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'faviconUrl')" />
+              </label>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-3 border-t border-black/5">
+            <label class="block text-[11px] text-[#8a7d84]">background wallpaper image / gif</label>
+            <div class="flex items-center gap-2">
+              <input id="edit-bg-image" type="text" placeholder="image or gif url..." class="clean-input" onchange="updateImageField('bgImageUrl', this.value)" />
+              <label class="clean-btn whitespace-nowrap cursor-pointer">
+                upload
+                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'bgImageUrl')" />
+              </label>
+              <button type="button" onclick="updateImageField('bgImageUrl', '')" class="clean-btn">clear</button>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-3 border-t border-black/5">
+            <label class="block text-[11px] text-[#8a7d84]">background looping video or youtube link (blurred)</label>
+            <input id="edit-bg-video" type="text" placeholder="youtube link or .mp4 url..." class="clean-input" onchange="updateBgVideo(this.value)" />
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <span class="block text-[10px] text-[#8a7d84] mb-1">bg blur</span>
+                <input id="rng-bg-blur" type="range" min="0" max="24" class="w-full" oninput="updateSize('bgBlur', this.value)" />
+              </div>
+              <div>
+                <span class="block text-[10px] text-[#8a7d84] mb-1">bg opacity</span>
+                <input id="rng-bg-opacity" type="range" min="0" max="100" class="w-full" oninput="updateSize('bgOpacity', this.value)" />
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
-          <p class="text-[11.5px] font-medium">background image</p>
-          <input id="input-bg-img-url" type="text" placeholder="image url" class="soft-input" onchange="updateImageSetting('bgImageUrl', this.value)" />
-          <input type="file" accept="image/*" class="text-[11px]" onchange="handleImageUpload(event, 'bgImageUrl')" />
-        </div>
-
-        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
-          <p class="text-[11.5px] font-medium">background video / youtube</p>
-          <input id="input-bg-video-url" type="text" placeholder="youtube or mp4 url" class="soft-input" onchange="updateVideoBgSetting()" />
-          <div class="grid grid-cols-3 gap-2">
-            <div>
-              <label class="text-[11px] block">start (s)</label>
-              <input id="input-bg-video-start" type="number" min="0" value="0" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
-            </div>
-            <div>
-              <label class="text-[11px] block">end (s)</label>
-              <input id="input-bg-video-end" type="number" min="0" value="0" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
-            </div>
-            <div>
-              <label class="text-[11px] block">blur (px)</label>
-              <input id="input-bg-video-blur" type="number" min="0" max="24" value="5" class="soft-input text-xs" onchange="updateVideoBgSetting()" />
-            </div>
+        <!-- TAB: ACCOUNT -->
+        <div id="tab-account" class="editor-tab hidden space-y-4">
+          <div class="p-3.5 rounded-xl bg-[#faf7f9] border border-black/5 space-y-1.5">
+            <div class="text-[11px] font-semibold text-[#6c5d65]">cloud sync status</div>
+            <div id="account-sync-status" class="text-xs text-[#8a7d84]">connected to meowmeow-6ec62</div>
           </div>
-        </div>
-      </div>
 
-      <div id="tab-song" class="edit-tab-pane space-y-3 hidden">
-        <div>
-          <label class="text-[11.5px] block mb-1">track label</label>
-          <input id="input-song-title" type="text" placeholder="song name" class="soft-input" onchange="updateTextSetting('songTitle', this.value)" />
-        </div>
-        <div>
-          <label class="text-[11.5px] block mb-1">audio url (.mp3 / .wav)</label>
-          <input id="input-song-url" type="text" placeholder="direct audio url" class="soft-input" onchange="updateSongSetting(this.value)" />
-        </div>
-        <input type="file" accept="audio/*" class="text-[11px]" onchange="handleAudioUpload(event)" />
-      </div>
-
-      <div id="tab-text" class="edit-tab-pane space-y-3 hidden">
-        <div>
-          <label class="text-[11.5px] block mb-1">bottom quote</label>
-          <input id="input-diary-whisper" type="text" class="soft-input" onchange="updateTextSetting('diaryWhisper', this.value)" />
-        </div>
-      </div>
-
-      <div id="tab-security" class="edit-tab-pane space-y-3 hidden">
-        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
-          <p class="text-[11.5px] font-medium">passcode</p>
-          <input id="input-new-passcode" type="password" placeholder="new passcode" class="soft-input" />
-          <button type="button" onclick="changeOwnerPasscode()" class="soft-btn text-[11.5px]">save</button>
-        </div>
-
-        <div class="p-3 rounded-xl space-y-2" style="background: #fcf9fa; border: 1px solid #f0e7ec;">
-          <p class="text-[11.5px] font-medium">firebase config</p>
-          <textarea id="input-firebase-config" rows="5" placeholder='{"apiKey":"..."}' class="soft-input font-mono text-[11px]"></textarea>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="saveFirebaseConfig()" class="soft-btn text-[11.5px]">connect</button>
-            <span id="firebase-status-badge" class="text-[11px]" style="color: var(--text-secondary);">offline</span>
+            <button type="button" onclick="lockAndSignOutOwner()" class="clean-btn">lock & sign out</button>
+            <button type="button" onclick="exportStandaloneHtml()" class="clean-btn primary">copy html backup</button>
           </div>
         </div>
+
       </div>
     </div>
   </div>
+
+  <audio id="bg-audio-player" loop crossorigin="anonymous"></audio>
 
   <script id="baked-state-data" type="application/json">{}</script>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
     const DEFAULT_FIREBASE_CONFIG = {
       apiKey: "AIzaSyDL26DDvtw9oA-7LB6awvEeqAZwrmORhQE",
@@ -542,50 +536,48 @@
     };
 
     const DEFAULT_STATE = {
-      passcodeHash: "",
-      firebaseConfig: DEFAULT_FIREBASE_CONFIG,
       ownerUid: "",
-      diaryTitle: "diary",
-      diaryWhisper: "taking things slowly",
-      songTitle: "girl favorite",
+      firebaseConfig: DEFAULT_FIREBASE_CONFIG,
+      whisper: "taking things slowly",
       notes: [
-        { id: "n1", text: "quiet mornings & warm tea.", date: "nov 28" },
-        { id: "n2", text: "remember to breathe.", date: "nov 27" }
+        { id: "n1", date: "nov 28", text: "quiet mornings & warm tea." },
+        { id: "n2", date: "nov 27", text: "soft light through the window today." }
       ],
-      sizes: {
-        diaryWidth: 490,
-        diaryHeight: 280,
-        drifterSize: 38
-      },
       colors: {
-        bgColor: "#fbf6f8",
-        boxBg: "#ffffff",
-        boxBorder: "#eee5ea",
-        textPrimary: "#6c6167",
-        textSecondary: "#a598a0",
-        accentPinkDark: "#b98ea3",
-        accentPillBg: "#f8f2f5",
-        accentPillText: "#a598a0"
+        bgColor: "#fdf3f7",
+        boxColor: "#fcfcfc",
+        textColor: "#9e969c",
+        accentColor: "#e8a8c0",
+        dateBgColor: "#f9eff4",
+        dateTextColor: "#b89aa8"
+      },
+      sizes: {
+        boxOpacity: 94,
+        boxWidth: 580,
+        boxHeight: 280,
+        textSize: 16,
+        bgBlur: 8,
+        bgOpacity: 35
+      },
+      music: {
+        title: "girl favorite",
+        url: ""
       },
       images: {
         faviconUrl: "",
-        topDrifterUrl: "",
-        bottomDrifterUrl: "",
         bgImageUrl: "",
-        bgVideoUrl: "",
-        bgVideoStart: 0,
-        bgVideoEnd: 0,
-        bgVideoBlur: 5
+        bgVideoUrl: ""
       },
-      songUrl: "",
       positions: {
-        "widget-diary": { x: 0, y: 0 }
+        diaryCard: { x: 0, y: 0 },
+        musicPill: { x: 0, y: 0 }
       }
     };
 
     let state = structuredClone(DEFAULT_STATE);
     let isOwnerUnlocked = false;
     let isCloudStateLoaded = false;
+    let isSavingLocally = false;
     let currentNoteIndex = 0;
     let noteCycleTimer = null;
     let ytLoopTimer = null;
@@ -594,7 +586,72 @@
     let fbDb = null;
     let fbUnsubState = null;
 
-    const LOCAL_BACKUP_KEY = "gentle_diary_backup_v1";
+    // Web Audio Muffled Filter Nodes
+    let audioCtx = null;
+    let audioSourceNode = null;
+    let lowPassFilter = null;
+    let hasAttemptedAutoPlay = false;
+
+    const LOCAL_BACKUP_KEY = "gentle_diary_backup_v2";
+
+    function mergeDeep(target, source) {
+      if (!source || typeof source !== "object") return target;
+      const out = Array.isArray(target) ? [...target] : { ...target };
+      for (const key of Object.keys(source)) {
+        const val = source[key];
+        if (val !== undefined && val !== null) {
+          if (typeof val === "object" && !Array.isArray(val) && typeof out[key] === "object" && !Array.isArray(out[key])) {
+            out[key] = mergeDeep(out[key], val);
+          } else {
+            out[key] = val;
+          }
+        }
+      }
+      return out;
+    }
+
+    function openLocalIDB() {
+      return new Promise((resolve) => {
+        try {
+          const req = indexedDB.open("gentle_diary_idb_v2", 1);
+          req.onupgradeneeded = () => req.result.createObjectStore("kv");
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+
+    async function saveToLocalIDB(data) {
+      const db = await openLocalIDB();
+      if (!db) return;
+      return new Promise((resolve) => {
+        try {
+          const tx = db.transaction("kv", "readwrite");
+          tx.objectStore("kv").put(data, LOCAL_BACKUP_KEY);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => resolve();
+        } catch (e) {
+          resolve();
+        }
+      });
+    }
+
+    async function loadFromLocalIDB() {
+      const db = await openLocalIDB();
+      if (!db) return null;
+      return new Promise((resolve) => {
+        try {
+          const tx = db.transaction("kv", "readonly");
+          const req = tx.objectStore("kv").get(LOCAL_BACKUP_KEY);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
 
     function loadInitialState() {
       try {
@@ -616,626 +673,725 @@
       }
     }
 
-    function mergeDeep(target, source) {
-      if (!source || typeof source !== "object") return target;
-      for (const key of Object.keys(source)) {
-        if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
-          if (!target[key] || typeof target[key] !== "object") target[key] = {};
-          mergeDeep(target[key], source[key]);
-        } else if (source[key] !== undefined) {
-          target[key] = source[key];
-        }
-      }
-      return target;
-    }
-
-    async function hashString(str) {
-      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
     function showToast(msg) {
       const el = document.getElementById("toast-banner");
+      if (!el) return;
       el.textContent = msg;
-      el.style.opacity = "1";
+      el.classList.remove("hidden");
       clearTimeout(el._t);
-      el._t = setTimeout(() => { el.style.opacity = "0"; }, 2200);
+      el._t = setTimeout(() => el.classList.add("hidden"), 2400);
     }
 
     async function persistState() {
+      isSavingLocally = true;
+      await saveToLocalIDB(structuredClone(state));
       try {
         localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(state));
       } catch (e) {}
 
-      if (fbDb && isOwnerUnlocked) {
+      if (fbDb && isOwnerUnlocked && fbAuth?.currentUser) {
         try {
-          if (!fbAuth.currentUser) {
-            await signInAnonymously(fbAuth);
+          if (!state.ownerUid) {
+            state.ownerUid = fbAuth.currentUser.uid;
           }
           const cleanState = structuredClone(state);
-          await setDoc(doc(fbDb, "diary_sanctuary", "main_state"), cleanState, { merge: true });
+          const payloadSize = JSON.stringify(cleanState).length;
+          if (payloadSize > 950000) {
+            showToast("file too large for cloud — use a link");
+          } else {
+            await setDoc(doc(fbDb, "diary_sanctuary", "main_state"), cleanState, { merge: true });
+            showToast("saved");
+          }
         } catch (err) {
           console.error("Firestore save error:", err);
-          showToast("cloud save blocked");
+          showToast("cloud save error: " + (err.code || "check rules"));
         }
+      } else {
+        showToast("saved locally");
       }
+      setTimeout(() => { isSavingLocally = false; }, 1200);
+    }
+
+    function hexToRgba(hex, alpha) {
+      const clean = (hex || "#fcfcfc").replace("#", "");
+      const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
+      const num = parseInt(full, 16);
+      const r = (num >> 16) & 255;
+      const g = (num >> 8) & 255;
+      const b = num & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function extractYouTubeId(url) {
+      if (!url) return "";
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+      return match ? match[1] : "";
     }
 
     function applyThemeAndSizes() {
       const root = document.documentElement;
-      root.style.setProperty("--bg-color", state.colors.bgColor);
-      root.style.setProperty("--box-bg", state.colors.boxBg);
-      root.style.setProperty("--box-border", state.colors.boxBorder);
-      root.style.setProperty("--text-primary", state.colors.textPrimary);
-      root.style.setProperty("--text-secondary", state.colors.textSecondary);
-      root.style.setProperty("--accent-pink-dark", state.colors.accentPinkDark);
-      root.style.setProperty("--accent-pill-bg", state.colors.accentPillBg || "#f8f2f5");
-      root.style.setProperty("--accent-pill-text", state.colors.accentPillText || "#a598a0");
+      const c = state.colors;
+      const s = state.sizes;
 
-      root.style.setProperty("--diary-width", state.sizes.diaryWidth + "px");
-      root.style.setProperty("--diary-height", state.sizes.diaryHeight + "px");
+      root.style.setProperty("--bg-color", c.bgColor);
+      root.style.setProperty("--box-bg", hexToRgba(c.boxColor, (s.boxOpacity ?? 94) / 100));
+      root.style.setProperty("--text-color", c.textColor);
+      root.style.setProperty("--accent-color", c.accentColor);
+      root.style.setProperty("--date-bg", c.dateBgColor || "#f9eff4");
+      root.style.setProperty("--date-text", c.dateTextColor || "#b89aa8");
+      root.style.setProperty("--box-width", (s.boxWidth || 580) + "px");
+      root.style.setProperty("--box-min-height", (s.boxHeight || 280) + "px");
+      root.style.setProperty("--text-size", (s.textSize || 16) + "px");
 
-      const favEl = document.getElementById("page-favicon");
-      if (favEl) {
-        if (state.images.faviconUrl) {
-          favEl.removeAttribute("type");
-          favEl.href = state.images.faviconUrl;
-        } else {
-          favEl.type = "image/svg+xml";
-          favEl.href = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='24' x='5' font-size='22' fill='%23b5a4ad'%3E%E2%99%A1%3C/text%3E%3C/svg%3E";
-        }
-      }
-      document.getElementById("diary-footer-whisper").textContent = state.diaryWhisper;
-      document.getElementById("floating-song-title").textContent = state.songTitle || "girl favorite";
+      document.getElementById("whisper-display").textContent = state.whisper || "";
+      document.getElementById("song-title-display").textContent = state.music?.title || "girl favorite";
 
-      applyPositions();
-      renderDrifters();
-      renderBackgroundMedia();
-    }
-
-    function applyPositions() {
-      const el = document.getElementById("widget-diary");
-      const pos = state.positions?.["widget-diary"] || { x: 0, y: 0 };
-      if (el) {
-        el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-      }
-    }
-
-    function renderDrifters() {
-      const topTrack = document.getElementById("top-drifter-track");
-      const botTrack = document.getElementById("bottom-drifter-track");
-      topTrack.innerHTML = "";
-      botTrack.innerHTML = "";
-
-      if (state.images.topDrifterUrl) {
-        const img = document.createElement("img");
-        img.src = state.images.topDrifterUrl;
-        img.className = "drifter-sprite";
-        img.style.animation = "driftLeftToRight 22s linear infinite";
-        topTrack.appendChild(img);
+      // Favicon
+      const fav = document.getElementById("dynamic-favicon");
+      if (state.images?.faviconUrl) {
+        fav.href = state.images.faviconUrl;
       }
 
-      if (state.images.bottomDrifterUrl) {
-        const img = document.createElement("img");
-        img.src = state.images.bottomDrifterUrl;
-        img.className = "drifter-sprite";
-        img.style.animation = "driftRightToLeft 25s linear infinite";
-        botTrack.appendChild(img);
-      }
-    }
-
-    function extractYoutubeId(url) {
-      if (!url) return null;
-      const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
-      return m ? m[1] : null;
-    }
-
-    function renderBackgroundMedia() {
-      const imgLayer = document.getElementById("custom-bg-layer");
-      const vidWrap = document.getElementById("custom-bg-video-wrap");
-      const vidEl = document.getElementById("custom-bg-video");
-      const ytEl = document.getElementById("custom-bg-yt-frame");
-
-      if (state.images.bgImageUrl) {
-        imgLayer.style.backgroundImage = `url('${state.images.bgImageUrl}')`;
-        imgLayer.style.display = "block";
+      // Background Image
+      const bgImg = document.getElementById("bg-image-el");
+      if (state.images?.bgImageUrl) {
+        bgImg.src = state.images.bgImageUrl;
+        bgImg.style.filter = `blur(${s.bgBlur ?? 8}px)`;
+        bgImg.style.opacity = ((s.bgOpacity ?? 35) / 100).toString();
+        bgImg.classList.remove("hidden");
       } else {
-        imgLayer.style.display = "none";
+        bgImg.classList.add("hidden");
       }
 
-      clearInterval(ytLoopTimer);
-      const vUrl = (state.images.bgVideoUrl || "").trim();
-      const blurPx = Number(state.images.bgVideoBlur ?? 5);
-      const startSec = Math.max(0, Number(state.images.bgVideoStart || 0));
-      const endSec = Math.max(0, Number(state.images.bgVideoEnd || 0));
-
-      if (!vUrl) {
-        vidWrap.style.display = "none";
-        vidEl.style.display = "none";
-        ytEl.style.display = "none";
-        ytEl.src = "";
-        return;
-      }
-
-      vidWrap.style.display = "block";
-      const ytId = extractYoutubeId(vUrl);
+      // Background Video / YouTube
+      const bgVid = document.getElementById("bg-video-el");
+      const bgYt = document.getElementById("bg-yt-wrap");
+      const vidUrl = state.images?.bgVideoUrl || "";
+      const ytId = extractYouTubeId(vidUrl);
 
       if (ytId) {
-        vidEl.style.display = "none";
-        vidEl.pause();
-        ytEl.style.display = "block";
-        ytEl.style.filter = `blur(${blurPx}px)`;
-        const endParam = endSec > startSec ? `&end=${endSec}` : "";
-        const srcUrl = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${ytId}&start=${startSec}${endParam}&modestbranding=1&rel=0&playsinline=1`;
-        if (ytEl.src !== srcUrl) {
-          ytEl.src = srcUrl;
-        }
-        if (endSec > startSec) {
-          const spanMs = (endSec - startSec) * 1000;
+        bgVid.classList.add("hidden");
+        bgYt.classList.remove("hidden");
+        bgYt.style.filter = `blur(${s.bgBlur ?? 8}px)`;
+        bgYt.style.opacity = ((s.bgOpacity ?? 35) / 100).toString();
+        if (bgYt.dataset.ytId !== ytId) {
+          bgYt.dataset.ytId = ytId;
+          bgYt.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&rel=0&modestbranding=1" allow="autoplay; encrypted-media"></iframe>`;
+          clearInterval(ytLoopTimer);
           ytLoopTimer = setInterval(() => {
-            ytEl.src = srcUrl;
-          }, spanMs);
+            const ifr = bgYt.querySelector("iframe");
+            if (ifr) ifr.src = ifr.src;
+          }, 55000);
+        }
+      } else if (vidUrl) {
+        bgYt.classList.add("hidden");
+        bgYt.innerHTML = "";
+        bgYt.dataset.ytId = "";
+        bgVid.classList.remove("hidden");
+        bgVid.style.filter = `blur(${s.bgBlur ?? 8}px)`;
+        bgVid.style.opacity = ((s.bgOpacity ?? 35) / 100).toString();
+        if (bgVid.src !== vidUrl) {
+          bgVid.src = vidUrl;
+          bgVid.play().catch(() => {});
         }
       } else {
-        ytEl.style.display = "none";
-        ytEl.src = "";
-        vidEl.style.display = "block";
-        vidEl.style.filter = `blur(${blurPx}px)`;
-        if (vidEl.src !== vUrl) {
-          vidEl.src = vUrl;
-        }
-        vidEl.currentTime = startSec;
-        vidEl.play().catch(() => {});
-        vidEl.ontimeupdate = () => {
-          if (endSec > startSec && vidEl.currentTime >= endSec) {
-            vidEl.currentTime = startSec;
-          }
-        };
+        bgVid.classList.add("hidden");
+        bgYt.classList.add("hidden");
+        bgYt.innerHTML = "";
+        bgYt.dataset.ytId = "";
       }
+
+      // Audio Source
+      const audioEl = document.getElementById("bg-audio-player");
+      if (state.music?.url && audioEl.dataset.loadedUrl !== state.music.url) {
+        audioEl.dataset.loadedUrl = state.music.url;
+        audioEl.src = state.music.url;
+      }
+
+      // Dragged Positions
+      document.querySelectorAll(".draggable-el").forEach((el) => {
+        const key = el.dataset.dragKey;
+        const pos = state.positions?.[key] || { x: 0, y: 0 };
+        el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+      });
+
+      syncEditorControls();
     }
 
     function renderDiaryNote(animate = true) {
-      const stage = document.getElementById("diary-note-stage");
-      const textEl = document.getElementById("diary-note-text");
-      const dateEl = document.getElementById("diary-note-date");
-      const notes = state.notes && state.notes.length ? state.notes : [{ text: "...", date: "nov 28" }];
+      const notes = state.notes && state.notes.length ? state.notes : [{ id: "empty", date: "", text: "" }];
       if (currentNoteIndex >= notes.length) currentNoteIndex = 0;
-      const note = notes[currentNoteIndex];
+      if (currentNoteIndex < 0) currentNoteIndex = notes.length - 1;
 
-      if (animate) {
-        stage.classList.add("note-blur-out");
-        setTimeout(() => {
-          textEl.textContent = note.text;
-          dateEl.textContent = note.date || "♡";
-          stage.classList.remove("note-blur-out");
-        }, 380);
-      } else {
-        textEl.textContent = note.text;
-        dateEl.textContent = note.date || "♡";
+      const note = notes[currentNoteIndex];
+      const textEl = document.getElementById("diary-text-display");
+      const dateEl = document.getElementById("note-date-pill");
+      const navRow = document.getElementById("note-nav-row");
+
+      navRow.style.visibility = notes.length > 1 ? "visible" : "hidden";
+
+      if (!animate) {
+        dateEl.textContent = note.date || "";
+        dateEl.style.display = note.date ? "inline-block" : "none";
+        textEl.textContent = note.text || "";
+        return;
       }
+
+      textEl.classList.add("note-fading");
+      setTimeout(() => {
+        dateEl.textContent = note.date || "";
+        dateEl.style.display = note.date ? "inline-block" : "none";
+        textEl.textContent = note.text || "";
+        textEl.classList.remove("note-fading");
+      }, 320);
     }
 
     function startNoteAutoCycle() {
       clearInterval(noteCycleTimer);
       noteCycleTimer = setInterval(() => {
-        if ((state.notes || []).length > 1) {
+        if (state.notes && state.notes.length > 1 && document.getElementById("editor-modal").classList.contains("hidden")) {
           currentNoteIndex = (currentNoteIndex + 1) % state.notes.length;
           renderDiaryNote(true);
         }
-      }, 6500);
+      }, 8500);
     }
 
-    window.nextDiaryNote = function () {
-      if (!(state.notes || []).length) return;
-      currentNoteIndex = (currentNoteIndex + 1) % state.notes.length;
-      renderDiaryNote(true);
-      startNoteAutoCycle();
-    };
-
-    window.prevDiaryNote = function () {
-      if (!(state.notes || []).length) return;
-      currentNoteIndex = (currentNoteIndex - 1 + state.notes.length) % state.notes.length;
-      renderDiaryNote(true);
-      startNoteAutoCycle();
-    };
-
-    let musicUnlockedByClick = false;
-    let muffledAudioCtx = null;
-    let muffledFilterNode = null;
-
-    function ensureMuffledAudioChain(audioEl) {
-      if (muffledAudioCtx) {
-        if (muffledAudioCtx.state === "suspended") {
-          muffledAudioCtx.resume().catch(() => {});
-        }
-        return;
-      }
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        muffledAudioCtx = new AudioCtx();
-        const source = muffledAudioCtx.createMediaElementSource(audioEl);
-        muffledFilterNode = muffledAudioCtx.createBiquadFilter();
-        muffledFilterNode.type = "lowpass";
-        muffledFilterNode.frequency.value = 540;
-        muffledFilterNode.Q.value = 0.8;
-        const gainNode = muffledAudioCtx.createGain();
-        gainNode.gain.value = 0.65;
-        source.connect(muffledFilterNode);
-        muffledFilterNode.connect(gainNode);
-        gainNode.connect(muffledAudioCtx.destination);
-      } catch (e) {}
-    }
-
-    function updateMusicIndicators(playing) {
-      const playIcon = document.getElementById("floating-play-icon");
-      const eq = document.getElementById("floating-eq");
-      if (playIcon) playIcon.textContent = playing ? "❚❚" : "▶";
-      if (eq) {
-        if (playing) eq.classList.add("eq-playing");
-        else eq.classList.remove("eq-playing");
-      }
-    }
-
-    function startMuffledPlayback() {
-      const audio = document.getElementById("bg-music-player");
-      if (!state.songUrl) return;
-      if (audio.src !== state.songUrl) {
-        audio.src = state.songUrl;
-      }
-      audio.volume = 0.55;
-      ensureMuffledAudioChain(audio);
-      audio.play().then(() => {
-        musicUnlockedByClick = true;
-        updateMusicIndicators(true);
-      }).catch(() => {});
-    }
-
-    window.toggleBgMusic = function (e) {
+    window.prevNote = function (e) {
       if (e) e.stopPropagation();
-      const audio = document.getElementById("bg-music-player");
-      if (!state.songUrl) {
-        showToast("no audio set");
+      currentNoteIndex--;
+      renderDiaryNote(true);
+      startNoteAutoCycle();
+    };
+
+    window.nextNote = function (e) {
+      if (e) e.stopPropagation();
+      currentNoteIndex++;
+      renderDiaryNote(true);
+      startNoteAutoCycle();
+    };
+
+    // Muffled Audio Engine
+    function setupMuffledFilter(audioEl) {
+      if (audioCtx) return;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        audioSourceNode = audioCtx.createMediaElementSource(audioEl);
+        lowPassFilter = audioCtx.createBiquadFilter();
+        lowPassFilter.type = "lowpass";
+        lowPassFilter.frequency.value = 540;
+        lowPassFilter.Q.value = 0.8;
+        audioSourceNode.connect(lowPassFilter);
+        lowPassFilter.connect(audioCtx.destination);
+      } catch (e) {
+        // Fallback to normal playback if CORS prevents WebAudio node attachment
+      }
+    }
+
+    function updateMusicUI(isPlaying) {
+      const icon = document.getElementById("music-play-icon");
+      const eq = document.getElementById("music-eq");
+      icon.textContent = isPlaying ? "❚❚" : "▶";
+      if (isPlaying) eq.classList.add("playing");
+      else eq.classList.remove("playing");
+    }
+
+    window.toggleAudioPlayback = async function (e) {
+      if (e) e.stopPropagation();
+      const audioEl = document.getElementById("bg-audio-player");
+      if (!state.music?.url) {
+        if (isOwnerUnlocked) openEditorModal("media");
         return;
       }
-      if (audio.paused) {
-        startMuffledPlayback();
+      setupMuffledFilter(audioEl);
+      if (audioCtx && audioCtx.state === "suspended") {
+        await audioCtx.resume().catch(() => {});
+      }
+      if (audioEl.paused) {
+        audioEl.volume = 0.72;
+        audioEl.play().then(() => updateMusicUI(true)).catch(() => {});
       } else {
-        musicUnlockedByClick = true;
-        audio.pause();
-        updateMusicIndicators(false);
+        audioEl.pause();
+        updateMusicUI(false);
       }
     };
 
-    document.addEventListener("pointerdown", () => {
-      if (!musicUnlockedByClick && state.songUrl) {
-        startMuffledPlayback();
+    // Auto-play muffled music on first page click
+    document.addEventListener("click", async () => {
+      if (hasAttemptedAutoPlay) return;
+      const audioEl = document.getElementById("bg-audio-player");
+      if (!state.music?.url) return;
+      hasAttemptedAutoPlay = true;
+      setupMuffledFilter(audioEl);
+      if (audioCtx && audioCtx.state === "suspended") {
+        await audioCtx.resume().catch(() => {});
+      }
+      if (audioEl.paused) {
+        audioEl.volume = 0.72;
+        audioEl.play().then(() => updateMusicUI(true)).catch(() => {
+          hasAttemptedAutoPlay = false;
+        });
       }
     });
 
-    window.openModal = function (id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.remove("hidden");
-        el.classList.add("flex");
-      }
-    };
+    // Dragging Support (when owner unlocked)
+    function initDragging() {
+      document.querySelectorAll(".draggable-el").forEach((el) => {
+        let startX = 0;
+        let startY = 0;
+        let origX = 0;
+        let origY = 0;
+        let dragging = false;
 
-    window.closeModal = function (id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.add("hidden");
-        el.classList.remove("flex");
-      }
-    };
+        el.addEventListener("pointerdown", (e) => {
+          if (!isOwnerUnlocked) return;
+          if (e.target.closest("button, input, textarea")) return;
+          dragging = true;
+          const key = el.dataset.dragKey;
+          const pos = state.positions?.[key] || { x: 0, y: 0 };
+          origX = pos.x;
+          origY = pos.y;
+          startX = e.clientX;
+          startY = e.clientY;
+          el.setPointerCapture(e.pointerId);
+        });
 
-    window.handleLockClick = function () {
-      if (isOwnerUnlocked) {
-        isOwnerUnlocked = false;
-        updateOwnerUI();
-        showToast("locked");
-        return;
-      }
-      if (state.firebaseConfig && state.firebaseConfig.apiKey && !isCloudStateLoaded) {
-        showToast("syncing...");
-        return;
-      }
-      const desc = document.getElementById("lock-modal-desc");
-      const passBox = document.getElementById("passcode-auth-box");
-      const fbSub = document.getElementById("fb-auth-subtitle");
+        el.addEventListener("pointermove", (e) => {
+          if (!dragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          const key = el.dataset.dragKey;
+          state.positions[key] = { x: Math.round(origX + dx), y: Math.round(origY + dy) };
+          el.style.transform = `translate(${state.positions[key].x}px, ${state.positions[key].y}px)`;
+        });
 
-      if (state.firebaseConfig && state.firebaseConfig.apiKey) {
-        passBox.classList.add("hidden");
-        desc.textContent = state.ownerUid ? "owner sign in" : "claim ownership";
-        if (fbSub) fbSub.textContent = "";
-      } else {
-        passBox.classList.remove("hidden");
-        desc.textContent = state.passcodeHash ? "enter passcode" : "set passcode";
-      }
-      document.getElementById("owner-passcode-input").value = "";
-      openModal("lock-modal");
-    };
-
-    window.submitOwnerPasscode = async function () {
-      const val = document.getElementById("owner-passcode-input").value;
-      if (!val || val.length < 2) {
-        showToast("enter passcode");
-        return;
-      }
-      const hashed = await hashString(val);
-      if (!state.passcodeHash) {
-        state.passcodeHash = hashed;
-        isOwnerUnlocked = true;
-        await persistState();
-        updateOwnerUI();
-        closeModal("lock-modal");
-        showToast("unlocked");
-      } else if (hashed === state.passcodeHash) {
-        isOwnerUnlocked = true;
-        updateOwnerUI();
-        closeModal("lock-modal");
-        showToast("unlocked");
-      } else {
-        showToast("wrong passcode");
-      }
-    };
-
-    function updateOwnerUI() {
-      const toolbar = document.getElementById("owner-toolbar");
-      const noteBar = document.getElementById("owner-inline-note-bar");
-      const lockIcon = document.getElementById("owner-lock-icon");
-      if (isOwnerUnlocked) {
-        toolbar.classList.remove("hidden");
-        noteBar.classList.remove("hidden");
-        lockIcon.textContent = "♥";
-      } else {
-        toolbar.classList.add("hidden");
-        noteBar.classList.add("hidden");
-        lockIcon.textContent = "♡";
-      }
-    }
-
-    window.openNoteManagerModal = function () {
-      renderNotesEditorList();
-      openModal("notes-manager-modal");
-    };
-
-    function renderNotesEditorList() {
-      const list = document.getElementById("notes-editor-list");
-      list.innerHTML = "";
-      (state.notes || []).forEach((n, idx) => {
-        const row = document.createElement("div");
-        row.className = "p-2.5 rounded-xl flex items-start justify-between gap-2 text-xs";
-        row.style.background = "#fcf9fa";
-        row.style.border = "1px solid #f0e7ec";
-        row.innerHTML = `
-          <div>
-            <p class="whitespace-pre-line">${escapeHtml(n.text)}</p>
-            <span class="text-[11px]" style="color:var(--text-secondary);">${escapeHtml(n.date || "")}</span>
-          </div>
-          <button type="button" onclick="deleteDiaryNote(${idx})" class="px-1.5 py-0.5 rounded hover:opacity-70" style="color:var(--text-secondary);">✕</button>
-        `;
-        list.appendChild(row);
+        el.addEventListener("pointerup", () => {
+          if (!dragging) return;
+          dragging = false;
+          persistState();
+        });
       });
     }
 
-    window.addDiaryNote = async function () {
-      const text = document.getElementById("new-note-text").value.trim();
-      const date = document.getElementById("new-note-date").value.trim() || "today";
-      if (!text) return;
-      state.notes.unshift({ id: crypto.randomUUID(), text, date });
-      currentNoteIndex = 0;
-      document.getElementById("new-note-text").value = "";
-      document.getElementById("new-note-date").value = "";
-      renderNotesEditorList();
-      renderDiaryNote(false);
-      await persistState();
-      showToast("added");
-    };
+    // Owner Unlock State UI
+    function setOwnerModeUI(unlocked) {
+      isOwnerUnlocked = unlocked;
+      const lockBtn = document.getElementById("lock-toggle-btn");
+      const editBtn = document.getElementById("open-editor-btn");
+      const quickNotesBtn = document.getElementById("quick-notes-btn");
 
-    window.deleteDiaryNote = async function (idx) {
-      state.notes.splice(idx, 1);
-      if (!state.notes.length) {
-        state.notes.push({ id: crypto.randomUUID(), text: "...", date: "♡" });
-      }
-      currentNoteIndex = 0;
-      renderNotesEditorList();
-      renderDiaryNote(false);
-      await persistState();
-    };
-
-    window.openEditModal = function (tab) {
-      populateEditInputs();
-      switchEditTab(tab || "sizes");
-      openModal("customize-modal");
-    };
-
-    window.switchEditTab = function (tab) {
-      document.querySelectorAll(".edit-tab-pane").forEach(p => p.classList.add("hidden"));
-      const active = document.getElementById("tab-" + tab);
-      if (active) active.classList.remove("hidden");
-    };
-
-    function populateEditInputs() {
-      document.getElementById("size-diary-w").value = state.sizes.diaryWidth;
-      document.getElementById("val-diary-w").textContent = state.sizes.diaryWidth;
-      document.getElementById("size-diary-h").value = state.sizes.diaryHeight;
-      document.getElementById("val-diary-h").textContent = state.sizes.diaryHeight;
-
-      document.getElementById("color-bg").value = state.colors.bgColor;
-      document.getElementById("color-box-bg").value = state.colors.boxBg;
-      document.getElementById("color-text-primary").value = state.colors.textPrimary;
-      document.getElementById("color-text-secondary").value = state.colors.textSecondary;
-      document.getElementById("color-accent-pink-dark").value = state.colors.accentPinkDark;
-      document.getElementById("color-pill-bg").value = state.colors.accentPillBg || "#f8f2f5";
-      document.getElementById("color-pill-text").value = state.colors.accentPillText || "#a598a0";
-
-      document.getElementById("input-favicon-url").value = state.images.faviconUrl || "";
-      document.getElementById("input-top-drifter-url").value = state.images.topDrifterUrl || "";
-      document.getElementById("input-bottom-drifter-url").value = state.images.bottomDrifterUrl || "";
-      document.getElementById("input-bg-img-url").value = state.images.bgImageUrl || "";
-      document.getElementById("input-bg-video-url").value = state.images.bgVideoUrl || "";
-      document.getElementById("input-bg-video-start").value = state.images.bgVideoStart || 0;
-      document.getElementById("input-bg-video-end").value = state.images.bgVideoEnd || 0;
-      document.getElementById("input-bg-video-blur").value = state.images.bgVideoBlur ?? 5;
-
-      document.getElementById("input-song-title").value = state.songTitle || "";
-      document.getElementById("input-song-url").value = state.songUrl || "";
-      document.getElementById("input-diary-whisper").value = state.diaryWhisper || "";
-
-      if (state.firebaseConfig) {
-        document.getElementById("input-firebase-config").value = JSON.stringify(state.firebaseConfig, null, 2);
+      if (unlocked) {
+        document.body.classList.add("drag-unlocked");
+        lockBtn.textContent = "♥";
+        lockBtn.title = "lock editor";
+        editBtn.classList.remove("hidden");
+        quickNotesBtn.classList.remove("hidden");
+      } else {
+        document.body.classList.remove("drag-unlocked");
+        lockBtn.textContent = "♡";
+        lockBtn.title = "owner lock";
+        editBtn.classList.add("hidden");
+        quickNotesBtn.classList.add("hidden");
+        closeEditorModal();
       }
     }
 
-    window.updateSizeSetting = async function (key, val) {
-      state.sizes[key] = Number(val);
-      const map = {
-        diaryWidth: "val-diary-w",
-        diaryHeight: "val-diary-h"
-      };
-      if (map[key]) document.getElementById(map[key]).textContent = val;
-      applyThemeAndSizes();
-      await persistState();
+    window.handleLockClick = async function () {
+      if (isOwnerUnlocked) {
+        setOwnerModeUI(false);
+        showToast("locked");
+        return;
+      }
+
+      if (fbDb && !isCloudStateLoaded) {
+        try {
+          const snap = await getDoc(doc(fbDb, "diary_sanctuary", "main_state"));
+          isCloudStateLoaded = true;
+          if (snap.exists()) {
+            state = mergeDeep(state, snap.data());
+            applyThemeAndSizes();
+          }
+        } catch (e) {
+          isCloudStateLoaded = true;
+        }
+      }
+
+      const statusText = document.getElementById("auth-status-text");
+      if (state.ownerUid) {
+        statusText.textContent = "this page is claimed. sign in with your owner account to edit.";
+      } else {
+        statusText.textContent = "sign in with google or email to claim ownership of this page.";
+      }
+
+      const modal = document.getElementById("auth-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
     };
 
-    window.updateColorSetting = async function (key, val) {
+    window.closeAuthModal = function () {
+      const modal = document.getElementById("auth-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    };
+
+    async function verifyAndClaimOwner(user) {
+      if (!user) return;
+      if (fbDb) {
+        try {
+          const snap = await getDoc(doc(fbDb, "diary_sanctuary", "main_state"));
+          if (snap.exists() && snap.data().ownerUid) {
+            state.ownerUid = snap.data().ownerUid;
+          }
+        } catch (e) {}
+      }
+
+      if (state.ownerUid && state.ownerUid !== user.uid) {
+        await signOut(fbAuth).catch(() => {});
+        setOwnerModeUI(false);
+        showToast("not the owner account");
+        return;
+      }
+
+      const isFirstClaim = !state.ownerUid;
+      state.ownerUid = user.uid;
+      setOwnerModeUI(true);
+      closeAuthModal();
+      if (isFirstClaim) {
+        await persistState();
+        showToast("claimed");
+      } else {
+        showToast("unlocked");
+      }
+    }
+
+    window.signInOwnerGoogle = async function () {
+      if (!fbAuth) return;
+      try {
+        const provider = new GoogleAuthProvider();
+        const res = await signInWithPopup(fbAuth, provider);
+        await verifyAndClaimOwner(res.user);
+      } catch (err) {
+        showToast(err.message || "google sign-in failed");
+      }
+    };
+
+    window.signInOwnerEmail = async function () {
+      if (!fbAuth) return;
+      const email = document.getElementById("owner-email-input").value.trim();
+      const pass = document.getElementById("owner-pass-input").value;
+      if (!email || !pass) return;
+      try {
+        const res = await signInWithEmailAndPassword(fbAuth, email, pass);
+        await verifyAndClaimOwner(res.user);
+      } catch (err) {
+        if (!state.ownerUid && (err.code === "auth/user-not-found" || err.code === "auth/invalid-credential")) {
+          try {
+            const created = await createUserWithEmailAndPassword(fbAuth, email, pass);
+            await verifyAndClaimOwner(created.user);
+            return;
+          } catch (createErr) {
+            showToast(createErr.message || "sign-in failed");
+            return;
+          }
+        }
+        showToast(err.message || "sign-in failed");
+      }
+    };
+
+    window.lockAndSignOutOwner = async function () {
+      if (fbAuth) await signOut(fbAuth).catch(() => {});
+      setOwnerModeUI(false);
+      showToast("signed out");
+    };
+
+    // Editor Modal & Controls
+    window.openEditorModal = function (tab = "notes") {
+      if (!isOwnerUnlocked) return;
+      syncEditorControls();
+      switchEditorTab(tab);
+      const modal = document.getElementById("editor-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    };
+
+    window.closeEditorModal = function () {
+      const modal = document.getElementById("editor-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    };
+
+    window.switchEditorTab = function (tab) {
+      document.querySelectorAll(".tab-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.tab === tab);
+      });
+      document.querySelectorAll(".editor-tab").forEach((panel) => {
+        panel.classList.toggle("hidden", panel.id !== `tab-${tab}`);
+      });
+    };
+
+    function syncEditorControls() {
+      document.getElementById("edit-whisper-input").value = state.whisper || "";
+      document.getElementById("col-bg").value = state.colors.bgColor || "#fdf3f7";
+      document.getElementById("col-box").value = state.colors.boxColor || "#fcfcfc";
+      document.getElementById("col-text").value = state.colors.textColor || "#9e969c";
+      document.getElementById("col-accent").value = state.colors.accentColor || "#e8a8c0";
+      document.getElementById("col-date-bg").value = state.colors.dateBgColor || "#f9eff4";
+      document.getElementById("col-date-text").value = state.colors.dateTextColor || "#b89aa8";
+
+      document.getElementById("rng-box-opacity").value = state.sizes.boxOpacity ?? 94;
+      document.getElementById("val-box-opacity").textContent = (state.sizes.boxOpacity ?? 94) + "%";
+
+      document.getElementById("rng-box-width").value = state.sizes.boxWidth ?? 580;
+      document.getElementById("val-box-width").textContent = (state.sizes.boxWidth ?? 580) + "px";
+
+      document.getElementById("rng-box-height").value = state.sizes.boxHeight ?? 280;
+      document.getElementById("val-box-height").textContent = (state.sizes.boxHeight ?? 280) + "px";
+
+      document.getElementById("rng-text-size").value = state.sizes.textSize ?? 16;
+      document.getElementById("val-text-size").textContent = (state.sizes.textSize ?? 16) + "px";
+
+      document.getElementById("edit-song-title").value = state.music?.title || "";
+      document.getElementById("edit-song-url").value = state.music?.url?.startsWith("data:") ? "" : (state.music?.url || "");
+      document.getElementById("edit-favicon-url").value = state.images?.faviconUrl?.startsWith("data:") ? "" : (state.images?.faviconUrl || "");
+      document.getElementById("edit-bg-image").value = state.images?.bgImageUrl?.startsWith("data:") ? "" : (state.images?.bgImageUrl || "");
+      document.getElementById("edit-bg-video").value = state.images?.bgVideoUrl || "";
+      document.getElementById("rng-bg-blur").value = state.sizes.bgBlur ?? 8;
+      document.getElementById("rng-bg-opacity").value = state.sizes.bgOpacity ?? 35;
+
+      renderNotesEditorList();
+    }
+
+    function renderNotesEditorList() {
+      const container = document.getElementById("notes-editor-list");
+      container.innerHTML = "";
+      (state.notes || []).forEach((n, idx) => {
+        const card = document.createElement("div");
+        card.className = "p-3 rounded-xl bg-[#faf7f9] border border-black/5 space-y-2";
+        card.innerHTML = `
+          <div class="flex items-center gap-2">
+            <input type="text" value="${(n.date || "").replace(/"/g, "&quot;")}" placeholder="date (e.g. nov 28)" class="clean-input flex-1" />
+            <button type="button" class="clean-btn text-[11px]">show</button>
+            <button type="button" class="clean-btn text-[11px]">delete</button>
+          </div>
+          <textarea rows="2" placeholder="write note..." class="clean-input resize-none">${n.text || ""}</textarea>
+        `;
+        const [dateInput, showBtn, delBtn] = card.querySelectorAll("input, button");
+        const textarea = card.querySelector("textarea");
+
+        dateInput.addEventListener("input", () => {
+          state.notes[idx].date = dateInput.value;
+          if (currentNoteIndex === idx) renderDiaryNote(false);
+        });
+        dateInput.addEventListener("change", () => persistState());
+
+        textarea.addEventListener("input", () => {
+          state.notes[idx].text = textarea.value;
+          if (currentNoteIndex === idx) renderDiaryNote(false);
+        });
+        textarea.addEventListener("change", () => persistState());
+
+        showBtn.addEventListener("click", () => {
+          currentNoteIndex = idx;
+          renderDiaryNote(true);
+        });
+
+        delBtn.addEventListener("click", () => {
+          if (state.notes.length <= 1) return;
+          state.notes.splice(idx, 1);
+          if (currentNoteIndex >= state.notes.length) currentNoteIndex = 0;
+          renderDiaryNote(false);
+          renderNotesEditorList();
+          persistState();
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    window.addNewNote = function () {
+      const today = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }).toLowerCase();
+      state.notes.unshift({ id: "n_" + Date.now(), date: today, text: "" });
+      currentNoteIndex = 0;
+      renderDiaryNote(false);
+      renderNotesEditorList();
+      persistState();
+    };
+
+    let saveDebounce = null;
+    function debouncedPersist() {
+      clearTimeout(saveDebounce);
+      saveDebounce = setTimeout(() => persistState(), 450);
+    }
+
+    window.updateWhisper = function (val) {
+      state.whisper = val;
+      document.getElementById("whisper-display").textContent = val;
+      debouncedPersist();
+    };
+
+    window.updateColor = function (key, val) {
       state.colors[key] = val;
       applyThemeAndSizes();
-      await persistState();
+      debouncedPersist();
     };
 
-    window.updateTextSetting = async function (key, val) {
-      state[key] = val;
+    window.updateSize = function (key, val) {
+      state.sizes[key] = Number(val);
       applyThemeAndSizes();
-      await persistState();
+      debouncedPersist();
     };
 
-    window.updateImageSetting = async function (key, val) {
-      state.images[key] = val.trim();
-      applyThemeAndSizes();
-      await persistState();
-    };
-
-    window.updateVideoBgSetting = async function () {
-      state.images.bgVideoUrl = document.getElementById("input-bg-video-url").value.trim();
-      state.images.bgVideoStart = Number(document.getElementById("input-bg-video-start").value || 0);
-      state.images.bgVideoEnd = Number(document.getElementById("input-bg-video-end").value || 0);
-      state.images.bgVideoBlur = Number(document.getElementById("input-bg-video-blur").value ?? 5);
-      renderBackgroundMedia();
-      await persistState();
-    };
-
-    window.handleImageUpload = function (e, key) {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async () => {
-        state.images[key] = reader.result;
-        applyThemeAndSizes();
-        await persistState();
-        showToast("updated");
+    window.resetDragPositions = function () {
+      state.positions = {
+        diaryCard: { x: 0, y: 0 },
+        musicPill: { x: 0, y: 0 }
       };
-      reader.readAsDataURL(file);
+      applyThemeAndSizes();
+      persistState();
     };
 
-    window.updateSongSetting = async function (val) {
-      state.songUrl = val.trim();
-      musicUnlockedByClick = false;
-      await persistState();
-      showToast("updated");
+    window.updateMusicField = function (key, val) {
+      state.music[key] = val.trim();
+      applyThemeAndSizes();
+      persistState();
     };
 
     window.handleAudioUpload = function (e) {
       const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = async () => {
-        state.songUrl = reader.result;
-        musicUnlockedByClick = false;
-        await persistState();
-        showToast("loaded");
+      reader.onload = () => {
+        state.music.url = reader.result;
+        if (!state.music.title) state.music.title = file.name.replace(/\.[^/.]+$/, "");
+        applyThemeAndSizes();
+        persistState();
       };
       reader.readAsDataURL(file);
     };
 
-    window.changeOwnerPasscode = async function () {
-      const next = document.getElementById("input-new-passcode").value;
-      if (!next || next.length < 2) {
-        showToast("too short");
-        return;
-      }
-      state.passcodeHash = await hashString(next);
-      document.getElementById("input-new-passcode").value = "";
+    window.clearAudio = function () {
+      const audioEl = document.getElementById("bg-audio-player");
+      audioEl.pause();
+      audioEl.removeAttribute("src");
+      audioEl.dataset.loadedUrl = "";
+      state.music.url = "";
+      updateMusicUI(false);
+      persistState();
+    };
+
+    function compressImageIfNeeded(file, maxDim = 900) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (file.type === "image/gif" || file.type === "image/svg+xml") {
+            resolve(reader.result);
+            return;
+          }
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            const outType = file.type === "image/png" ? "image/png" : "image/jpeg";
+            resolve(canvas.toDataURL(outType, 0.82));
+          };
+          img.onerror = () => resolve(reader.result);
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    window.handleImageUpload = async function (e, key) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const maxDim = key === "faviconUrl" ? 128 : 1280;
+      const dataUrl = await compressImageIfNeeded(file, maxDim);
+      state.images[key] = dataUrl;
+      applyThemeAndSizes();
       await persistState();
-      showToast("saved");
     };
 
-    window.saveFirebaseConfig = async function () {
-      const raw = document.getElementById("input-firebase-config").value.trim();
-      if (!raw) return;
-      try {
-        const cleaned = raw
-          .replace(/^[^{]*/, "")
-          .replace(/[^}]*$/, "")
-          .replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":')
-          .replace(/'/g, '"');
-        const cfg = JSON.parse(cleaned);
-        state.firebaseConfig = cfg;
-        await persistState();
-        initFirebaseConnection(cfg);
-        showToast("connected");
-      } catch (e) {
-        showToast("invalid config");
-      }
+    window.updateImageField = function (key, val) {
+      state.images[key] = val.trim();
+      applyThemeAndSizes();
+      persistState();
     };
 
+    window.updateBgVideo = function (val) {
+      state.images.bgVideoUrl = val.trim();
+      applyThemeAndSizes();
+      persistState();
+    };
+
+    window.exportStandaloneHtml = function () {
+      const clone = document.documentElement.cloneNode(true);
+      const bakedScript = clone.querySelector("#baked-state-data");
+      if (bakedScript) bakedScript.textContent = JSON.stringify(state);
+      const htmlString = "<!DOCTYPE html>\n" + clone.outerHTML;
+      const tempArea = document.createElement("textarea");
+      tempArea.value = htmlString;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempArea);
+      showToast("html copied");
+    };
+
+    // Firebase Initialization & Live Cloud Sync
     function initFirebaseConnection(cfg) {
       try {
         fbApp = initializeApp(cfg);
         fbAuth = getAuth(fbApp);
         fbDb = getFirestore(fbApp);
-        const statusEl = document.getElementById("firebase-status-badge");
-        if (statusEl) statusEl.textContent = "connected";
-
-        signInAnonymously(fbAuth).catch(() => {});
 
         onAuthStateChanged(fbAuth, async (user) => {
-          if (user && !user.isAnonymous) {
-            if (!isCloudStateLoaded) {
-              try {
-                const { getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                const firstSnap = await getDoc(doc(fbDb, "diary_sanctuary", "main_state"));
-                if (firstSnap.exists()) {
-                  state = mergeDeep(state, firstSnap.data());
-                }
-                isCloudStateLoaded = true;
-              } catch (e) {}
+          if (!user) {
+            setOwnerModeUI(false);
+            return;
+          }
+          if (fbDb && !isCloudStateLoaded) {
+            try {
+              const snap = await getDoc(doc(fbDb, "diary_sanctuary", "main_state"));
+              isCloudStateLoaded = true;
+              if (snap.exists()) {
+                state = mergeDeep(state, snap.data());
+                applyThemeAndSizes();
+                renderDiaryNote(false);
+              }
+            } catch (e) {
+              isCloudStateLoaded = true;
             }
-            if (!state.ownerUid) {
-              state.ownerUid = user.uid;
-              isOwnerUnlocked = true;
-              await persistState();
-              updateOwnerUI();
-              showToast("claimed");
-            } else if (user.uid === state.ownerUid) {
-              isOwnerUnlocked = true;
-              updateOwnerUI();
-            } else {
-              isOwnerUnlocked = false;
-              updateOwnerUI();
-              await fbAuth.signOut();
-              await signInAnonymously(fbAuth);
-              showToast("not owner");
-            }
+          }
+          if (!state.ownerUid || state.ownerUid === user.uid) {
+            state.ownerUid = user.uid;
+            setOwnerModeUI(true);
+          } else {
+            await signOut(fbAuth).catch(() => {});
+            setOwnerModeUI(false);
           }
         });
 
         if (fbUnsubState) fbUnsubState();
         fbUnsubState = onSnapshot(doc(fbDb, "diary_sanctuary", "main_state"), (snap) => {
           isCloudStateLoaded = true;
-          if (snap.exists() && !isOwnerUnlocked) {
+          if (snap.exists() && !isSavingLocally) {
             const remote = snap.data();
             state = mergeDeep(state, remote);
+            saveToLocalIDB(structuredClone(state));
             try {
               localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(state));
             } catch (e) {}
@@ -1245,133 +1401,17 @@
         }, () => {
           isCloudStateLoaded = true;
         });
-      } catch (e) {}
-    }
-
-    window.signInWithFirebaseEmail = async function () {
-      if (!fbAuth) return;
-      const email = document.getElementById("fb-email-input").value.trim();
-      const pass = document.getElementById("fb-pass-input").value;
-      try {
-        const cred = await signInWithEmailAndPassword(fbAuth, email, pass);
-        if (state.ownerUid && cred.user.uid !== state.ownerUid) {
-          await fbAuth.signOut();
-          await signInAnonymously(fbAuth);
-          showToast("not owner");
-          return;
-        }
-        if (!state.ownerUid) state.ownerUid = cred.user.uid;
-        isOwnerUnlocked = true;
-        await persistState();
-        updateOwnerUI();
-        closeModal("lock-modal");
-        showToast("signed in");
       } catch (e) {
-        showToast("sign in failed");
+        console.error("Firebase init error:", e);
       }
-    };
-
-    window.signInWithFirebaseGoogle = async function () {
-      if (!fbAuth) return;
-      try {
-        const cred = await signInWithPopup(fbAuth, new GoogleAuthProvider());
-        if (state.ownerUid && cred.user.uid !== state.ownerUid) {
-          await fbAuth.signOut();
-          await signInAnonymously(fbAuth);
-          showToast("not owner");
-          return;
-        }
-        if (!state.ownerUid) state.ownerUid = cred.user.uid;
-        isOwnerUnlocked = true;
-        await persistState();
-        updateOwnerUI();
-        closeModal("lock-modal");
-        showToast("signed in");
-      } catch (e) {
-        showToast("sign in failed");
-      }
-    };
-
-    window.copyBakedCode = function () {
-      const bakedState = structuredClone(state);
-      const cloneDoc = document.documentElement.cloneNode(true);
-      const toolbar = cloneDoc.querySelector("#owner-toolbar");
-      const noteBar = cloneDoc.querySelector("#owner-inline-note-bar");
-      const lockIcon = cloneDoc.querySelector("#owner-lock-icon");
-      if (toolbar) toolbar.classList.add("hidden");
-      if (noteBar) noteBar.classList.add("hidden");
-      if (lockIcon) lockIcon.textContent = "♡";
-
-      const bakedScript = cloneDoc.querySelector("#baked-state-data");
-      if (bakedScript) {
-        bakedScript.textContent = JSON.stringify(bakedState);
-      }
-
-      const fullHtml = "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
-      const ta = document.createElement("textarea");
-      ta.value = fullHtml;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
-      showToast("copied html");
-    };
-
-    window.resetLayoutPositions = async function () {
-      state.positions = {
-        "widget-diary": { x: 0, y: 0 }
-      };
-      applyPositions();
-      await persistState();
-      showToast("centered");
-    };
-
-    function initDragging() {
-      let activeId = null;
-      let startX = 0;
-      let startY = 0;
-      let origX = 0;
-      let origY = 0;
-
-      document.querySelectorAll(".drag-handle").forEach(handle => {
-        handle.addEventListener("pointerdown", (e) => {
-          e.preventDefault();
-          activeId = handle.getAttribute("data-drag-target");
-          const cur = state.positions?.[activeId] || { x: 0, y: 0 };
-          startX = e.clientX;
-          startY = e.clientY;
-          origX = cur.x;
-          origY = cur.y;
-          handle.setPointerCapture(e.pointerId);
-        });
-
-        handle.addEventListener("pointermove", (e) => {
-          if (!activeId) return;
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
-          if (!state.positions) state.positions = {};
-          state.positions[activeId] = { x: origX + dx, y: origY + dy };
-          applyPositions();
-        });
-
-        handle.addEventListener("pointerup", async () => {
-          if (!activeId) return;
-          activeId = null;
-          await persistState();
-        });
-      });
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", async () => {
       loadInitialState();
+      const idbSaved = await loadFromLocalIDB();
+      if (idbSaved) {
+        state = mergeDeep(state, idbSaved);
+      }
       applyThemeAndSizes();
       renderDiaryNote(false);
       startNoteAutoCycle();
